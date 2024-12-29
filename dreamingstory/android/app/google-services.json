@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "591305675153",
+    "project_id": "dreamingstory-63139",
+    "storage_bucket": "dreamingstory-63139.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591305675153:android:650773f9a9429fc6744a30",
+        "android_client_info": {
+          "package_name": "com.android.dreamingstory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc7i_Vk4pQ4QfOH6-FISjs4x2fsN40c8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591305675153:android:0cfe8bacfc2f6898744a30",
+        "android_client_info": {
+          "package_name": "com.example.dreamingstory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc7i_Vk4pQ4QfOH6-FISjs4x2fsN40c8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
