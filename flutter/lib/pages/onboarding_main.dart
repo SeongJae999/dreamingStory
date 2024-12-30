@@ -1,4 +1,5 @@
-import 'package:dreamingstory/pages/account/login.dart';
+// import 'package:dreamingstory/pages/account/login.dart'; // 일단 home.dart로 연결시켜 놓겠습니다.
+import 'package:dreamingstory/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => LoginPage()),
+      MaterialPageRoute(builder: (_) => HomePage()),
     );
   }
 
