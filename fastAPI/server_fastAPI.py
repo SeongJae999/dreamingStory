@@ -81,7 +81,7 @@ async def generate_story(request: ChatRequest):
         response = generate_response(request.topic)
         logger.info(f"Generated response: {response}")
         response_data = {"response":response}
-        return JSONResponse(content=response_data)
+        return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
         logger.error(f"ValueError occurred: {ve}")
