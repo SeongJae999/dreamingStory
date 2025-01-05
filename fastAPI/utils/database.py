@@ -1,7 +1,7 @@
 # fastAPI/app/utils/database.py
-import firebase_admin
-from firebase_admin import credentials, firestore
 from utils.config import settings
+from firebase_admin import credentials, firestore
+import firebase_admin
 import logging
 
 def init_firebase():
