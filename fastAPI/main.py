@@ -1,12 +1,14 @@
 # fastAPI/app/main.py
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes import auth_routes, story_routes
-from utils.config import settings
+from auth import get_current_user
+from utils.database import init_firebase
 
+init_firebase()
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -21,6 +23,7 @@ app = FastAPI(
 
 # CORS 설정
 origins = [
+    "http://10.0.2.2:8000"
     "http://localhost",
     "http://localhost:3000",
     "https://your-frontend-domain.com",
@@ -35,10 +38,9 @@ app.add_middleware(
 )
 
 # 라우트 포함
-app.include_router(auth_routes.router)
-# app.include_router(story_routes.router)
+app.include_router(auth_routes.router, dependencies=[Depends(get_current_user)])
+app.include_router(story_routes.router)
 
-# 기본 엔드포인트
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Aiffelthon Story Generator API"}
