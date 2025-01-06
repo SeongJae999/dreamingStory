@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
@@ -12,7 +13,8 @@ import os
 
 from dotenv import load_dotenv
 load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# openai_api_key = os.getenv("OPENAI_API_KEY")
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
 app = FastAPI()
 
@@ -30,24 +32,24 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def make_chain():
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", """
-         
-         화자 설정 : 
-         당신은 지금부터 동화를 재밌게 읽어주는 어머니입니다.
-         지금부터 당신의 4세 아이에게 재미있는 창작 동화를 한국어로 들려줍니다.
-         
-         주제 : {topic}
+    with open('dreamingStory/fastAPI/prompt.txt', 'r', encoding='utf-8') as file:
+        prompt_text = file.read()
+        logger.info(f"프롬프트 텍스트 파일: \n {prompt_text}")
 
-         지침 :
-         1) 의성어, 의태어를 풍부하게 사용해주세요.
-         2) 영어는 사용하지 말아주세요.
-         
-         """),
-    ])
+    prompt = ChatPromptTemplate.from_messages([
+            ("system", prompt_text), ('human', '지금부터 동화를 생성해주세요.')
+        ])
     logger.info("프롬프트가 생성되었습니다.")
 
-    llm = ChatOpenAI(openai_api_key=openai_api_key)
+    # llm = ChatOpenAI(openai_api_key=openai_api_key,
+    #                  model='gpt-4o',
+    #                  temperature=0.7,
+    #                  max_tokens=512)
+
+    llm = ChatAnthropic(api_key=anthropic_api_key,
+                        model="claude-3-5-sonnet-20240620",
+                        temperature=0.7,
+                        max_tokens=1024)
 
     chain = prompt|llm
 
@@ -80,7 +82,10 @@ async def generate_story(request: ChatRequest):
     try:
         response = generate_response(request.topic)
         logger.info(f"Generated response: {response}")
-        response_data = {"response":response}
+        first = response.split('[1]')[1].split('[2]')[0].strip()
+        second = response.split('[2]')[1].strip()
+        response = response.split('[1]')[0].strip()
+        response_data = {"response":response, "selection" : {'first' : first, 'second' : second}}
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
