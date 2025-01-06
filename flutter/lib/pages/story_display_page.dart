@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'next_story_page.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
@@ -13,6 +14,8 @@ class StoryDisplayPage extends StatefulWidget {
 
 class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? storyContent;
+  String? firstNextStory;
+  String? secondNextStory;
   bool isLoading = true;
 
   @override
@@ -32,6 +35,8 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       if (response.statusCode == 200) {
         setState(() {
           storyContent = jsonDecode(response.body)['response'];
+          firstNextStory = jsonDecode(response.body)['selection']['first'];
+          secondNextStory = jsonDecode(response.body)['selection']['second'];
           isLoading = false;
         });
       } else {
@@ -45,6 +50,15 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     }
   }
 
+  void _navigateToNextStory(String topic) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NextStoryPage(topic: topic),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,9 +70,26 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
-                child: Text(
-                  storyContent ?? '스토리를 불러올 수 없습니다.',
-                  style: TextStyle(fontSize: 16),
+                child: Column(
+                  children: [
+                    Text(
+                      storyContent ?? '스토리를 불러올 수 없습니다.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    // 첫 번째 선택지 버튼
+                    ElevatedButton(
+                      onPressed: firstNextStory != null
+                          ? () => _navigateToNextStory(firstNextStory!)
+                          : null,
+                      child: Text(firstNextStory ?? '첫 번째 선택지 없음'),
+                    ),
+                    ElevatedButton(
+                      onPressed: secondNextStory != null
+                          ? () => _navigateToNextStory(secondNextStory!)
+                          : null,
+                      child: Text(secondNextStory ?? '두 번째 선택지 없음'),
+                    ),
+                  ],
                 ),
               ),
       ),

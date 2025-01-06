@@ -30,20 +30,45 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def make_chain():
+    # prompt = ChatPromptTemplate.from_messages([
+    #     ("system", """
+         
+    #      화자 설정 : 
+    #      당신은 지금부터 동화를 재밌게 읽어주는 어머니입니다.
+    #      지금부터 당신의 4세 아이에게 재미있는 창작 동화를 한국어로 들려줍니다.
+         
+    #      주제 : {topic}
+
+    #      지침 :
+    #      1) 의성어, 의태어를 풍부하게 사용해주세요.
+    #      2) 영어는 사용하지 말아주세요.
+         
+    #      """),
+    # ])
     prompt = ChatPromptTemplate.from_messages([
         ("system", """
+            ## 화자 설정 : 
+                당신은 지금부터 동화를 재밌게 읽어주는 어머니입니다.
+                지금부터 당신의 4세 아이에게 재미있는 창작 동화를 한국어로 들려줍니다.
          
-         화자 설정 : 
-         당신은 지금부터 동화를 재밌게 읽어주는 어머니입니다.
-         지금부터 당신의 4세 아이에게 재미있는 창작 동화를 한국어로 들려줍니다.
+            ## 지시: 
+                - 의성어, 의태어를 풍부하게 사용해주세요.
+                - 한글을 사용해주세요.
+                - 아래 Triple backticks로 감싸진 '주제'의 교훈을 담은 이야기를 만들어주세요.
+            
+                    ```'주제' : {topic}```
          
-         주제 : {topic}
-
-         지침 :
-         1) 의성어, 의태어를 풍부하게 사용해주세요.
-         2) 영어는 사용하지 말아주세요.
-         
-         """),
+                - 이야기를 결말을 만들지 말고 두 가지 선택지를 주어 이야기를 이어갈 수 있게 해주세요.
+                    예시:
+                    1. 
+                    [1] 붕붕~ 자동차를 타고 갈까요? 
+                    [2] 엄마 아빠가 기다리는 집으로 뛰어갈까요?
+                    
+                    2. 
+                    [1] 용감한 마음을 가져서 숲 속을 계속 탐험해볼까요?
+                    [2] 곰에게 도움을 요청하고 마을로 돌아갈까요?
+ 
+         """)
     ])
     logger.info("프롬프트가 생성되었습니다.")
 
@@ -79,8 +104,11 @@ async def generate_story(request: ChatRequest):
 
     try:
         response = generate_response(request.topic)
+        first = response.split('[1]')[1].split('?')[0].strip()
+        second = response.split('[2]')[1].strip()
         logger.info(f"Generated response: {response}")
-        response_data = {"response":response}
+        response = response.split('---')[0].strip()
+        response_data = {"response":response, "selection" : {'first' : first, 'second' : second}}
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
