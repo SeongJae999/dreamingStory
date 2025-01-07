@@ -8,9 +8,10 @@ from langchain_anthropic import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
+from API.api import sd_generate_image, gpt_generate_text
+
 import logging
 import os
-
 from dotenv import load_dotenv
 load_dotenv()
 # openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -34,7 +35,8 @@ logger = logging.getLogger(__name__)
 def make_chain():
     with open('dreamingStory/fastAPI/prompt.txt', 'r', encoding='utf-8') as file:
         prompt_text = file.read()
-        logger.info(f"프롬프트 텍스트 파일: \n {prompt_text}")
+    
+    logger.info(f"프롬프트 텍스트 파일: \n {prompt_text}")
 
     prompt = ChatPromptTemplate.from_messages([
             ("system", prompt_text), ('human', '지금부터 동화를 생성해주세요.')
@@ -71,8 +73,12 @@ def generate_response(topic):
 class ChatRequest(BaseModel):
     topic: str
 
+class ImageRequest(BaseModel):
+    prompt: str
+
 @app.get("/")
 async def root():
+
     logger.info('뿌리를 찾아서...')
     return "꿈꾸는 이야기"
 
@@ -81,14 +87,32 @@ async def generate_story(request: ChatRequest):
 
     try:
         response = generate_response(request.topic)
-        first = response.split('[1]')[1].split('?')[0].strip()
-        second = response.split('[2]')[1].strip()
         logger.info(f"Generated response: {response}")
         first = response.split('[1]')[1].split('[2]')[0].strip()
         second = response.split('[2]')[1].strip()
         response = response.split('[1]')[0].strip()
         response_data = {"response":response, "selection" : {'first' : first, 'second' : second}}
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
+    
+    except ValueError as ve:
+        logger.error(f"ValueError occurred: {ve}")
+        raise HTTPException(status_code=400, detail=str(ve))
+    
+    except Exception as e:
+        logger.error(f"Error occurred: {e}")
+        raise HTTPException(status_code=500, detail="서버에서 오류가 발생했습니다.")
+    
+@app.post("/generate_image")
+async def generate_image(request: ImageRequest):
+
+    try:
+        prompt = f"""
+        translate the korean text delimited by triple backticks in English.
+        ```{request.prompt}```
+        """
+        eng_prompt = gpt_generate_text(prompt)
+        image_path = sd_generate_image(eng_prompt) 
+        return JSONResponse(content=image_path, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
         logger.error(f"ValueError occurred: {ve}")
