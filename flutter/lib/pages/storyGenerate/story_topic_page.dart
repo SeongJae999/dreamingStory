@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dreamingstory/pages/story_display_page.dart';
+import 'package:dreamingstory/pages/storyGenerate/story_display_page.dart';
 
 class StoryTopicPage extends StatelessWidget {
   const StoryTopicPage({Key? key}) : super(key: key);

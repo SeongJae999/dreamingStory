@@ -103,7 +103,6 @@ class _LoginPageState extends State<LoginPage> {
           'phone_number': userCredential.user!.phoneNumber,
           'created_at': FieldValue.serverTimestamp(),
           'is_active': true,
-          'is_onboarded': false,
         });
       }
     } on FirebaseAuthException catch (e) {

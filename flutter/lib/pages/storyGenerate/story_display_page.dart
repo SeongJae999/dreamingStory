@@ -29,7 +29,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       final response = await http.post(
         Uri.parse('https://47b0-222-239-25-12.ngrok-free.app/generate_story'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'topic': widget.topic, 'place': ''}),
+        body: jsonEncode({'topic': widget.topic}),
       );
 
       if (response.statusCode == 200) {

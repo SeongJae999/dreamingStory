@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'account/login.dart'; // 일단 onboarding 페이지와 연결시켜 놓겠습니다.
 import 'package:dreamingstory/pages/onboarding_main.dart';
-import 'package:dreamingstory/pages/story_topic_page.dart';
+import 'package:dreamingstory/pages/storyGenerate/story_topic_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

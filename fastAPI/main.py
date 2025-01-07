@@ -1,11 +1,11 @@
 # fastAPI/app/main.py
 import logging
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+import shutil
 
 from routes import auth_routes, story_routes
-from auth import get_current_user
 from utils.database import init_firebase
 
 init_firebase()
@@ -38,9 +38,42 @@ app.add_middleware(
 )
 
 # 라우트 포함
-app.include_router(auth_routes.router, dependencies=[Depends(get_current_user)])
+app.include_router(auth_routes.router)
 app.include_router(story_routes.router)
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Aiffelthon Story Generator API"}
+
+@app.post("/upload/")
+async def upload_image(file: UploadFile = File(...)):
+    with open(f"uploads/{file.filename}", "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    return {"filename": file.filename}
+
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+from fastapi import FastAPI, HTTPException, File, UploadFile, Response
+from firebase_admin import credentials, firestore, initialize_app
+from fastapi.responses import FileResponse
+import base64
+from utils.config import settings
+
+cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
+db = firestore.client()
+
+@app.post("/upload/")
+async def upload_image(file: UploadFile = File(...)):
+    # 이미지 파일을 Base64로 인코딩
+    image_data = await file.read()
+    encoded_image = base64.b64encode(image_data).decode('utf-8')
+
+    # Firestore 문서에 이미지 필드로 저장
+    doc_ref = db.collection('story').document('flower')
+    doc_ref.set({
+        'image': encoded_image
+    }, merge=True)  # 기존의 다른 필드를 유지하면서 'image' 필드만 추가하거나 업데이트
+
+    return {"message": "Image uploaded successfully"}
