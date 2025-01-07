@@ -28,7 +28,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        Uri.parse('https://47b0-222-239-25-12.ngrok-free.app/generate_story'),
+        Uri.parse('https://eb88-222-239-25-12.ngrok-free.app/generate_story'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );
@@ -54,7 +54,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<String?> _generateImage(String prompt) async {
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/generate_image'),
+        Uri.parse('https://eb88-222-239-25-12.ngrok-free.app/generate_image'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'prompt': prompt}),
       );

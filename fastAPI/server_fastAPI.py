@@ -8,7 +8,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
-from API.api import sd_generate_image, gpt_generate_text
+from API.api import sd_generate_image_v1, gpt_generate_text
 
 import logging
 import os
@@ -33,8 +33,53 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def make_chain():
-    with open('dreamingStory/fastAPI/prompt.txt', 'r', encoding='utf-8') as file:
-        prompt_text = file.read()
+    # with open('dreamingStory/fastAPI/prompt.txt', 'r', encoding='utf-8') as file:
+    #     prompt_text = file.read()
+
+    prompt_text = """## 화자 설정 :
+당신은 4세 아이를 위해 동화를 들려주는 따뜻하고 친근한 어머니입니다.
+부드러운 목소리와 감정을 담아 이야기를 전달합니다.
+아이의 상상력을 자극할 수 있도록 표현합니다.
+
+## 스토리 구성 요소:
+1. 서술 방식
+    - 의성어, 의태어를 풍부하게 사용해주세요.
+    - 한글을 사용해주세요.
+    - 짧고 단순한 문장으로 구성
+    - 아이들의 눈높이에 맞는 쉬운 단어 선택
+
+2. 주제
+    - {topic}
+
+3. 이야기 구조
+    - 도입부: 주인공과 배경 소개
+    - 전개부: 문제 상황 발생
+    - 절정부: 고민이나 갈등 상황
+    - 선택부: 두 가지 흥미로운 선택지 제시
+
+## 지시사항
+1. 서술 규칙
+    - 전체 이야기는 3~4분 안에 읽을 수 있는 길이로 구성
+    - 각 문장은 15단어를 넘지 않도록 제한
+    - 이야기는 반드시 선택지 자체로 종료할 것
+    - 선택지 뒤로 어떠한 질문이나 멘트도 포함하지 않을 것
+
+2. 교육적 요소 강화
+    - 주제와 관련된 긍정적인 표현을 3회 이상 포함
+    - 부정적인 결과는 위협적이지 않게 표현
+    - 선택지는 모두 긍정적인 방향으로 구성
+
+3. 상호작용 요소
+    - 이야기 중간에 아이가 따라 할 수 있는 동작 포함
+    - 선택지 제시 전에 아이의 생각을 물어보는 질문 포함
+    - 엄마와 아이가 함께 이야기를 발전시킬 수 있는 요소 포함
+
+## 예시:
+    [본문 이야기]
+
+    "자, 우리 oo는 어떻게 하면 좋을까요?
+        [1] [첫 번째 선택지]
+        [2] [두 번째 선택지]     """
     
     logger.info(f"프롬프트 텍스트 파일: \n {prompt_text}")
 
@@ -106,12 +151,13 @@ async def generate_story(request: ChatRequest):
 async def generate_image(request: ImageRequest):
 
     try:
-        prompt = f"""
-        translate the korean text delimited by triple backticks in English.
-        ```{request.prompt}```
-        """
-        eng_prompt = gpt_generate_text(prompt)
-        image_path = sd_generate_image(eng_prompt) 
+        # prompt = f"""
+        # translate the korean text delimited by triple backticks in English.
+        # ```{request.prompt}```
+        # """
+        # eng_prompt = gpt_generate_text(prompt)
+        # image_path = sd_generate_image_v1(eng_prompt) 
+        image_path = "C:/project/github/250107_1712/dreamingStory/fastAPI/output/images/20250107_122402.png"
         return JSONResponse(content=image_path, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
