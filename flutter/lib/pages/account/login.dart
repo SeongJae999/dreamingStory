@@ -40,6 +40,12 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
+      print('로그인 성공: ${userCredential.user?.uid}');
+
+      // 로그인 성공 후 홈 화면으로 이동
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+
       // 로그인 성공, AuthenticationWrapper가 HomePage로 이동
     } on FirebaseAuthException catch (e) {
       setState(() {

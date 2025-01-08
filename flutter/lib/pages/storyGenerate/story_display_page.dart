@@ -98,31 +98,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                       storyContent ?? '스토리를 불러올 수 없습니다.',
                       style: TextStyle(fontSize: 16),
                     ),
-                    if (imagePath != null) Image.network(imagePath!),
-                    // storyContent에 대한 이미지 생성
-                    if (storyContent != null)
-                      FutureBuilder<String?>(
-                        future: _generateImage(
-                            storyContent!), // storyContent에 대한 이미지 생성
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('이미지 생성 오류: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            return Image.network(snapshot.data!); // 생성된 이미지 출력
-                          } else {
-                            return Text('이미지 생성 실패'); // 데이터가 없을 경우 처리
-                          }
-                        },
-                      ),
-                    if (imagePath != null) Image.network(imagePath!),
                     ElevatedButton(
                       onPressed: firstNextStory != null
                           ? () {
                               _navigateToNextStory(firstNextStory!);
-                              //_generateImage(firstNextStory!);
                             }
                           : null,
                       child: Text(firstNextStory ?? '첫 번째 선택지 없음'),
@@ -131,7 +110,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                       onPressed: secondNextStory != null
                           ? () {
                               _navigateToNextStory(secondNextStory!);
-                              //_generateImage(secondNextStory!);
                             }
                           : null,
                       child: Text(secondNextStory ?? '두 번째 선택지 없음'),

@@ -44,6 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'email': _emailController.text.trim(),
         'phone_number': _phoneController.text.trim(),
         'created_at': FieldValue.serverTimestamp(),
+        'password': _passwordController.text.trim(),
         'is_active': true,
       });
 
