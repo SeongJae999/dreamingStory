@@ -54,26 +54,3 @@ async def upload_image(file: UploadFile = File(...)):
 from fastapi.staticfiles import StaticFiles
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
-from fastapi import FastAPI, HTTPException, File, UploadFile, Response
-from firebase_admin import credentials, firestore, initialize_app
-from fastapi.responses import FileResponse
-import base64
-from utils.config import settings
-
-cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
-db = firestore.client()
-
-@app.post("/upload/")
-async def upload_image(file: UploadFile = File(...)):
-    # 이미지 파일을 Base64로 인코딩
-    image_data = await file.read()
-    encoded_image = base64.b64encode(image_data).decode('utf-8')
-
-    # Firestore 문서에 이미지 필드로 저장
-    doc_ref = db.collection('story').document('flower')
-    doc_ref.set({
-        'image': encoded_image
-    }, merge=True)  # 기존의 다른 필드를 유지하면서 'image' 필드만 추가하거나 업데이트
-
-    return {"message": "Image uploaded successfully"}
