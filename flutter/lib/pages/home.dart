@@ -12,18 +12,57 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('홈'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => OnboardingMain()),
-              );
-            },
-          ),
-        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('메뉴',
+                  style: TextStyle(color: Colors.white, fontSize: 24)),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('사용자 이름'),
+            ),
+            ListTile(
+              title: Text('공유'),
+              onTap: () {
+                // 공유 기능 구현 필요
+              },
+            ),
+            ListTile(
+              title: Text('구독 및 취소'),
+              onTap: () {
+                // 구독 및 취소 기능 구현 필요
+              },
+            ),
+            ListTile(
+              title: Text('설정'),
+              onTap: () {
+                // 설정 페이지로 이동하는 기능 구현 필요
+              },
+            ),
+            ListTile(
+              title: Text('사용 가이드'),
+              onTap: () {
+                // 사용 가이드 페이지로 이동하는 기능 구현 필요
+              },
+            ),
+            ListTile(
+              title: Text('로그아웃'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => OnboardingMain()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

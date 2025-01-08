@@ -28,7 +28,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        Uri.parse('https://eb88-222-239-25-12.ngrok-free.app/generate_story'),
+        Uri.parse('https://ac99-222-239-25-12.ngrok-free.app/generate_story'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );
@@ -36,8 +36,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       if (response.statusCode == 200) {
         setState(() {
           storyContent = jsonDecode(response.body)['response'];
-          firstNextStory = jsonDecode(response.body)['selection']['first'];
-          secondNextStory = jsonDecode(response.body)['selection']['second'];
           isLoading = false;
         });
       } else {
@@ -97,22 +95,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                     Text(
                       storyContent ?? '스토리를 불러올 수 없습니다.',
                       style: TextStyle(fontSize: 16),
-                    ),
-                    ElevatedButton(
-                      onPressed: firstNextStory != null
-                          ? () {
-                              _navigateToNextStory(firstNextStory!);
-                            }
-                          : null,
-                      child: Text(firstNextStory ?? '첫 번째 선택지 없음'),
-                    ),
-                    ElevatedButton(
-                      onPressed: secondNextStory != null
-                          ? () {
-                              _navigateToNextStory(secondNextStory!);
-                            }
-                          : null,
-                      child: Text(secondNextStory ?? '두 번째 선택지 없음'),
                     ),
                   ],
                 ),
