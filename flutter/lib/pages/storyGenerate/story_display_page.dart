@@ -34,7 +34,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        Uri.parse('https://37d8-222-239-25-12.ngrok-free.app/generate_story'),
+        Uri.parse('https://279d-222-239-25-12.ngrok-free.app/generate_story'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );
