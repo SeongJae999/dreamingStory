@@ -1,19 +1,43 @@
 # fastAPI/app/routes/story_routes.py
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
-from firebase_admin import firestore
-
 from models.story import StoryRequest, StoryResponse
 from auth import get_current_user
 from services.gpt_service import generate_story
 from services.comfyui_service import generate_image
 from services.tts_service import convert_text_to_speech
 from utils.database import get_db
+from utils.story import generate_response
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/stories",
     tags=["stories"]
 )
+
+class ChatRequest(BaseModel):
+    topic: str
+
+@router.post("/generate_story")
+async def generate_story(request: ChatRequest):
+    try:
+        response = generate_response(request.topic)
+        logger.info(f"Generated response: {response}")
+        response_data = {"response":response}
+        return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
+    
+    except ValueError as ve:
+        logger.error(f"ValueError occurred: {ve}")
+        raise HTTPException(status_code=400, detail=str(ve))
+    
+    except Exception as e:
+        logger.error(f"Error occurred: {e}")
+        raise HTTPException(status_code=500, detail="서버에서 오류가 발생했습니다.")
 
 @router.post("/create", response_model=StoryResponse)
 async def create_story(request: StoryRequest, user_id: str = Depends(get_current_user)):

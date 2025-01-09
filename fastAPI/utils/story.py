@@ -1,8 +1,8 @@
 # fastAPI/utils/story.py
 from utils.config import settings
-from database import get_db
-from firebase_admin import firestore
+from utils.database import get_db
 
+from firebase_admin import firestore
 from langchain_anthropic import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate
 

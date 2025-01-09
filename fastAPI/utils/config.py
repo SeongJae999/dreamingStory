@@ -12,8 +12,6 @@ load_dotenv(dotenv_path=dotenv_path)
 
 class Settings:
     FIREBASE_CREDENTIALS: str = os.getenv("FIREBASE_CREDENTIALS")
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
-    COMFYUI_API_URL: str = os.getenv("COMFYUI_API_URL")
-    TTS_API_URL: str = os.getenv("TTS_API_URL")
-
+    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY")
+    
 settings = Settings()
