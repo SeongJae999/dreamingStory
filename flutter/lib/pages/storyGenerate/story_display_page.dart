@@ -47,6 +47,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           third = jsonDecode(response.body)['story']['third'];
           forth = jsonDecode(response.body)['story']['forth'];
           wisdom = jsonDecode(response.body)['wisdom'];
+          imagePath = "assets/images/ssa.jpg";
 
           isLoading = false;
         });
@@ -104,40 +105,88 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             : PageView(
                 children: [
                   Container(
-                    child: Text(
-                      title ?? '제목이 없습니다.',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    child: Column(
+                      children: [
+                        Text(
+                          title ?? '제목이 없습니다.',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        // 이미지 출력 부분
+                        imagePath != null
+                            ? Image.asset(imagePath!)
+                            : Container(),
+                      ],
                     ),
                   ),
                   Container(
-                    child: Text(
-                      first ?? '첫 번째 부분이 없습니다.',
-                      style: TextStyle(fontSize: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          first ?? '첫 번째 부분이 없습니다.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        // 이미지 출력 부분
+                        imagePath != null
+                            ? Image.asset(imagePath!)
+                            : Container(),
+                      ],
                     ),
                   ),
                   Container(
-                    child: Text(
-                      second ?? '두 번째 부분이 없습니다.',
-                      style: TextStyle(fontSize: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          second ?? '두 번째 부분이 없습니다.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        // 이미지 출력 부분
+                        imagePath != null
+                            ? Image.asset(imagePath!)
+                            : Container(),
+                      ],
                     ),
                   ),
                   Container(
-                    child: Text(
-                      third ?? '세 번째 부분이 없습니다.',
-                      style: TextStyle(fontSize: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          third ?? '세 번째 부분이 없습니다.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        // 이미지 출력 부분
+                        imagePath != null
+                            ? Image.asset(imagePath!)
+                            : Container(),
+                      ],
                     ),
                   ),
                   Container(
-                    child: Text(
-                      forth ?? '네 번째 부분이 없습니다.',
-                      style: TextStyle(fontSize: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          forth ?? '네 번째 부분이 없습니다.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        // 이미지 출력 부분
+                        imagePath != null
+                            ? Image.asset(imagePath!)
+                            : Container(),
+                      ],
                     ),
                   ),
                   Container(
-                    child: Text(
-                      wisdom ?? '교훈이 없습니다.',
-                      style: TextStyle(fontSize: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          wisdom ?? '교훈이 없습니다.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        // 이미지 출력 부분
+                        imagePath != null
+                            ? Image.asset(imagePath!)
+                            : Container(),
+                      ],
                     ),
                   ),
                 ],
