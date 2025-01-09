@@ -25,10 +25,17 @@ class ChatRequest(BaseModel):
 
 @router.post("/generate_story")
 async def generate_story(request: ChatRequest):
+
     try:
         response = generate_response(request.topic)
         logger.info(f"Generated response: {response}")
-        response_data = {"response":response}
+        title=response.split('---')[0]
+        first=response.split('---')[1]
+        second=response.split('---')[2]
+        third=response.split('---')[3]
+        forth=response.split('---')[4]
+        wisdom=response.split('---')[5]
+        response_data = {"title":title, "story":{"first":first, "second":second, "third":third, "forth":forth}, "wisdom":wisdom}
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
