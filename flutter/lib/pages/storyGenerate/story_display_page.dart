@@ -18,6 +18,12 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? secondNextStory;
   bool isLoading = true;
   String? imagePath;
+  String? title;
+  String? first;
+  String? second;
+  String? third;
+  String? forth;
+  String? wisdom;
 
   @override
   void initState() {
@@ -28,14 +34,20 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        Uri.parse('https://ac99-222-239-25-12.ngrok-free.app/generate_story'),
+        Uri.parse('https://37d8-222-239-25-12.ngrok-free.app/generate_story'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );
 
       if (response.statusCode == 200) {
         setState(() {
-          storyContent = jsonDecode(response.body)['response'];
+          title = jsonDecode(response.body)['title'];
+          first = jsonDecode(response.body)['story']['first'];
+          second = jsonDecode(response.body)['story']['second'];
+          third = jsonDecode(response.body)['story']['third'];
+          forth = jsonDecode(response.body)['story']['forth'];
+          wisdom = jsonDecode(response.body)['wisdom'];
+
           isLoading = false;
         });
       } else {
@@ -89,15 +101,46 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         padding: const EdgeInsets.all(16.0),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text(
-                      storyContent ?? '스토리를 불러올 수 없습니다.',
+            : PageView(
+                children: [
+                  Container(
+                    child: Text(
+                      title ?? '제목이 없습니다.',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      first ?? '첫 번째 부분이 없습니다.',
                       style: TextStyle(fontSize: 16),
                     ),
-                  ],
-                ),
+                  ),
+                  Container(
+                    child: Text(
+                      second ?? '두 번째 부분이 없습니다.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      third ?? '세 번째 부분이 없습니다.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      forth ?? '네 번째 부분이 없습니다.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      wisdom ?? '교훈이 없습니다.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
       ),
     );

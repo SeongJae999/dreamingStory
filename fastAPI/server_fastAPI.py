@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def make_chain():
-    # with open('dreamingStory/fastAPI/prompt.txt', 'r', encoding='utf-8') as file:
+    # with open('./prompt.txt', 'r', encoding='utf-8') as file:
     #     prompt_text = file.read()
 
     prompt_text = """## 화자 설정 :
@@ -69,6 +69,25 @@ def make_chain():
 3. 상호작용 요소
     - 이야기 중간에 아이가 따라 할 수 있는 동작 포함
     - 엄마와 아이가 함께 이야기를 발전시킬 수 있는 요소 포함
+
+
+## 출력예시
+[이야기 제목]
+---
+
+[도입부 내용]
+---
+
+[전개부 내용]
+---
+
+[절정부 내용]
+---
+
+[결말부 내용]
+---
+
+[이 이야기를 통해 아이와 같이 나눠보면 좋을 내용]
 """
     
     logger.info(f"프롬프트 텍스트 파일: \n {prompt_text}")
@@ -123,7 +142,13 @@ async def generate_story(request: ChatRequest):
     try:
         response = generate_response(request.topic)
         logger.info(f"Generated response: {response}")
-        response_data = {"response":response}
+        title=response.split('---')[0]
+        first=response.split('---')[1]
+        second=response.split('---')[2]
+        third=response.split('---')[3]
+        forth=response.split('---')[4]
+        wisdom=response.split('---')[5]
+        response_data = {"title":title, "story":{"first":first, "second":second, "third":third, "forth":forth}, "wisdom":wisdom}
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
