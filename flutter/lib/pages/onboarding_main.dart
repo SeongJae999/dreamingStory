@@ -102,7 +102,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
         ),
       ),
       floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 350),
+        margin: EdgeInsets.only(bottom: 100),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(4, (index) {

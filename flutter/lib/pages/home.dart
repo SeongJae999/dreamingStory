@@ -128,11 +128,64 @@ class HomePage extends StatelessWidget {
                       // 흥부와 놀부 페이지로 이동
                     },
                   ),
+                  _buildStoryCard(
+                    context,
+                    '흥부와 놀부',
+                    'assets/images/background.png',
+                    () {
+                      // 흥부와 놀부 페이지로 이동
+                    },
+                  ),
+                  _buildStoryCard(
+                    context,
+                    '흥부와 놀부',
+                    'assets/images/background.png',
+                    () {
+                      // 흥부와 놀부 페이지로 이동
+                    },
+                  ),
+                  _buildStoryCard(
+                    context,
+                    '흥부와 놀부',
+                    'assets/images/background.png',
+                    () {
+                      // 흥부와 놀부 페이지로 이동
+                    },
+                  ),
+                  _buildStoryCard(
+                    context,
+                    '흥부와 놀부',
+                    'assets/images/background.png',
+                    () {
+                      // 흥부와 놀부 페이지로 이동
+                    },
+                  ),
                 ],
               ),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.collections_bookmark),
+            label: '나의 책장',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.diversity_3),
+            label: '친구의 책장',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.brush),
+            label: '캐릭터 꾸미기',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.blue,
+        onTap: (index) {
+          // 하단바 아이템 클릭 시 동작 구현 필요
+        },
       ),
     );
   }
