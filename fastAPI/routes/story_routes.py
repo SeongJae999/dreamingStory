@@ -1,11 +1,11 @@
 # fastAPI/app/routes/story_routes.py
 from models.story import StoryRequest, StoryResponse
-from auth import get_current_user
 from services.gpt_service import generate_story
 from services.comfyui_service import generate_image
 from services.tts_service import convert_text_to_speech
 from utils.database import get_db
 from utils.story import generate_response
+from utils.auth import get_current_user
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
@@ -25,7 +25,6 @@ class ChatRequest(BaseModel):
 
 @router.post("/generate_story")
 async def generate_story(request: ChatRequest):
-
     try:
         response = generate_response(request.topic)
         logger.info(f"Generated response: {response}")

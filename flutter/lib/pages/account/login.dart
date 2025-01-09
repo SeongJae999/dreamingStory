@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:dreamingstory/pages/account/register.dart';
 import 'package:dreamingstory/pages/home.dart';
+import 'package:dreamingstory/component/user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -13,26 +15,51 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // 텍스트 컨트롤러
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // 폼 키
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
   String? _error;
+  userInfo? user;
 
-  // GoogleSignIn 인스턴스 생성
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  // 로그인 함수
-  Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+  Future<userInfo?> _makeAuthenticatedRequest(String idToken) async {
+    final url = Uri.parse('http://10.0.2.2:8000/auth/current-user');
 
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $idToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final user = userInfo.fromJson(data);
+        setState(() {
+          print('\nAPI 응답: ${response.body}');
+        });
+
+        return user;
+      } else {
+        setState(() {
+          print('\nAPI 요청 실패: ${response.statusCode} - ${response.body}');
+        });
+        return null;
+      }
+    } catch (e) {
+      setState(() {
+        print('\n요청 중 오류 발생: $e');
+      });
+      return null;
+    }
+  }
+
+  Future<void> _login() async {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -40,13 +67,12 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
-      print('로그인 성공: ${userCredential.user?.uid}');
+      String? idToken = await userCredential.user!.getIdToken();
 
-      // 로그인 성공 후 홈 화면으로 이동
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+      user = await _makeAuthenticatedRequest(idToken!);
 
-      // 로그인 성공, AuthenticationWrapper가 HomePage로 이동
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => HomePage(user: user)));
     } on FirebaseAuthException catch (e) {
       setState(() {
         _error = e.message;
@@ -56,13 +82,8 @@ class _LoginPageState extends State<LoginPage> {
         _error = '예상치 못한 오류가 발생했습니다.';
       });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
-  // Google Sign-In 함수
   Future<void> _signInWithGoogle() async {
     setState(() {
       _isLoading = true;
@@ -70,46 +91,14 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      // 기존 세션 로그아웃
       await _googleSignIn.signOut();
 
-      // Google 로그인 시도
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        // 사용자가 로그인 취소
         setState(() {
           _isLoading = false;
         });
         return;
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-
-      // Firestore에 사용자 데이터 저장 (존재하지 않을 경우)
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
-
-      if (!userDoc.exists) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
-          'email': userCredential.user!.email,
-          'phone_number': userCredential.user!.phoneNumber,
-          'created_at': FieldValue.serverTimestamp(),
-          'is_active': true,
-        });
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -133,12 +122,10 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      // Firebase 익명 로그인
       UserCredential userCredential =
           await FirebaseAuth.instance.signInAnonymously();
       print('익명 로그인 성공: ${userCredential.user?.uid}');
 
-      // 로그인 성공 후 홈 화면으로 이동
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),

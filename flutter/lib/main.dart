@@ -4,8 +4,6 @@ import 'component/firebase_options.dart';
 import 'pages/onboarding_main.dart';
 import 'story.dart';
 
-//import 'auth.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 // import 'account/login.dart'; // 일단 onboarding 페이지와 연결시켜 놓겠습니다.
 import 'package:dreamingstory/pages/onboarding_main.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_topic_page.dart';
+import 'package:dreamingstory/component/user.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final userInfo? user;
+  const HomePage({Key? key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('사용자 이름'),
+              title: Text(user?.email ?? '이메일 정보 없음'),
             ),
             ListTile(
               title: Text('공유'),
