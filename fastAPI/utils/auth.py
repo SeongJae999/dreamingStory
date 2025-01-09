@@ -13,7 +13,7 @@ security = HTTPBearer()
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
     token = credentials.credentials
     try:
-        decoded_token = firebase_auth.verify_id_token(token)
+        decoded_token = firebase_auth.verify_id_token(token, clock_skew_seconds=5)
     except Exception as e:
         logger.error(f"토큰 검증 실패: {e}")
         raise HTTPException(

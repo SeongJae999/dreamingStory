@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:audioplayers/audioplayers.dart';
 import 'next_story_page.dart';
 
 class StoryDisplayPage extends StatefulWidget {
@@ -16,14 +17,13 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? storyContent;
   String? firstNextStory;
   String? secondNextStory;
-  bool isLoading = true;
   String? imagePath;
   String? title;
-  String? first;
-  String? second;
-  String? third;
-  String? forth;
   String? wisdom;
+  String? audioUrl;
+  Map<String, String>? story;
+  bool isLoading = true;
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -34,21 +34,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        Uri.parse('https://279d-222-239-25-12.ngrok-free.app/generate_story'),
+        // Uri.parse('https://279d-222-239-25-12.ngrok-free.app/stories/generate_story'), // 민규 ngrok
+        Uri.parse(
+            'https://5ab4-59-25-93-111.ngrok-free.app/stories/generate_story'), // 정민 ngrok
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );
 
       if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
         setState(() {
-          title = jsonDecode(response.body)['title'];
-          first = jsonDecode(response.body)['story']['first'];
-          second = jsonDecode(response.body)['story']['second'];
-          third = jsonDecode(response.body)['story']['third'];
-          forth = jsonDecode(response.body)['story']['forth'];
-          wisdom = jsonDecode(response.body)['wisdom'];
+          title = data['title'];
+          story = Map<String, String>.from(data['story']);
+          wisdom = data['wisdom'];
+          audioUrl = data['audio_url'];
           imagePath = "assets/images/ssa.jpg";
-
           isLoading = false;
         });
       } else {
@@ -59,6 +59,17 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         storyContent = '오류가 발생했습니다: $e';
         isLoading = false;
       });
+    }
+  }
+
+  void playNarration() async {
+    if (audioUrl != null) {
+      try {
+        await audioPlayer.play(UrlSource(audioUrl!));
+        print("오디오 재생 성공.");
+      } catch (e) {
+        print("오디오 재생 오류: $e");
+      }
     }
   }
 
@@ -92,6 +103,27 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     );
   }
 
+  Widget _buildPage({
+    required String? text,
+    required String fallback,
+    TextStyle? textStyle,
+    required String? imagePath,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Text(
+            text ?? fallback,
+            style: textStyle ?? TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 8.0),
+          if (imagePath != null) Image.asset(imagePath) else Container(),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,92 +134,46 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         padding: const EdgeInsets.all(16.0),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : PageView(
+            : Column(
                 children: [
-                  Container(
-                    child: Column(
+                  // PageView를 Expanded로 감싸 화면을 차지하도록 함
+                  Expanded(
+                    child: PageView(
                       children: [
-                        Text(
-                          title ?? '제목이 없습니다.',
-                          style: TextStyle(
+                        // 첫 페이지: 제목 표시
+                        _buildPage(
+                          text: title,
+                          fallback: '제목이 없습니다.',
+                          textStyle: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
+                          imagePath: imagePath,
                         ),
-                        // 이미지 출력 부분
-                        imagePath != null
-                            ? Image.asset(imagePath!)
-                            : Container(),
+                        // story 맵의 각 항목에 대해 동적으로 페이지 생성
+                        if (story != null)
+                          ...story!.entries.map((entry) => _buildPage(
+                                text: entry.value,
+                                fallback: '${entry.key} 부분이 없습니다.',
+                                imagePath: imagePath,
+                              )),
+                        // 마지막 페이지: 교훈 표시
+                        _buildPage(
+                          text: wisdom,
+                          fallback: '교훈이 없습니다.',
+                          imagePath: imagePath,
+                        ),
                       ],
                     ),
                   ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          first ?? '첫 번째 부분이 없습니다.',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        // 이미지 출력 부분
-                        imagePath != null
-                            ? Image.asset(imagePath!)
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          second ?? '두 번째 부분이 없습니다.',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        // 이미지 출력 부분
-                        imagePath != null
-                            ? Image.asset(imagePath!)
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          third ?? '세 번째 부분이 없습니다.',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        // 이미지 출력 부분
-                        imagePath != null
-                            ? Image.asset(imagePath!)
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          forth ?? '네 번째 부분이 없습니다.',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        // 이미지 출력 부분
-                        imagePath != null
-                            ? Image.asset(imagePath!)
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          wisdom ?? '교훈이 없습니다.',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        // 이미지 출력 부분
-                        imagePath != null
-                            ? Image.asset(imagePath!)
-                            : Container(),
-                      ],
-                    ),
+                  SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (audioUrl != null) {
+                        playNarration();
+                      } else {
+                        print("오디오 URL이 없습니다.");
+                      }
+                    },
+                    child: Text('내레이션 재생'),
                   ),
                 ],
               ),

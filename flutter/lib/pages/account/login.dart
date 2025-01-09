@@ -27,8 +27,9 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<userInfo?> _makeAuthenticatedRequest(String idToken) async {
-    final url = Uri.parse('http://10.0.2.2:8000/auth/current-user');
-
+    // final url = Uri.parse('https://279d-222-239-25-12.ngrok-free.app/generate_story'); // 민규 ngrok
+    final url = Uri.parse(
+        'https://5ab4-59-25-93-111.ngrok-free.app/auth/current-user'); // 정민 ngrok
     try {
       final response = await http.get(
         url,

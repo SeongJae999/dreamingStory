@@ -6,6 +6,14 @@ class NextStoryPage extends StatelessWidget {
 
   const NextStoryPage({Key? key, required this.topic}) : super(key: key);
 
+  // 필요한 경우 텍스트와 스타일을 재사용할 수 있는 헬퍼 함수
+  Widget _buildSection({required String text, required TextStyle style}) {
+    return Text(
+      text,
+      style: style,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,18 +25,16 @@ class NextStoryPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '선택한 주제: $topic',
+            _buildSection(
+              text: '선택한 주제: $topic',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-            // 여기에 선택한 이야기를 표시하는 위젯을 추가할 수 있습니다.
-            Text(
-              '여기에 선택한 이야기를 표시합니다.',
+            _buildSection(
+              text: '여기에 선택한 이야기를 표시합니다.',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),
-            // 종료 버튼 추가
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(

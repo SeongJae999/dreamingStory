@@ -1,17 +1,13 @@
 # fastAPI/app/routes/story_routes.py
-from models.story import StoryRequest, StoryResponse
-from services.gpt_service import generate_story
-from services.comfyui_service import generate_image
-from services.tts_service import convert_text_to_speech
-from utils.database import get_db
 from utils.story import generate_response
-from utils.auth import get_current_user
+from utils.tts import synthesize_speech_to_file
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -27,14 +23,38 @@ class ChatRequest(BaseModel):
 async def generate_story(request: ChatRequest):
     try:
         response = generate_response(request.topic)
-        logger.info(f"Generated response: {response}")
-        title=response.split('---')[0]
-        first=response.split('---')[1]
-        second=response.split('---')[2]
-        third=response.split('---')[3]
-        forth=response.split('---')[4]
-        wisdom=response.split('---')[5]
-        response_data = {"title":title, "story":{"first":first, "second":second, "third":third, "forth":forth}, "wisdom":wisdom}
+        logger.info(f"동화 생성: {response}")
+        
+        parts = response.split('---')
+        if len(parts) < 6:
+            raise ValueError("Unexpected reponse format.")
+        
+        title=parts[0]
+        first=parts[1]
+        second=parts[2]
+        third=parts[3]
+        forth=parts[4]
+        wisdom=parts[5]
+        
+        logger.info("TTS 변환중...")
+        audio_filename = f"narration_{int(time.time())}.mp3"
+        synthesize_speech_to_file(response, output_filename=audio_filename)
+        logger.info(f"TTS 변환 완료. {audio_filename}로 저장됨")
+        
+        audio_url = f"output/audios/{audio_filename}"
+        logger.info(f"오디오 생성 URL: {audio_url}")
+        
+        response_data = {"title": title, 
+                         "story": {
+                             "first": first, 
+                             "second": second, 
+                             "third": third, 
+                             "forth": forth
+                             }, 
+                         "wisdom": wisdom, 
+                         "audio_url": audio_url
+                         }
+        logger.info("생성된 동화와 내레이션을 JSON으로 전달.")
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
     
     except ValueError as ve:
@@ -44,57 +64,3 @@ async def generate_story(request: ChatRequest):
     except Exception as e:
         logger.error(f"Error occurred: {e}")
         raise HTTPException(status_code=500, detail="서버에서 오류가 발생했습니다.")
-
-@router.post("/create", response_model=StoryResponse)
-async def create_story(request: StoryRequest, user_id: str = Depends(get_current_user)):
-    db = get_db()
-    try:
-        # GPT API 호출
-        story_text = await generate_story(request.theme, request.characters, request.style)
-
-        # ComfyUI 이미지 생성
-        image_url = await generate_image(story_text)
-
-        # TTS 변환
-        audio_url = await convert_text_to_speech(story_text)
-
-        # Firestore에 스토리 저장
-        story_data = {
-            "theme": request.theme,
-            "characters": request.characters,
-            "style": request.style,
-            "story_text": story_text,
-            "image_url": image_url,
-            "audio_url": audio_url,
-            "user_id": user_id
-        }
-        doc_ref = db.collection("stories").add(story_data)
-        story_id = doc_ref[1].id
-
-        return StoryResponse(
-            story_id=story_id,
-            story_text=story_text,
-            image_url=image_url,
-            audio_url=audio_url
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/{story_id}", response_model=StoryResponse)
-def get_story(story_id: str, user_id: str = Depends(get_current_user)):
-    db = get_db()
-    try:
-        doc = db.collection("stories").document(story_id).get()
-        if not doc.exists:
-            raise HTTPException(status_code=404, detail="Story not found")
-        story_data = doc.to_dict()
-        if story_data["user_id"] != user_id:
-            raise HTTPException(status_code=403, detail="Not authorized to view this story")
-        return StoryResponse(
-            story_id=story_id,
-            story_text=story_data["story_text"],
-            image_url=story_data["image_url"],
-            audio_url=story_data["audio_url"]
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
