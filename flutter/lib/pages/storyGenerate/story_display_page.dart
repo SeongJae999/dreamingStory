@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'next_story_page.dart';
 
 class StoryDisplayPage extends StatefulWidget {
@@ -34,9 +35,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        // Uri.parse('https://279d-222-239-25-12.ngrok-free.app/stories/generate_story'), // 민규 ngrok
-        Uri.parse(
-            'https://5ab4-59-25-93-111.ngrok-free.app/stories/generate_story'), // 정민 ngrok
+        Uri.parse('${dotenv.env['NGROK_URL']}/stories/generate_story'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );

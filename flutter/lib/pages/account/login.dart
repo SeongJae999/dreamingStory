@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dreamingstory/pages/account/register.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/component/user.dart';
@@ -27,9 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<userInfo?> _makeAuthenticatedRequest(String idToken) async {
-    // final url = Uri.parse('https://279d-222-239-25-12.ngrok-free.app/generate_story'); // 민규 ngrok
-    final url = Uri.parse(
-        'https://5ab4-59-25-93-111.ngrok-free.app/auth/current-user'); // 정민 ngrok
+    final url = Uri.parse('${dotenv.env['NGROK_URL']}/generate_story');
     try {
       final response = await http.get(
         url,
