@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
+import 'package:dreamingstory/component/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
@@ -46,10 +48,16 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   Future<void> _fetchStory() async {
+    String? idToken = AuthService().idToken;
+
+    if (idToken == null) throw Exception("유효한 인증 토큰이 없습니다.");
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/stories/generate_story'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $idToken',
+        },
         body: jsonEncode({'topic': widget.topic}),
       );
 

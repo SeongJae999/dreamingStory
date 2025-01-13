@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 import os
+import shutil
 import phonenumbers
 
 router = APIRouter(
@@ -31,6 +32,10 @@ def to_e164(phone: str, default_region: str = "KR") -> str:
 
 @router.post("/register")
 async def register_user(data: RegistrationData):
+    user_record = None
+    user_doc_ref = None
+    user_audio_dir = None
+    
     try:
         e164_phone = to_e164(data.phone_number, default_region="KR")
         user_record = firebase_auth.create_user(
@@ -42,7 +47,8 @@ async def register_user(data: RegistrationData):
         
         db = get_db()
         
-        db.collection('users').document(user_id).set({
+        user_doc_ref = db.collection('users').document(user_id)
+        user_doc_ref.set({
             'email': data.email,
             'phone_number': data.phone_number,
             'created_at': firestore.SERVER_TIMESTAMP,
@@ -51,13 +57,30 @@ async def register_user(data: RegistrationData):
         
         base_dir = "output"
         user_audio_dir = os.path.join(base_dir, user_id, "audios")
-        os.mkdir(user_audio_dir, exist_ok=True)
+        os.makedirs(user_audio_dir, exist_ok=True)
         
         return User(
             uid = user_record.uid,
             email = user_record.email
         )
     except Exception as e:
+        if user_id and user_doc_ref is not None:
+            try:
+                user_doc_ref.delete()
+            except Exception as firestore_del_error:
+                print(f"Firestore 문서 삭제 실패: {firestore_del_error}")
+
+        if user_record is not None:
+            try:
+                firebase_auth.delete_user(user_record.uid)
+            except Exception as auth_del_error:
+                print(f"Firebase 사용자 삭제 실패: {auth_del_error}")
+
+        if user_audio_dir and os.path.exists(user_audio_dir):
+            try:
+                shutil.rmtree(os.path.join("output", user_id))
+            except Exception as dir_del_error:
+                print(f"디렉토리 삭제 실패: {dir_del_error}")
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/current-user", response_model=User)

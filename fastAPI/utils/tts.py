@@ -40,7 +40,7 @@ def synthesize_speech_to_file(text: str, output_filename: str = "output.mp3"):
         audio_config=audio_config
     )
 
-    output_path = os.path.join('./output/audios', output_filename)
+    output_path = os.path.join('./', output_filename)
     
     with open(output_path, "wb") as out:
         out.write(response.audio_content)

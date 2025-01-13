@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dreamingstory/pages/account/register.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/component/user.dart';
@@ -68,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       String? idToken = await userCredential.user!.getIdToken();
+      AuthService().idToken = idToken;
 
       user = await _makeAuthenticatedRequest(idToken!);
 
