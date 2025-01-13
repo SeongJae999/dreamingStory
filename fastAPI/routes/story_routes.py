@@ -44,14 +44,26 @@ async def generate_story(request: ChatRequest, current_user: User = Depends(get_
         user_audio_dir.mkdir(parents=True, exist_ok=True)
         
         logger.info("TTS 변환중...")
-        audio_filename = f"narration_{int(time.time())}.mp3"
-        output_filepath = user_audio_dir / audio_filename
-        
-        synthesize_speech_to_file(response, output_filename=str(output_filepath))
-        logger.info(f"TTS 변환 완료. {audio_filename}로 저장됨")
-        
-        audio_url = f"output/{current_user.uid}/audios/{audio_filename}"
-        logger.info(f"오디오 생성 URL: {audio_url}")
+        texts = {
+            "title": title,
+            "first": first,
+            "second": second,
+            "third": third,
+            "forth": forth,
+            "wisdom": wisdom
+        }
+        audio_urls = {}
+        for key, text in texts.items():
+            timestamp = int(time.time() * 1000)
+            filename = f"{key}_narration_{timestamp}.mp3"
+            output_filepath = user_audio_dir / filename
+
+            synthesize_speech_to_file(text, output_filename=str(output_filepath))
+            logger.info(f"{key} 부분 TTS 변환 완료: {filename}로 저장됨")
+
+            audio_urls[key] = f"output/{current_user.uid}/audios/{filename}"
+            
+        logger.info(f"TTS 변환 완료")
         
         response_data = {"title": title, 
                          "story": {
@@ -61,7 +73,7 @@ async def generate_story(request: ChatRequest, current_user: User = Depends(get_
                              "forth": forth
                              }, 
                          "wisdom": wisdom, 
-                         "audio_url": audio_url
+                         "audio_urls": audio_urls
                          }
         logger.info("생성된 동화와 내레이션을 JSON으로 전달.")
         return JSONResponse(content=response_data, media_type="application/json; charset=utf-8")
