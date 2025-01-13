@@ -51,7 +51,7 @@ async def upload_image(file: UploadFile = File(...)):
 
 from fastapi.staticfiles import StaticFiles
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/output", StaticFiles(directory="output"), name="output")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

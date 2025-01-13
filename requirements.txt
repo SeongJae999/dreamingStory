@@ -12,3 +12,6 @@ langchain_anthropic
 
 # TTS dependencies:
 google-cloud-texttospeech
+
+# Register dependencies:
+phonenumbers

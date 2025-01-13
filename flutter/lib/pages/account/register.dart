@@ -1,6 +1,7 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -10,18 +11,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // 텍스트 컨트롤러
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  // 폼 키
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
   String? _error;
 
-  // 등록 함수
   Future<void> _register() async {
     setState(() {
       _isLoading = true;
@@ -29,34 +27,25 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      // 이메일과 비밀번호로 사용자 생성
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+      final baseUrl = dotenv.env['NGROK_URL'];
+      final response = await http.post(Uri.parse('$baseUrl/auth/register'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'email': _emailController.text.trim(),
+            'password': _passwordController.text.trim(),
+            'phone_number': _phoneController.text.trim(),
+          }));
 
-      // 사용자 ID 가져오기
-      String userId = userCredential.user!.uid;
-
-      // 추가 사용자 데이터를 Firestore에 저장
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'email': _emailController.text.trim(),
-        'phone_number': _phoneController.text.trim(),
-        'created_at': FieldValue.serverTimestamp(),
-        'password': _passwordController.text.trim(),
-        'is_active': true,
-      });
-
-      // 등록 성공, 로그인 페이지로 돌아가기
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _error = e.message;
-      });
+      if (response.statusCode == 200) {
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          _error = '회원가입 실패: ${response.body}';
+        });
+      }
     } catch (e) {
       setState(() {
-        _error = '예상치 못한 오류가 발생했습니다.';
+        _error = '예상치 못한 오류가 발생했습니다: $e';
       });
     }
 

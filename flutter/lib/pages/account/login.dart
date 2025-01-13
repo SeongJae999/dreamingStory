@@ -28,10 +28,10 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<userInfo?> _makeAuthenticatedRequest(String idToken) async {
-    final url = Uri.parse('${dotenv.env['NGROK_URL']}/generate_story');
     try {
+      final baseUrl = dotenv.env['NGROK_URL'];
       final response = await http.get(
-        url,
+        Uri.parse('$baseUrl/auth/current-user'),
         headers: {
           'Authorization': 'Bearer $idToken',
         },

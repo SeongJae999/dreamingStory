@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'next_story_page.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
@@ -15,16 +14,17 @@ class StoryDisplayPage extends StatefulWidget {
 }
 
 class _StoryDisplayPageState extends State<StoryDisplayPage> {
-  String? storyContent;
-  String? firstNextStory;
-  String? secondNextStory;
-  String? imagePath;
   String? title;
   String? wisdom;
   String? audioUrl;
-  Map<String, String>? story;
+  String? first;
+  String? second;
+  String? third;
+  String? forth;
+  String? imagePath;
   bool isLoading = true;
   final AudioPlayer audioPlayer = AudioPlayer();
+  final baseUrl = dotenv.env['NGROK_URL'];
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _fetchStory() async {
     try {
       final response = await http.post(
-        Uri.parse('${dotenv.env['NGROK_URL']}/stories/generate_story'),
+        Uri.parse('$baseUrl/stories/generate_story'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'topic': widget.topic}),
       );
@@ -44,7 +44,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         final data = jsonDecode(response.body);
         setState(() {
           title = data['title'];
-          story = Map<String, String>.from(data['story']);
+          first = data['story']['first'];
+          second = data['story']['second'];
+          third = data['story']['third'];
+          forth = data['story']['forth'];
           wisdom = data['wisdom'];
           audioUrl = data['audio_url'];
           imagePath = "assets/images/ssa.jpg";
@@ -55,51 +58,24 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       }
     } catch (e) {
       setState(() {
-        storyContent = '오류가 발생했습니다: $e';
         isLoading = false;
       });
+      print('오류가 발생했습니다: $e');
     }
   }
 
   void playNarration() async {
     if (audioUrl != null) {
       try {
-        await audioPlayer.play(UrlSource(audioUrl!));
+        Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrl!);
+        await audioPlayer.play(UrlSource(fullUri.toString()));
         print("오디오 재생 성공.");
       } catch (e) {
         print("오디오 재생 오류: $e");
       }
+    } else {
+      print("오디오 URL이 없습니다.");
     }
-  }
-
-  Future<String?> _generateImage(String prompt) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://eb88-222-239-25-12.ngrok-free.app/generate_image'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'prompt': prompt}),
-      );
-
-      if (response.statusCode == 200) {
-        return response.body;
-      } else {
-        throw Exception('이미지 생성에 실패했습니다');
-      }
-    } catch (e) {
-      setState(() {
-        imagePath = '오류가 발생했습니다: $e';
-      });
-      return null;
-    }
-  }
-
-  void _navigateToNextStory(String topic) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NextStoryPage(topic: topic),
-      ),
-    );
   }
 
   Widget _buildPage({
@@ -125,6 +101,34 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> pageData = [
+      {
+        'text': title,
+        'fallback': '제목이 없습니다.',
+        'textStyle': TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      },
+      {
+        'text': first,
+        'fallback': '첫 번째 부분이 없습니다.',
+      },
+      {
+        'text': second,
+        'fallback': '두 번째 부분이 없습니다.',
+      },
+      {
+        'text': third,
+        'fallback': '세 번째 부분이 없습니다.',
+      },
+      {
+        'text': forth,
+        'fallback': '네 번째 부분이 없습니다.',
+      },
+      {
+        'text': wisdom,
+        'fallback': '교훈이 없습니다.',
+      },
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('동화 이야기'),
@@ -135,44 +139,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             ? Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  // PageView를 Expanded로 감싸 화면을 차지하도록 함
+                  ElevatedButton(
+                    onPressed: playNarration,
+                    child: Text('내레이션 재생'),
+                  ),
                   Expanded(
                     child: PageView(
-                      children: [
-                        // 첫 페이지: 제목 표시
-                        _buildPage(
-                          text: title,
-                          fallback: '제목이 없습니다.',
-                          textStyle: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                      children: pageData.map((data) {
+                        return _buildPage(
+                          text: data['text'] as String?,
+                          fallback: data['fallback'] as String,
+                          textStyle: data['textStyle'] as TextStyle?,
                           imagePath: imagePath,
-                        ),
-                        // story 맵의 각 항목에 대해 동적으로 페이지 생성
-                        if (story != null)
-                          ...story!.entries.map((entry) => _buildPage(
-                                text: entry.value,
-                                fallback: '${entry.key} 부분이 없습니다.',
-                                imagePath: imagePath,
-                              )),
-                        // 마지막 페이지: 교훈 표시
-                        _buildPage(
-                          text: wisdom,
-                          fallback: '교훈이 없습니다.',
-                          imagePath: imagePath,
-                        ),
-                      ],
+                        );
+                      }).toList(),
                     ),
-                  ),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (audioUrl != null) {
-                        playNarration();
-                      } else {
-                        print("오디오 URL이 없습니다.");
-                      }
-                    },
-                    child: Text('내레이션 재생'),
                   ),
                 ],
               ),
