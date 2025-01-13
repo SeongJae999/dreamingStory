@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_display_page.dart';
+import 'package:dreamingstory/pages/storyGenerate/story_background_page.dart';
 
 class StoryTopicPage extends StatelessWidget {
   const StoryTopicPage({Key? key}) : super(key: key);
@@ -8,31 +8,32 @@ class StoryTopicPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text('나만의 동화 만들기'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
+        child: Column(
           children: [
-            _buildTopicCard(
-                '이빨을 잘 닦아요!', 'assets/images/background.png', context),
-            _buildTopicCard(
-                '친구들과 친하게 지내요!', 'assets/images/background.png', context),
-            _buildTopicCard(
-                '청소를 잘해요!', 'assets/images/background.png', context),
-            _buildTopicCard(
-                '어른들께 인사를 잘해요!', 'assets/images/background.png', context),
-            _buildTopicCard(
-                '똥을 잘 싸요!', 'assets/images/background.png', context),
-            _buildTopicCard(
-                '넘어져도 울지 않아요!', 'assets/images/background.png', context),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              children: [
+                _buildTopicCard(
+                    '이빨을 잘 닦아요!', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '친구들과 친하게 지내요!', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '청소를 잘해요!', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '어른들께 인사를 잘해요!', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '똥을 잘 싸요!', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '넘어져도 울지 않아요!', 'assets/images/background.png', context),
+              ],
+            ),
           ],
         ),
       ),
@@ -45,7 +46,7 @@ class StoryTopicPage extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StoryDisplayPage(topic: title),
+            builder: (context) => StoryBackGroundPage(topic: title),
           ),
         );
       },
@@ -71,10 +72,7 @@ class StoryTopicPage extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ],
