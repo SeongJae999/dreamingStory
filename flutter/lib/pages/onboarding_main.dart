@@ -13,7 +13,8 @@ class OnboardingMain extends StatefulWidget {
 class _OnboardingMainState extends State<OnboardingMain> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  final AudioPlayer _buttonClickPlayer = AudioPlayer();
 
   void _onPageChanged(int page) {
     setState(() {
@@ -42,14 +43,23 @@ class _OnboardingMainState extends State<OnboardingMain> {
   }
 
   void _playBackgroundMusic() async {
-    await _audioPlayer.setSource(AssetSource('audios/background.mp3'));
-    _audioPlayer.setVolume(0.5);
-    _audioPlayer.resume();
+    await _backgroundMusicPlayer
+        .setSource(AssetSource('audios/background.mp3'));
+    _backgroundMusicPlayer.setVolume(0.5);
+    _backgroundMusicPlayer.resume();
+  }
+
+  void _playButtonClickSound() async {
+    await _buttonClickPlayer
+        .setSource(AssetSource('audios/toy-button-105724.mp3'));
+    _buttonClickPlayer.setVolume(1.0);
+    _buttonClickPlayer.resume();
   }
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    _backgroundMusicPlayer.dispose();
+    _buttonClickPlayer.dispose();
     super.dispose();
   }
 
@@ -107,12 +117,16 @@ class _OnboardingMainState extends State<OnboardingMain> {
             ElevatedButton(
               onPressed: _currentPage < 3
                   ? () {
+                      _playButtonClickSound();
                       _pageController.nextPage(
                         duration: Duration(milliseconds: 300),
                         curve: Curves.ease,
                       );
                     }
-                  : _completeOnboarding,
+                  : () {
+                      _playButtonClickSound();
+                      _completeOnboarding();
+                    },
               child: Text(_currentPage < 3 ? '다음' : '시작하기',
                   style: TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(

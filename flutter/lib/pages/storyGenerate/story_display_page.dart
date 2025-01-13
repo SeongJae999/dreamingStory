@@ -9,8 +9,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
+  final String? background;
+  final String? characters;
+  final String? helper;
+  final String? atmosphere;
 
-  const StoryDisplayPage({Key? key, required this.topic}) : super(key: key);
+  const StoryDisplayPage({
+    Key? key,
+    required this.topic,
+    this.background,
+    this.characters,
+    this.helper,
+    this.atmosphere,
+  }) : super(key: key);
 
   @override
   _StoryDisplayPageState createState() => _StoryDisplayPageState();
