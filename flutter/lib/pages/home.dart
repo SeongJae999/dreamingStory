@@ -166,25 +166,33 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.collections_bookmark),
-            label: '나의 책장',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.diversity_3),
-            label: '친구의 책장',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.brush),
-            label: '캐릭터 꾸미기',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        onTap: (index) {
-          // 하단바 아이템 클릭 시 동작 구현 필요
+      bottomNavigationBar: LayoutBuilder(
+        builder: (context, constraints) {
+          double height = constraints.maxHeight * 0.1; // 화면 높이의 10%
+          return Container(
+            height: height,
+            child: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.collections_bookmark),
+                  label: '나의 책장',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.diversity_3),
+                  label: '친구의 책장',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.brush),
+                  label: '캐릭터 꾸미기',
+                ),
+              ],
+              currentIndex: 0,
+              selectedItemColor: Colors.blue,
+              onTap: (index) {
+                // 하단바 아이템 클릭 시 동작 구현 필요
+              },
+            ),
+          );
         },
       ),
     );

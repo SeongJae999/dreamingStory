@@ -2,6 +2,8 @@ import 'package:dreamingstory/pages/account/login.dart'; // 일단 home.dart로 
 //import 'package:dreamingstory/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class OnboardingMain extends StatefulWidget {
   @override
@@ -11,6 +13,7 @@ class OnboardingMain extends StatefulWidget {
 class _OnboardingMainState extends State<OnboardingMain> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   void _onPageChanged(int page) {
     setState(() {
@@ -26,6 +29,28 @@ class _OnboardingMainState extends State<OnboardingMain> {
       context,
       MaterialPageRoute(builder: (_) => LoginPage()),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+    _playBackgroundMusic();
+  }
+
+  void _playBackgroundMusic() async {
+    await _audioPlayer.setSource(AssetSource('audios/background.mp3'));
+    _audioPlayer.setVolume(0.5);
+    _audioPlayer.resume();
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
