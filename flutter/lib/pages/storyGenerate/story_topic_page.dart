@@ -21,17 +21,21 @@ class StoryTopicPage extends StatelessWidget {
               crossAxisSpacing: 16,
               children: [
                 _buildTopicCard(
-                    '이빨을 잘 닦아요!', 'assets/images/background.png', context),
+                    '친구와 함께 놀아요', 'assets/images/background.png', context),
                 _buildTopicCard(
-                    '친구들과 친하게 지내요!', 'assets/images/background.png', context),
+                    '맛있는 음식을 골고루 먹어요', 'assets/images/background.png', context),
                 _buildTopicCard(
-                    '청소를 잘해요!', 'assets/images/background.png', context),
+                    '양치질은 즐거워요', 'assets/images/background.png', context),
                 _buildTopicCard(
-                    '어른들께 인사를 잘해요!', 'assets/images/background.png', context),
+                    '혼자서도 잘해요', 'assets/images/background.png', context),
                 _buildTopicCard(
-                    '똥을 잘 싸요!', 'assets/images/background.png', context),
+                    '잠자리에 일찍 들어요', 'assets/images/background.png', context),
                 _buildTopicCard(
-                    '넘어져도 울지 않아요!', 'assets/images/background.png', context),
+                    '엄마 아빠 말씀을 잘 들어요', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '정리정돈이 재미있어요', 'assets/images/background.png', context),
+                _buildTopicCard(
+                    '기다리는 것을 배워요', 'assets/images/background.png', context),
               ],
             ),
           ],
