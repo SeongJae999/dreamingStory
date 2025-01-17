@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text(user?.email ?? '이메일 정보 없음'),
+              title: Text(user?.email ?? '게스트 계정입니다.'),
             ),
             ListTile(
               title: Text('공유'),
