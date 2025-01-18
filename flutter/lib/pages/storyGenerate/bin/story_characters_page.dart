@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_helper_page.dart';
+import 'package:dreamingstory/pages/storyGenerate/bin/story_helper_page.dart';
 
 class StoryCharactersPage extends StatelessWidget {
   final String topic;

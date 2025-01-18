@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_characters_page.dart';
+import 'package:dreamingstory/pages/storyGenerate/bin/story_characters_page.dart';
 
 class StoryBackGroundPage extends StatelessWidget {
   final String topic;

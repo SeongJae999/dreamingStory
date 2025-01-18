@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_topic_page.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
+import 'package:dreamingstory/pages/story_display_default_page.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;
@@ -161,10 +161,15 @@ class HomePage extends StatelessWidget {
                   children: [
                     _buildStoryCard(
                       context,
-                      '아기 돼지 삼형제',
-                      'assets/images/준비중.jpg',
+                      '반짝이의 이빨 모험',
+                      'assets/images/반짝이의 이빨 모험/intro.png',
                       () {
-                        // 아기 돼지 삼형제 페이지로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StoryDisplayDefaultPage(),
+                          ),
+                        );
                       },
                     ),
                     _buildStoryCard(
@@ -271,6 +276,7 @@ class HomePage extends StatelessWidget {
                   Image.asset(
                     imagePath,
                     width: double.infinity,
+                    height: double.infinity,
                     fit: BoxFit.cover,
                   ),
                   Positioned(
