@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'account/login.dart'; // 일단 onboarding 페이지와 연결시켜 놓겠습니다.
 import 'package:dreamingstory/pages/onboarding_main.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_topic_page.dart';
 import 'package:dreamingstory/component/user.dart';
@@ -13,7 +12,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('홈'),
+        title: const Text(
+          '나의 책장',
+          style: TextStyle(fontFamily: 'GodoB'),
+        ),
         backgroundColor: const Color.fromARGB(255, 27, 65, 89),
         elevation: 0,
         foregroundColor: const Color.fromARGB(255, 242, 210, 114),
@@ -23,43 +25,67 @@ class HomePage extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Text('메뉴',
-                  style: TextStyle(
-                      color: const Color.fromARGB(255, 242, 210, 114),
-                      fontSize: 24)),
+              child: Text(
+                '메뉴',
+                style: TextStyle(
+                    color: const Color.fromARGB(255, 242, 210, 114),
+                    fontSize: 24,
+                    fontFamily: 'GodoB'),
+              ),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 27, 65, 89),
               ),
             ),
             ListTile(
-              title: Text(user?.email ?? '게스트 계정입니다.'),
+              title: Text(
+                user?.email ?? '게스트 계정입니다.',
+                style: TextStyle(fontFamily: 'GodoM'),
+              ),
             ),
             ListTile(
-              title: Text('공유'),
+              title: Text(
+                '공유',
+                style: TextStyle(fontFamily: 'GodoM'),
+              ),
               onTap: () {
                 // 공유 기능 구현 필요
               },
             ),
             ListTile(
-              title: Text('구독 및 취소'),
+              title: Text(
+                '구독 및 취소',
+                style: TextStyle(fontFamily: 'GodoM'),
+              ),
               onTap: () {
                 // 구독 및 취소 기능 구현 필요
               },
             ),
             ListTile(
-              title: Text('설정'),
+              title: Text(
+                '설정',
+                style: TextStyle(fontFamily: 'GodoM'),
+              ),
               onTap: () {
                 // 설정 페이지로 이동하는 기능 구현 필요
               },
             ),
             ListTile(
-              title: Text('사용 가이드'),
+              title: Text(
+                '사용 가이드',
+                style: TextStyle(fontFamily: 'GodoM'),
+              ),
               onTap: () {
                 // 사용 가이드 페이지로 이동하는 기능 구현 필요
               },
             ),
             ListTile(
-              title: Text('로그아웃'),
+              title: Text(
+                '로그아웃',
+                style: TextStyle(
+                  fontFamily: 'GodoM',
+                  color: Color.fromARGB(255, 217, 123, 102),
+                ),
+              ),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushReplacement(
@@ -88,7 +114,10 @@ class HomePage extends StatelessWidget {
                 // 나만의 동화 만들기 섹션
                 Text(
                   '나만의 동화 만들기',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'GodoB'),
                 ),
                 SizedBox(height: 16),
                 GestureDetector(
@@ -114,7 +143,10 @@ class HomePage extends StatelessWidget {
                 // 인기 무료 섹션
                 Text(
                   '인기 무료',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'GodoB'),
                 ),
                 SizedBox(height: 16),
                 GridView.count(
@@ -186,7 +218,7 @@ class HomePage extends StatelessWidget {
           return Container(
             height: height,
             child: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
+              items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.collections_bookmark),
                   label: '나의 책장',
@@ -204,6 +236,10 @@ class HomePage extends StatelessWidget {
               selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
               unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
               backgroundColor: const Color.fromARGB(255, 27, 65, 89),
+              selectedLabelStyle:
+                  const TextStyle(fontFamily: 'GodoM', fontSize: 16),
+              unselectedLabelStyle:
+                  const TextStyle(fontFamily: 'GodoM', fontSize: 14),
               onTap: (index) {
                 // 하단바 아이템 클릭 시 동작 구현 필요
               },
@@ -250,7 +286,8 @@ class HomePage extends StatelessWidget {
           SizedBox(height: 8),
           Text(
             title,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'GodoM'),
           ),
         ],
       ),

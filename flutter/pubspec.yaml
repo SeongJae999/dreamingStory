@@ -60,6 +60,13 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+      - family: GodoB
+        fonts:
+          - asset: assets/fonts/GodoB.ttf
+      - family: GodoM
+        fonts:
+          - asset: assets/fonts/GodoM.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -69,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - assets/audios/
+    - assets/fonts/
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
