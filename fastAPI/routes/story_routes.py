@@ -21,11 +21,16 @@ router = APIRouter(
 
 class ChatRequest(BaseModel):
     topic: str
+    background: str
+    characters: str
+    helper: str
+    atmosphere: str
+    
 
 @router.post("/generate_story")
 async def generate_story(request: ChatRequest, current_user: User = Depends(get_current_user)):
     try:
-        response = generate_response(request.topic)
+        response = generate_response(request.topic, request.background, request.characters, request.helper, request.atmosphere)
         logger.info(f"동화 생성: {response}")
         
         parts = response.split('---')

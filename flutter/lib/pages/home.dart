@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_topic_page.dart';
 import 'package:dreamingstory/component/user.dart';
+import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;
@@ -102,7 +103,7 @@ class HomePage extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
-            opacity: 0.8,
+            opacity: 0.3,
           ),
         ),
         child: SingleChildScrollView(
@@ -124,13 +125,14 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StoryTopicPage()),
+                      MaterialPageRoute(
+                          builder: (context) => StoryCreationPage()),
                     );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
-                      'assets/images/background.png', // 이미지 경로 수정 필요
+                      'assets/images/반짝이.png', // 이미지 경로 수정 필요
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
@@ -160,7 +162,7 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '아기 돼지 삼형제',
-                      'assets/images/background.png',
+                      'assets/images/준비중.jpg',
                       () {
                         // 아기 돼지 삼형제 페이지로 이동
                       },
@@ -168,7 +170,7 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '흥부와 놀부',
-                      'assets/images/background.png',
+                      'assets/images/준비중.jpg',
                       () {
                         // 흥부와 놀부 페이지로 이동
                       },
@@ -176,7 +178,7 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '흥부와 놀부',
-                      'assets/images/background.png',
+                      'assets/images/준비중.jpg',
                       () {
                         // 흥부와 놀부 페이지로 이동
                       },
@@ -184,7 +186,7 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '흥부와 놀부',
-                      'assets/images/background.png',
+                      'assets/images/준비중.jpg',
                       () {
                         // 흥부와 놀부 페이지로 이동
                       },
@@ -192,7 +194,7 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '흥부와 놀부',
-                      'assets/images/background.png',
+                      'assets/images/준비중.jpg',
                       () {
                         // 흥부와 놀부 페이지로 이동
                       },
@@ -200,7 +202,7 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '흥부와 놀부',
-                      'assets/images/background.png',
+                      'assets/images/준비중.jpg',
                       () {
                         // 흥부와 놀부 페이지로 이동
                       },

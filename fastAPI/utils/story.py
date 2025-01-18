@@ -30,7 +30,7 @@ def make_chain():
 
     return chain
 
-def generate_response(topic):
+def generate_response(topic, background, characters, helper, atmosphere):
     logger.info(f"주제 : {topic}")
     
     logger.info("체인을 생성합니다.")
@@ -38,7 +38,7 @@ def generate_response(topic):
     logger.info("체인이 생성되었습니다.")
 
     logger.info("요청을 보냅니다.")
-    response = chain.invoke({'topic':topic}).content
+    response = chain.invoke({'topic':topic, 'background':background, 'characters':characters, 'helper':helper, 'atmosphere':atmosphere}).content
     logger.info("응답을 받았습니다.")
 
     return response
