@@ -14,6 +14,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('홈'),
+        backgroundColor: const Color.fromARGB(255, 27, 65, 89),
+        elevation: 0,
+        foregroundColor: const Color.fromARGB(255, 242, 210, 114),
       ),
       drawer: Drawer(
         child: ListView(
@@ -21,9 +24,11 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             DrawerHeader(
               child: Text('메뉴',
-                  style: TextStyle(color: Colors.white, fontSize: 24)),
+                  style: TextStyle(
+                      color: const Color.fromARGB(255, 242, 210, 114),
+                      fontSize: 24)),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: const Color.fromARGB(255, 27, 65, 89),
               ),
             ),
             ListTile(
@@ -66,103 +71,112 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 나만의 동화 만들기 섹션
-              Text(
-                '나만의 동화 만들기',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StoryTopicPage()),
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/images/background.png', // 이미지 경로 수정 필요
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+            opacity: 0.8,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 나만의 동화 만들기 섹션
+                Text(
+                  '나만의 동화 만들기',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => StoryTopicPage()),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/background.png', // 이미지 경로 수정 필요
+                      width: double.infinity,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
 
-              SizedBox(height: 32),
+                SizedBox(height: 32),
 
-              // 인기 무료 섹션
-              Text(
-                '인기 무료',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16),
-              GridView.count(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 0.8,
-                children: [
-                  _buildStoryCard(
-                    context,
-                    '아기 돼지 삼형제',
-                    'assets/images/background.png',
-                    () {
-                      // 아기 돼지 삼형제 페이지로 이동
-                    },
-                  ),
-                  _buildStoryCard(
-                    context,
-                    '흥부와 놀부',
-                    'assets/images/background.png',
-                    () {
-                      // 흥부와 놀부 페이지로 이동
-                    },
-                  ),
-                  _buildStoryCard(
-                    context,
-                    '흥부와 놀부',
-                    'assets/images/background.png',
-                    () {
-                      // 흥부와 놀부 페이지로 이동
-                    },
-                  ),
-                  _buildStoryCard(
-                    context,
-                    '흥부와 놀부',
-                    'assets/images/background.png',
-                    () {
-                      // 흥부와 놀부 페이지로 이동
-                    },
-                  ),
-                  _buildStoryCard(
-                    context,
-                    '흥부와 놀부',
-                    'assets/images/background.png',
-                    () {
-                      // 흥부와 놀부 페이지로 이동
-                    },
-                  ),
-                  _buildStoryCard(
-                    context,
-                    '흥부와 놀부',
-                    'assets/images/background.png',
-                    () {
-                      // 흥부와 놀부 페이지로 이동
-                    },
-                  ),
-                ],
-              ),
-            ],
+                // 인기 무료 섹션
+                Text(
+                  '인기 무료',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.8,
+                  children: [
+                    _buildStoryCard(
+                      context,
+                      '아기 돼지 삼형제',
+                      'assets/images/background.png',
+                      () {
+                        // 아기 돼지 삼형제 페이지로 이동
+                      },
+                    ),
+                    _buildStoryCard(
+                      context,
+                      '흥부와 놀부',
+                      'assets/images/background.png',
+                      () {
+                        // 흥부와 놀부 페이지로 이동
+                      },
+                    ),
+                    _buildStoryCard(
+                      context,
+                      '흥부와 놀부',
+                      'assets/images/background.png',
+                      () {
+                        // 흥부와 놀부 페이지로 이동
+                      },
+                    ),
+                    _buildStoryCard(
+                      context,
+                      '흥부와 놀부',
+                      'assets/images/background.png',
+                      () {
+                        // 흥부와 놀부 페이지로 이동
+                      },
+                    ),
+                    _buildStoryCard(
+                      context,
+                      '흥부와 놀부',
+                      'assets/images/background.png',
+                      () {
+                        // 흥부와 놀부 페이지로 이동
+                      },
+                    ),
+                    _buildStoryCard(
+                      context,
+                      '흥부와 놀부',
+                      'assets/images/background.png',
+                      () {
+                        // 흥부와 놀부 페이지로 이동
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -187,7 +201,9 @@ class HomePage extends StatelessWidget {
                 ),
               ],
               currentIndex: 0,
-              selectedItemColor: Colors.blue,
+              selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
+              unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
+              backgroundColor: const Color.fromARGB(255, 27, 65, 89),
               onTap: (index) {
                 // 하단바 아이템 클릭 시 동작 구현 필요
               },
