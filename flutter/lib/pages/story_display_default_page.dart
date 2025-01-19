@@ -11,6 +11,7 @@ class StoryDisplayDefaultPage extends StatefulWidget {
 
 class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   final AudioPlayer audioPlayer = AudioPlayer();
+  int currentPageIndex = 0;
   String? title;
   String? wisdom;
   String? first;
@@ -21,6 +22,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   String? secondImagePath;
   String? thirdImagePath;
   String? forthImagePath;
+  String? baseUrl;
 
   @override
   void initState() {
@@ -28,32 +30,26 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
 
     // ... 기본 데이터 설정 ...
     title = '반짝이의 이빨 모험';
-    first = '''옛날 옛적에 반짝이라는 작은 토끼가 살았어요.
-    반짝이는 하얀 털과 긴 귀가 참 예뻤어요.
-    하지만 반짝이는 이를 닦는 걸 정말 싫어했어요.
-    "싫어! 이 닦기 싫어!" 하고 매일 투덜거렸죠.''';
-    second = '''어느 날, 반짝이의 이빨에 꼬마 세균들이 이사를 왔어요.
-    꼬마 세균들은 "야호! 맛있는 집이다!" 하며 신나게 춤을 췄어요.
-    반짝이의 이빨은 점점 누렇게 변해갔어요.
-    "아야야, 이가 아파!" 반짝이가 울먹였어요.''';
-    third = '''반짝이는 고민에 빠졌어요. "어떡하지? 이가 너무 아파."
-    그때 현명한 부엉이 선생님이 나타났어요.
-    "반짝아, 이를 깨끗이 닦으면 세균들이 도망갈 거야."
-    반짝이는 용기를 내어 이를 닦기로 했어요.
-    "치카치카 쓱싹쓱싹" 열심히 이를 닦았어요.''';
-    forth = '''며칠 뒤, 반짝이의 이는 하얗게 반짝였어요.
-    꼬마 세균들은 "여긴 너무 깨끗해!" 하며 도망갔어요.
-    반짝이는 기뻐하며 말했어요. "와! 이 닦기 정말 좋아!"
-    그 후로 반짝이는 매일 즐겁게 이를 닦았답니다.''';
-    firstImagePath = 'assets/images/반짝이의 이빨 모험/intro.png';
-    secondImagePath = 'assets/images/반짝이의 이빨 모험/development.png';
-    thirdImagePath = 'assets/images/반짝이의 이빨 모험/climax.png';
-    forthImagePath = 'assets/images/반짝이의 이빨 모험/conclusion.png';
+    first =
+        ''' 옛날 옛적에 반짝이라는 작은 토끼가 살았어요.\n 반짝이는 하얀 털과 긴 귀가 참 예뻤어요.\n 하지만 반짝이는 이를 닦는 걸 정말 싫어했어요.\n "싫어! 이 닦기 싫어!" 하고 매일 투덜거렸죠.''';
+    second =
+        ''' 어느 날, 반짝이의 이빨에 꼬마 세균들이 이사를 왔어요.\n 꼬마 세균들은 "야호! 맛있는 집이다!" 하며 신나게 춤을 췄어요.\n 반짝이의 이빨은 점점 누렇게 변해갔어요.\n "아야야, 이가 아파!" 반짝이가 울먹였어요.''';
+    third =
+        ''' 반짝이는 고민에 빠졌어요. "어떡하지? 이가 너무 아파."\n 그때 현명한 부엉이 선생님이 나타났어요.\n "반짝아, 이를 깨끗이 닦으면 세균들이 도망갈 거야."\n 반짝이는 용기를 내어 이를 닦기로 했어요.\n "치카치카 쓱싹쓱싹" 열심히 이를 닦았어요.''';
+    forth =
+        ''' 며칠 뒤, 반짝이의 이는 하얗게 반짝였어요.\n 꼬마 세균들은 "여긴 너무 깨끗해!" 하며 도망갔어요.\n 반짝이는 기뻐하며 말했어요. "와! 이 닦기 정말 좋아!"\n 그 후로 반짝이는 매일 즐겁게 이를 닦았답니다.''';
+
+    firstImagePath = 'assets/무료 동화/반짝이의 이빨 모험/images/intro.png';
+    secondImagePath = 'assets/무료 동화/반짝이의 이빨 모험/images/development.png';
+    thirdImagePath = 'assets/무료 동화/반짝이의 이빨 모험/images/climax.png';
+    forthImagePath = 'assets/무료 동화/반짝이의 이빨 모험/images/conclusion.png';
+    baseUrl = 'assets/무료 동화/반짝이의 이빨 모험/audios/';
   }
 
   @override
   void dispose() {
     // 페이지에서 벗어날 때 다시 세로모드로 설정
+    audioPlayer.stop();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -61,8 +57,39 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
     super.dispose();
   }
 
-  void playNarration() {
-    // 오디오 재생 로직 구현
+  void playNarration() async {
+    String? audioUrl;
+    switch (currentPageIndex) {
+      case 0:
+        audioUrl = 'title_narration.mp3';
+        break;
+      case 1:
+        audioUrl = 'first_narration.mp3';
+        break;
+      case 2:
+        audioUrl = 'second_narration.mp3';
+        break;
+      case 3:
+        audioUrl = 'third_narration.mp3';
+        break;
+      case 4:
+        audioUrl = 'forth_narration.mp3';
+        break;
+    }
+
+    if (audioUrl != null) {
+      try {
+        await audioPlayer.setSource(AssetSource('$baseUrl$audioUrl'));
+        audioPlayer.setVolume(1.0);
+        audioPlayer.setReleaseMode(ReleaseMode.stop);
+        await audioPlayer.resume();
+        print("오디오 재생 성공.");
+      } catch (e) {
+        print("오디오 재생 오류: $e");
+      }
+    } else {
+      print("오디오 URL이 없습니다.");
+    }
   }
 
   Widget _buildPage({
@@ -102,9 +129,10 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 text ?? fallback,
                 style: textStyle ??
                     TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'GodoB'),
+                textAlign: TextAlign.center,
               ),
             )
           : Align(
@@ -116,10 +144,10 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   text ?? fallback,
                   style: textStyle ??
                       TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        backgroundColor: Colors.white,
-                      ),
+                          fontSize: 14,
+                          color: Colors.black,
+                          backgroundColor: Colors.white,
+                          fontFamily: 'GodoM'),
                 ),
               ),
             ),
@@ -171,7 +199,12 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
             padding: const EdgeInsets.all(16.0),
             child: Expanded(
               child: PageView(
-                controller: _pageController, // PageController 설정
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    currentPageIndex = index;
+                  });
+                }, // PageController 설정
                 children: pageData.map((data) {
                   return _buildPage(
                     text: data['text'] as String?,
@@ -185,18 +218,33 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
           Positioned(
             top: 16.0,
             left: 16.0,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              icon: Image.asset(
-                'assets/images/home.png',
-                width: 60,
-                height: 60,
-              ),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  icon: Image.asset(
+                    'assets/images/home.png',
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+                SizedBox(width: 16.0), // 홈 버튼과 나레이션 버튼 사이 간격
+                IconButton(
+                  onPressed: () {
+                    playNarration;
+                  }, // 나레이션 재생 함수 호출
+                  icon: Image.asset(
+                    'assets/images/music.png', // 음악 아이콘 이미지 경로
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(

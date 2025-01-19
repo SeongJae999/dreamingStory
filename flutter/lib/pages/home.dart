@@ -132,9 +132,9 @@ class HomePage extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
-                      'assets/images/반짝이.png', // 이미지 경로 수정 필요
+                      'assets/images/준비중.jpg', // 이미지 경로 수정 필요
                       width: double.infinity,
-                      height: 200,
+                      height: 360,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -162,7 +162,20 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '반짝이의 이빨 모험',
-                      'assets/images/반짝이의 이빨 모험/intro.png',
+                      'assets/무료 동화/반짝이의 이빨 모험/images/intro.png',
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StoryDisplayDefaultPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildStoryCard(
+                      context,
+                      '구름 궁전의 웃음 공주와 기다림의 마법',
+                      'assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/images/intro.png',
                       () {
                         Navigator.push(
                           context,
@@ -175,41 +188,14 @@ class HomePage extends StatelessWidget {
                     _buildStoryCard(
                       context,
                       '흥부와 놀부',
-                      'assets/images/준비중.jpg',
+                      'assets/무료 동화/흥부와 놀부/images/intro.png',
                       () {
-                        // 흥부와 놀부 페이지로 이동
-                      },
-                    ),
-                    _buildStoryCard(
-                      context,
-                      '흥부와 놀부',
-                      'assets/images/준비중.jpg',
-                      () {
-                        // 흥부와 놀부 페이지로 이동
-                      },
-                    ),
-                    _buildStoryCard(
-                      context,
-                      '흥부와 놀부',
-                      'assets/images/준비중.jpg',
-                      () {
-                        // 흥부와 놀부 페이지로 이동
-                      },
-                    ),
-                    _buildStoryCard(
-                      context,
-                      '흥부와 놀부',
-                      'assets/images/준비중.jpg',
-                      () {
-                        // 흥부와 놀부 페이지로 이동
-                      },
-                    ),
-                    _buildStoryCard(
-                      context,
-                      '흥부와 놀부',
-                      'assets/images/준비중.jpg',
-                      () {
-                        // 흥부와 놀부 페이지로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StoryDisplayDefaultPage(),
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -276,15 +262,15 @@ class HomePage extends StatelessWidget {
                   Image.asset(
                     imagePath,
                     width: double.infinity,
-                    height: double.infinity,
+                    height: 200,
                     fit: BoxFit.cover,
                   ),
                   Positioned(
                     top: 8,
                     right: 8,
                     child: Icon(
-                      Icons.favorite,
-                      color: Colors.red,
+                      Icons.bookmark,
+                      color: Color.fromARGB(255, 217, 123, 102),
                     ),
                   ),
                 ],
@@ -295,7 +281,10 @@ class HomePage extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'GodoM'),
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'GodoM',
+            ),
           ),
         ],
       ),

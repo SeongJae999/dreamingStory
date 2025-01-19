@@ -77,7 +77,12 @@ flutter:
     - assets/images/
     - assets/audios/
     - assets/fonts/
-    - assets/images/반짝이의 이빨 모험/
+    - assets/무료 동화/반짝이의 이빨 모험/images/
+    - assets/무료 동화/반짝이의 이빨 모험/audios/
+    - assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/images/
+    - assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/audios/
+    - assets/무료 동화/흥부와 놀부/images/
+    - assets/무료 동화/흥부와 놀부/audios/
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
