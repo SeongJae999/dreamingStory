@@ -103,7 +103,7 @@ class HomePage extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
-            opacity: 0.3,
+            opacity: 0.7,
           ),
         ),
         child: SingleChildScrollView(

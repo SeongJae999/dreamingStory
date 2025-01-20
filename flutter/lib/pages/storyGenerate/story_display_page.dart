@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/home.dart';
+import 'package:lottie/lottie.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
@@ -89,7 +90,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           forth = data['story']['forth'];
           wisdom = data['wisdom'];
           audioUrl = data['audio_url'];
-          imagePath = "assets/images/ssa.jpg";
+          imagePath = "assets/images/반짝이.png";
           isLoading = false;
         });
       } else {
@@ -123,18 +124,44 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     TextStyle? textStyle,
     required String? imagePath,
   }) {
+    bool isTitle = text == title;
+
     return Container(
-      padding: EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Text(
-            text ?? fallback,
-            style: textStyle ?? TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 8.0),
-          if (imagePath != null) Image.asset(imagePath) else Container(),
-        ],
-      ),
+      decoration: imagePath != null
+          ? BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+              ),
+            )
+          : null,
+      child: isTitle // 제목 텍스트이면 가운데 정렬
+          ? Center(
+              child: Text(
+                text ?? fallback,
+                style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'GodoB'),
+                textAlign: TextAlign.center,
+              ),
+            )
+          : Align(
+              // 그 외 텍스트는 좌하단 정렬
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  text ?? fallback,
+                  style: textStyle ??
+                      TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          backgroundColor: Colors.white,
+                          fontFamily: 'GodoM'),
+                ),
+              ),
+            ),
     );
   }
 
@@ -169,48 +196,60 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            await SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-              DeviceOrientation.portraitDown,
-            ]);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-            );
-          },
-        ),
-        title: Text('동화 이야기'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: playNarration,
-                    child: Text('내레이션 재생'),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: isLoading
+                ? Center(child: Lottie.asset('assets/images/Main Scene.json'))
+                : Column(
+                    children: [
+                      Expanded(
+                        child: PageView(
+                          children: pageData.map((data) {
+                            return _buildPage(
+                              text: data['text'] as String?,
+                              fallback: data['fallback'] as String,
+                              textStyle: data['textStyle'] as TextStyle?,
+                              imagePath: imagePath,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: PageView(
-                      children: pageData.map((data) {
-                        return _buildPage(
-                          text: data['text'] as String?,
-                          fallback: data['fallback'] as String,
-                          textStyle: data['textStyle'] as TextStyle?,
-                          imagePath: imagePath,
-                        );
-                      }).toList(),
-                    ),
+          ),
+          Positioned(
+            top: 16.0,
+            left: 16.0,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  icon: Image.asset(
+                    'assets/images/home.png',
+                    width: 60,
+                    height: 60,
                   ),
-                ],
-              ),
+                ),
+                SizedBox(width: 16.0), // 홈 버튼과 나레이션 버튼 사이 간격
+                IconButton(
+                  onPressed: playNarration, // 나레이션 재생 함수 호출
+                  icon: Image.asset(
+                    'assets/images/music.png', // 음악 아이콘 이미지 경로
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

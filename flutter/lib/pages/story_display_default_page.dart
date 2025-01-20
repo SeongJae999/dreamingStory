@@ -11,6 +11,8 @@ class StoryDisplayDefaultPage extends StatefulWidget {
 
 class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   final AudioPlayer audioPlayer = AudioPlayer();
+  bool _showTextContainer = false;
+  String? _currentText;
   int currentPageIndex = 0;
   String? title;
   String? wisdom;
@@ -112,8 +114,6 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
       imagePath = forthImagePath;
     }
 
-    bool isTitle = text == title;
-
     return Container(
       decoration: imagePath != null
           ? BoxDecoration(
@@ -123,34 +123,6 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
               ),
             )
           : null,
-      child: isTitle // 제목 텍스트이면 가운데 정렬
-          ? Center(
-              child: Text(
-                text ?? fallback,
-                style: textStyle ??
-                    TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'GodoB'),
-                textAlign: TextAlign.center,
-              ),
-            )
-          : Align(
-              // 그 외 텍스트는 좌하단 정렬
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  text ?? fallback,
-                  style: textStyle ??
-                      TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
-                          fontFamily: 'GodoM'),
-                ),
-              ),
-            ),
     );
   }
 
@@ -203,6 +175,17 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 onPageChanged: (index) {
                   setState(() {
                     currentPageIndex = index;
+                    _currentText = index == 0
+                        ? null
+                        : index == 1
+                            ? first
+                            : index == 2
+                                ? second
+                                : index == 3
+                                    ? third
+                                    : index == 4
+                                        ? forth
+                                        : null;
                   });
                 }, // PageController 설정
                 children: pageData.map((data) {
@@ -283,7 +266,57 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
               ),
             ),
           ),
+          if (_showTextContainer)
+            Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7), // 반투명한 검정색 배경
+                  borderRadius: BorderRadius.circular(8.0), // 모서리 둥근 정도
+                ),
+                child: Text(
+                  _currentText ?? '', // 텍스트 내용
+                  style: TextStyle(
+                    color: Colors.white, // 텍스트 색상
+                    fontSize: 16.0, // 텍스트 크기
+                  ),
+                ),
+              ),
+            ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _showTextContainer = !_showTextContainer; // 텍스트 컨테이너 표시 여부 반전
+            if (_showTextContainer) {
+              // 텍스트 컨테이너가 표시될 때 현재 페이지의 텍스트 설정
+              switch (currentPageIndex) {
+                case 1:
+                  _currentText = first;
+                  break;
+                case 2:
+                  _currentText = second;
+                  break;
+                case 3:
+                  _currentText = third;
+                  break;
+                case 4:
+                  _currentText = forth;
+                  break;
+                default:
+                  _currentText = null;
+              }
+            } else {
+              // 텍스트 컨테이너가 사라질 때 현재 텍스트 초기화
+              _currentText = null;
+            }
+          });
+        },
+        child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
       ),
     );
   }
