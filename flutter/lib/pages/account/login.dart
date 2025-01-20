@@ -61,6 +61,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),

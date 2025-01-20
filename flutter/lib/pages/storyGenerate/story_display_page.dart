@@ -5,7 +5,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:dreamingstory/component/user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
@@ -30,13 +29,21 @@ class StoryDisplayPage extends StatefulWidget {
 class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? title;
   String? wisdom;
-  String? audioUrl;
   String? first;
   String? second;
   String? third;
   String? forth;
   String? imagePath;
   bool isLoading = true;
+  Map<String, String>? audioUrls;
+  List<String> pageAudioKeys = [
+    "title",
+    "first",
+    "second",
+    "third",
+    "forth",
+    "wisdom"
+  ];
   final AudioPlayer audioPlayer = AudioPlayer();
   final baseUrl = dotenv.env['NGROK_URL'];
 
@@ -81,7 +88,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           third = data['story']['third'];
           forth = data['story']['forth'];
           wisdom = data['wisdom'];
-          audioUrl = data['audio_url'];
+          audioUrls = Map<String, String>.from(data['audio_urls'] ?? {});
           imagePath = "assets/images/ssa.jpg";
           isLoading = false;
         });
@@ -96,10 +103,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     }
   }
 
-  void playNarration() async {
-    if (audioUrl != null) {
+  void playNarration(String partKey) async {
+    if (audioUrls != null && audioUrls![partKey] != null) {
       try {
-        Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrl!);
+        Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrls![partKey]!);
         await audioPlayer.play(UrlSource(fullUri.toString()));
         print("오디오 재생 성공.");
       } catch (e) {
@@ -172,11 +179,20 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             : Column(
                 children: [
                   ElevatedButton(
-                    onPressed: playNarration,
+                    onPressed: () => playNarration("title"),
                     child: Text('내레이션 재생'),
                   ),
                   Expanded(
                     child: PageView(
+                      onPageChanged: (int index) {
+                        String? key;
+                        if (index < pageAudioKeys.length) {
+                          key = pageAudioKeys[index];
+                        }
+                        if (key != null) {
+                          playNarration(key);
+                        }
+                      },
                       children: pageData.map((data) {
                         return _buildPage(
                           text: data['text'] as String?,
