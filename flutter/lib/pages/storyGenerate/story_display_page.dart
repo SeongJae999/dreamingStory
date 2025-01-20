@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:dreamingstory/component/user.dart';
+import 'package:dreamingstory/pages/home.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String topic;
@@ -61,6 +62,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   void dispose() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
     super.dispose();
   }
@@ -76,7 +78,13 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $idToken',
         },
-        body: jsonEncode({'topic': widget.topic}),
+        body: jsonEncode({
+          'topic': widget.topic,
+          'background': widget.background,
+          'characters': widget.characters,
+          'helper': widget.helper,
+          'atmosphere': widget.atmosphere
+        }),
       );
 
       if (response.statusCode == 200) {
@@ -170,6 +178,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () async {
+            await SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+              DeviceOrientation.portraitDown,
+            ]);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+        ),
         title: Text('동화 이야기'),
       ),
       body: Padding(

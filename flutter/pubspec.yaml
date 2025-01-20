@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
-environment:
+environment: 
   sdk: ^3.5.3
 
 # Dependencies specify other packages that your package needs in order to work.
@@ -60,6 +60,13 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+      - family: GodoB
+        fonts:
+          - asset: assets/fonts/GodoB.ttf
+      - family: GodoM
+        fonts:
+          - asset: assets/fonts/GodoM.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -69,6 +76,13 @@ flutter:
   assets:
     - assets/images/
     - assets/audios/
+    - assets/fonts/
+    - assets/무료 동화/반짝이의 이빨 모험/images/
+    - assets/무료 동화/반짝이의 이빨 모험/audios/
+    - assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/images/
+    - assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/audios/
+    - assets/무료 동화/흥부와 놀부/images/
+    - assets/무료 동화/흥부와 놀부/audios/
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:

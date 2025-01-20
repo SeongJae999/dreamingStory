@@ -44,8 +44,9 @@ class _OnboardingMainState extends State<OnboardingMain> {
 
   void _playBackgroundMusic() async {
     await _backgroundMusicPlayer
-        .setSource(AssetSource('audios/background.mp3'));
+        .setSource(AssetSource('audios/dreaming_story.wav'));
     _backgroundMusicPlayer.setVolume(0.5);
+    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
     _backgroundMusicPlayer.resume();
   }
 
