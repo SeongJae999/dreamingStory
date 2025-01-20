@@ -97,13 +97,8 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           third = data['story']['third'];
           forth = data['story']['forth'];
           wisdom = data['wisdom'];
-<<<<<<< HEAD
-          audioUrl = data['audio_url'];
-          imagePath = "assets/images/반짝이.png";
-=======
           audioUrls = Map<String, String>.from(data['audio_urls'] ?? {});
           imagePath = "assets/images/ssa.jpg";
->>>>>>> e6a3395705fdc9d466d9f2ecf3e3d5f8a26f4ccc
           isLoading = false;
         });
       } else {
@@ -209,7 +204,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     ];
 
     return Scaffold(
-<<<<<<< HEAD
       body: Stack(
         children: [
           Padding(
@@ -249,61 +243,11 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                     'assets/images/home.png',
                     width: 60,
                     height: 60,
-=======
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            await SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-              DeviceOrientation.portraitDown,
-            ]);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-            );
-          },
-        ),
-        title: Text('동화 이야기'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => playNarration("title"),
-                    child: Text('내레이션 재생'),
-                  ),
-                  Expanded(
-                    child: PageView(
-                      onPageChanged: (int index) {
-                        String? key;
-                        if (index < pageAudioKeys.length) {
-                          key = pageAudioKeys[index];
-                        }
-                        if (key != null) {
-                          playNarration(key);
-                        }
-                      },
-                      children: pageData.map((data) {
-                        return _buildPage(
-                          text: data['text'] as String?,
-                          fallback: data['fallback'] as String,
-                          textStyle: data['textStyle'] as TextStyle?,
-                          imagePath: imagePath,
-                        );
-                      }).toList(),
-                    ),
->>>>>>> e6a3395705fdc9d466d9f2ecf3e3d5f8a26f4ccc
                   ),
                 ),
                 SizedBox(width: 16.0), // 홈 버튼과 나레이션 버튼 사이 간격
                 IconButton(
-                  onPressed: playNarration, // 나레이션 재생 함수 호출
+                  onPressed: () => playNarration, // 나레이션 재생 함수 호출
                   icon: Image.asset(
                     'assets/images/music.png', // 음악 아이콘 이미지 경로
                     width: 60,
