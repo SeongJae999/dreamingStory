@@ -34,7 +34,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? second;
   String? third;
   String? forth;
-  String? imagePath;
   bool isLoading = true;
   Map<String, String>? audioUrls;
   Map<String, String>? imageUrls;
@@ -99,7 +98,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           wisdom = data['wisdom'];
           audioUrls = Map<String, String>.from(data['audio_urls'] ?? {});
           imageUrls = Map<String, String>.from(data['image_urls'] ?? {});
-          imagePath = "assets/images/ssa.jpg";
           isLoading = false;
         });
       } else {
@@ -131,11 +129,13 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     required String? text,
     required String fallback,
     TextStyle? textStyle,
-    required String? imageUrl,
+    String? partKey,
   }) {
     String? fullImageUrl;
-    if (imageUrl != null)
-      fullImageUrl = Uri.parse(baseUrl!).resolve(imageUrl).toString();
+    if (imageUrls != null && imageUrls![partKey] != null)
+      fullImageUrl =
+          Uri.parse(baseUrl!).resolve(imageUrls![partKey]!).toString();
+
     return Container(
       padding: EdgeInsets.all(8.0),
       child: Column(
@@ -145,10 +145,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             style: textStyle ?? TextStyle(fontSize: 16),
           ),
           SizedBox(height: 8.0),
-          if (fullImageUrl != null)
-            Image.network(fullImageUrl)
-          else
-            Container(),
+          if (fullImageUrl != null) Image.network(fullImageUrl)
         ],
       ),
     );
@@ -235,7 +232,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                           text: data['text'] as String?,
                           fallback: data['fallback'] as String,
                           textStyle: data['textStyle'] as TextStyle?,
-                          imageUrl: data['imageUrl'] as String?,
+                          partKey: "first" as String?,
                         );
                       }).toList(),
                     ),

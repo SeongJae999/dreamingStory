@@ -11,24 +11,16 @@ class StoryDisplayDefaultPage extends StatefulWidget {
 
 class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   final AudioPlayer audioPlayer = AudioPlayer();
+  bool _showTextContainer = false;
+  String? _currentText;
   int currentPageIndex = 0;
-  String? title;
-  String? wisdom;
-  String? first;
-  String? second;
-  String? third;
-  String? forth;
-  String? firstImagePath;
-  String? secondImagePath;
-  String? thirdImagePath;
-  String? forthImagePath;
+  String? title, wisdom, first, second, third, forth;
+  String? firstImagePath, secondImagePath, thirdImagePath, forthImagePath;
   String? baseUrl;
 
   @override
   void initState() {
     super.initState();
-
-    // ... 기본 데이터 설정 ...
     title = '반짝이의 이빨 모험';
     first =
         ''' 옛날 옛적에 반짝이라는 작은 토끼가 살았어요.\n 반짝이는 하얀 털과 긴 귀가 참 예뻤어요.\n 하지만 반짝이는 이를 닦는 걸 정말 싫어했어요.\n "싫어! 이 닦기 싫어!" 하고 매일 투덜거렸죠.''';
@@ -48,7 +40,6 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
 
   @override
   void dispose() {
-    // 페이지에서 벗어날 때 다시 세로모드로 설정
     audioPlayer.stop();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -58,7 +49,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   }
 
   void playNarration() async {
-    String? audioUrl;
+    String audioUrl;
     switch (currentPageIndex) {
       case 0:
         audioUrl = 'title_narration.mp3';
@@ -75,88 +66,31 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
       case 4:
         audioUrl = 'forth_narration.mp3';
         break;
+      default:
+        return;
     }
 
-    if (audioUrl != null) {
-      try {
-        await audioPlayer.setSource(AssetSource('$baseUrl$audioUrl'));
-        audioPlayer.setVolume(1.0);
-        audioPlayer.setReleaseMode(ReleaseMode.stop);
-        await audioPlayer.resume();
-        print("오디오 재생 성공.");
-      } catch (e) {
-        print("오디오 재생 오류: $e");
-      }
-    } else {
-      print("오디오 URL이 없습니다.");
+    try {
+      await audioPlayer.setSource(AssetSource('$baseUrl$audioUrl'));
+      audioPlayer.setVolume(1.0);
+      audioPlayer.setReleaseMode(ReleaseMode.stop);
+      await audioPlayer.resume();
+    } catch (e) {
+      print("오디오 재생 오류: $e");
     }
   }
 
-  Widget _buildPage({
-    required String? text,
-    required String fallback,
-    TextStyle? textStyle,
-  }) {
-    String? imagePath;
-
-    // 텍스트에 따라 이미지 경로 설정
-    if (text == title) {
-      imagePath = firstImagePath;
-    } else if (text == first) {
-      imagePath = firstImagePath;
-    } else if (text == second) {
-      imagePath = secondImagePath;
-    } else if (text == third) {
-      imagePath = thirdImagePath;
-    } else if (text == forth) {
-      imagePath = forthImagePath;
-    }
-
-    bool isTitle = text == title;
-
-    return Container(
-      decoration: imagePath != null
-          ? BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.cover,
-              ),
-            )
-          : null,
-      child: isTitle // 제목 텍스트이면 가운데 정렬
-          ? Center(
-              child: Text(
-                text ?? fallback,
-                style: textStyle ??
-                    TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'GodoB'),
-                textAlign: TextAlign.center,
-              ),
-            )
-          : Align(
-              // 그 외 텍스트는 좌하단 정렬
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  text ?? fallback,
-                  style: textStyle ??
-                      TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
-                          fontFamily: 'GodoM'),
-                ),
-              ),
-            ),
-    );
+  String? _getImagePath(String? text) {
+    if (text == title) return firstImagePath;
+    if (text == first) return firstImagePath;
+    if (text == second) return secondImagePath;
+    if (text == third) return thirdImagePath;
+    if (text == forth) return forthImagePath;
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    //가로 모드
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -165,31 +99,12 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
     final PageController _pageController = PageController();
 
     List<Map<String, dynamic>> pageData = [
-      {
-        'text': title,
-        'fallback': '제목이 없습니다.',
-        'textStyle': TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      },
-      {
-        'text': first,
-        'fallback': '첫 번째 부분이 없습니다.',
-      },
-      {
-        'text': second,
-        'fallback': '두 번째 부분이 없습니다.',
-      },
-      {
-        'text': third,
-        'fallback': '세 번째 부분이 없습니다.',
-      },
-      {
-        'text': forth,
-        'fallback': '네 번째 부분이 없습니다.',
-      },
-      {
-        'text': wisdom,
-        'fallback': '교훈이 없습니다.',
-      },
+      {'text': title, 'fallback': '제목이 없습니다.'},
+      {'text': first, 'fallback': '첫 번째 부분이 없습니다.'},
+      {'text': second, 'fallback': '두 번째 부분이 없습니다.'},
+      {'text': third, 'fallback': '세 번째 부분이 없습니다.'},
+      {'text': forth, 'fallback': '네 번째 부분이 없습니다.'},
+      {'text': wisdom, 'fallback': '교훈이 없습니다.'},
     ];
 
     return Scaffold(
@@ -197,22 +112,34 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPageIndex = index;
-                  });
-                }, // PageController 설정
-                children: pageData.map((data) {
-                  return _buildPage(
-                    text: data['text'] as String?,
-                    fallback: data['fallback'] as String,
-                    textStyle: data['textStyle'] as TextStyle?,
-                  );
-                }).toList(),
-              ),
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  currentPageIndex = index;
+                  _currentText = pageData[index]['text'] as String?;
+                });
+              },
+              children: pageData.map((data) {
+                return Container(
+                  decoration: _getImagePath(data['text'] as String?) != null
+                      ? BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(_getImagePath(data['text'])!),
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : null,
+                  child: Center(
+                    child: Text(
+                      data['text'] ?? data['fallback'],
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
           Positioned(
@@ -227,30 +154,21 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                       MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   },
-                  icon: Image.asset(
-                    'assets/images/home.png',
-                    width: 60,
-                    height: 60,
-                  ),
+                  icon: Image.asset('assets/images/home.png',
+                      width: 60, height: 60),
                 ),
-                SizedBox(width: 16.0), // 홈 버튼과 나레이션 버튼 사이 간격
+                SizedBox(width: 16.0),
                 IconButton(
-                  onPressed: () {
-                    playNarration;
-                  }, // 나레이션 재생 함수 호출
-                  icon: Image.asset(
-                    'assets/images/music.png', // 음악 아이콘 이미지 경로
-                    width: 60,
-                    height: 60,
-                  ),
+                  onPressed: playNarration,
+                  icon: Image.asset('assets/images/music.png',
+                      width: 60, height: 60),
                 ),
               ],
             ),
           ),
           Positioned(
-            // 왼쪽 버튼
             left: 16.0,
-            top: MediaQuery.of(context).size.height / 2 - 32.0, // 수직 중앙 정렬
+            top: MediaQuery.of(context).size.height / 2 - 32.0,
             child: IconButton(
               onPressed: () {
                 _pageController.previousPage(
@@ -258,17 +176,12 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   curve: Curves.easeInOut,
                 );
               },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                size: 60,
-                color: Colors.blue,
-              ),
+              icon: Icon(Icons.arrow_back_ios, size: 60, color: Colors.blue),
             ),
           ),
           Positioned(
-            // 오른쪽 버튼
             right: 16.0,
-            top: MediaQuery.of(context).size.height / 2 - 32.0, // 수직 중앙 정렬
+            top: MediaQuery.of(context).size.height / 2 - 32.0,
             child: IconButton(
               onPressed: () {
                 _pageController.nextPage(
@@ -276,14 +189,35 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   curve: Curves.easeInOut,
                 );
               },
-              icon: Icon(
-                Icons.arrow_forward_ios,
-                size: 60,
-                color: Colors.blue,
-              ),
+              icon: Icon(Icons.arrow_forward_ios, size: 60, color: Colors.blue),
             ),
           ),
+          if (_showTextContainer)
+            Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Text(
+                  _currentText ?? '',
+                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+              ),
+            ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _showTextContainer = !_showTextContainer;
+          });
+        },
+        child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
       ),
     );
   }

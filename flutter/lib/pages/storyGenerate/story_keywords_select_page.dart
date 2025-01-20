@@ -68,7 +68,7 @@ class _StoryCreationPageState extends State<StoryCreationPage> {
     '포근하고 안락한 이야기',
     '웃음이 가득한 이야기',
     '반짝이는 희망의 이야기',
-    '동화 같은 로맨틱 이야기',
+    '동화 같은 사랑 이야기',
   ];
 
   @override
