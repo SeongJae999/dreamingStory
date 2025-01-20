@@ -9,6 +9,7 @@ pytest
 langchain
 langchain_openai
 langchain_anthropic
+openai
 
 # TTS dependencies:
 google-cloud-texttospeech

@@ -37,6 +37,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? imagePath;
   bool isLoading = true;
   Map<String, String>? audioUrls;
+  Map<String, String>? imageUrls;
   List<String> pageAudioKeys = [
     "title",
     "first",
@@ -97,6 +98,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           forth = data['story']['forth'];
           wisdom = data['wisdom'];
           audioUrls = Map<String, String>.from(data['audio_urls'] ?? {});
+          imageUrls = Map<String, String>.from(data['image_urls'] ?? {});
           imagePath = "assets/images/ssa.jpg";
           isLoading = false;
         });
@@ -129,8 +131,11 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     required String? text,
     required String fallback,
     TextStyle? textStyle,
-    required String? imagePath,
+    required String? imageUrl,
   }) {
+    String? fullImageUrl;
+    if (imageUrl != null)
+      fullImageUrl = Uri.parse(baseUrl!).resolve(imageUrl).toString();
     return Container(
       padding: EdgeInsets.all(8.0),
       child: Column(
@@ -140,7 +145,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             style: textStyle ?? TextStyle(fontSize: 16),
           ),
           SizedBox(height: 8.0),
-          if (imagePath != null) Image.asset(imagePath) else Container(),
+          if (fullImageUrl != null)
+            Image.network(fullImageUrl)
+          else
+            Container(),
         ],
       ),
     );
@@ -153,26 +161,32 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         'text': title,
         'fallback': '제목이 없습니다.',
         'textStyle': TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        'imageUrl': imageUrls?['first'],
       },
       {
         'text': first,
         'fallback': '첫 번째 부분이 없습니다.',
+        'imageUrl': imageUrls?['first'],
       },
       {
         'text': second,
         'fallback': '두 번째 부분이 없습니다.',
+        'imageUrl': imageUrls?['first'],
       },
       {
         'text': third,
         'fallback': '세 번째 부분이 없습니다.',
+        'imageUrl': imageUrls?['first'],
       },
       {
         'text': forth,
         'fallback': '네 번째 부분이 없습니다.',
+        'imageUrl': imageUrls?['first'],
       },
       {
         'text': wisdom,
         'fallback': '교훈이 없습니다.',
+        'imageUrl': imageUrls?['first'],
       },
     ];
 
@@ -221,7 +235,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                           text: data['text'] as String?,
                           fallback: data['fallback'] as String,
                           textStyle: data['textStyle'] as TextStyle?,
-                          imagePath: imagePath,
+                          imageUrl: data['imageUrl'] as String?,
                         );
                       }).toList(),
                     ),
