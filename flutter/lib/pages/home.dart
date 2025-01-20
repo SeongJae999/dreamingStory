@@ -4,6 +4,7 @@ import 'package:dreamingstory/pages/onboarding_main.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
 import 'package:dreamingstory/pages/story_display_default_page.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;
@@ -161,7 +162,7 @@ class HomePage extends StatelessWidget {
                   children: [
                     _buildStoryCard(
                       context,
-                      '반짝이의 이빨 모험',
+                      const TextScroll('반짝이의 이빨 모험'),
                       'assets/무료 동화/반짝이의 이빨 모험/images/intro.png',
                       () {
                         Navigator.push(
@@ -174,7 +175,15 @@ class HomePage extends StatelessWidget {
                     ),
                     _buildStoryCard(
                       context,
-                      '구름 궁전의 웃음 공주와 기다림의 마법',
+                      const TextScroll(
+                        '구름 궁전의 웃음 공주와 기다림의 마법',
+                        mode: TextScrollMode.endless,
+                        velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
+                        numberOfReps: 200,
+                        delayBefore: Duration(milliseconds: 3000),
+                        pauseBetween:
+                            Duration(milliseconds: 1000), // 1000ms = 1s
+                      ),
                       'assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/images/intro.png',
                       () {
                         Navigator.push(
@@ -187,7 +196,7 @@ class HomePage extends StatelessWidget {
                     ),
                     _buildStoryCard(
                       context,
-                      '흥부와 놀부',
+                      const TextScroll('흥부와 놀부'),
                       'assets/무료 동화/흥부와 놀부/images/intro.png',
                       () {
                         Navigator.push(
@@ -245,7 +254,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildStoryCard(
     BuildContext context,
-    String title,
+    Widget title,
     String imagePath,
     VoidCallback onTap,
   ) {
@@ -278,13 +287,13 @@ class HomePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
-          Text(
-            title,
+          DefaultTextStyle(
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
               fontFamily: 'GodoM',
             ),
+            child: title,
           ),
         ],
       ),

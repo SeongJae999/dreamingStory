@@ -114,6 +114,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
       imagePath = forthImagePath;
     }
 
+    bool isTitle = text == title;
     return Container(
       decoration: imagePath != null
           ? BoxDecoration(
@@ -123,6 +124,18 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
               ),
             )
           : null,
+      child: isTitle
+          ? Center(
+              child: Text(
+                text ?? fallback,
+                style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'GodoB'),
+                textAlign: TextAlign.center,
+              ),
+            )
+          : Container(), // 그 외 텍스트는 출력하지 않음
     );
   }
 
