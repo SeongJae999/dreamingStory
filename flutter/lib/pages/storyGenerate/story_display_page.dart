@@ -130,12 +130,19 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   String? _getImagePath(String? text) {
-    if (text == title) return baseUrl! + '/images/' + imageUrls!['intro']!;
-    if (text == first) return baseUrl! + '/images/' + imageUrls!['intro']!;
-    if (text == second)
-      return baseUrl! + '/images/' + imageUrls!['development']!;
-    if (text == third) return baseUrl! + '/images/' + imageUrls!['climax']!;
-    if (text == forth) return baseUrl! + '/images/' + imageUrls!['conclusion']!;
+    if (imageUrls != null && imageUrls!['first'] != null) {
+      String imagePath = imageUrls!['first']!;
+
+      // baseUrl을 사용하여 절대 경로로 변환
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        // 만약 이미 절대 URL이면 그대로 반환
+        return imagePath;
+      } else {
+        // 상대 URL이라면 baseUrl과 합쳐서 절대 경로로 만듬
+        Uri fullUri = Uri.parse(baseUrl!).resolve(imagePath);
+        return fullUri.toString();
+      }
+    }
     return null;
   }
 
@@ -192,18 +199,20 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                   decoration: _getImagePath(data['text'] as String?) != null
                       ? BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(_getImagePath(data['text'])!),
+                            image: NetworkImage(_getImagePath(data['text'])!),
                             fit: BoxFit.cover,
                           ),
                         )
                       : null,
                   child: Center(
-                    child: Text(
-                      data['text'] ?? data['fallback'],
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
+                    child: (currentPageIndex == 0)
+                        ? Text(
+                            data['text'] ?? data['fallback'],
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          )
+                        : SizedBox(),
                   ),
                 );
               }).toList(),
