@@ -24,6 +24,8 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   Map<String, String>? audioUrls;
   Map<String, String>? imageUrls;
 
+  String? partKey;
+
   @override
   void initState() {
     super.initState();
@@ -129,7 +131,6 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 });
 
                 // 페이지에 맞는 오디오 재생
-                String? partKey;
                 if (index == 0) {
                   partKey = "title";
                 } else if (index == 1)
@@ -143,10 +144,11 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 else if (index == 5) partKey = "wisdom";
 
                 if (partKey != null) {
-                  playNarration(partKey); // 해당 페이지의 오디오 재생
+                  playNarration(partKey!); // 해당 페이지의 오디오 재생
                 }
               },
               children: pageData.map((data) {
+                bool isTitle = partKey == title;
                 return Container(
                   decoration: _getImagePath(data['text'] as String?) != null
                       ? BoxDecoration(
@@ -157,15 +159,22 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                         )
                       : null,
                   child: Center(
-                    child: (currentPageIndex == 0)
-                        ? Text(
-                            data['text'] ?? data['fallback'],
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+                      child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: isTitle
+                        ? Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(
+                              data['text'] ?? data['fallback'],
+                              style: TextStyle(
+                                  fontSize: 40,
+                                  fontFamily: 'GodoB',
+                                  backgroundColor: Colors.white),
+                              textAlign: TextAlign.left,
+                            ),
                           )
                         : SizedBox(),
-                  ),
+                  )),
                 );
               }).toList(),
             ),
@@ -187,7 +196,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 ),
                 SizedBox(width: 16.0),
                 IconButton(
-                  onPressed: () => playNarration("title"),
+                  onPressed: () => playNarration("title"), // 수정 필요
                   icon: Image.asset('assets/images/music.png',
                       width: 60, height: 60),
                 ),
