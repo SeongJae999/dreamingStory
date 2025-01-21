@@ -13,7 +13,6 @@ class _OnboardingMainState extends State<OnboardingMain> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
-  final AudioPlayer _buttonClickPlayer = AudioPlayer();
 
   void _onPageChanged(int page) {
     setState(() {
@@ -49,17 +48,9 @@ class _OnboardingMainState extends State<OnboardingMain> {
     _backgroundMusicPlayer.resume();
   }
 
-  void _playButtonClickSound() async {
-    await _buttonClickPlayer
-        .setSource(AssetSource('audios/toy-button-105724.mp3'));
-    _buttonClickPlayer.setVolume(1.0);
-    _buttonClickPlayer.resume();
-  }
-
   @override
   void dispose() {
     _backgroundMusicPlayer.dispose();
-    _buttonClickPlayer.dispose();
     super.dispose();
   }
 
@@ -76,57 +67,41 @@ class _OnboardingMainState extends State<OnboardingMain> {
         padding: EdgeInsets.only(top: 140),
         child: Column(
           children: [
-            Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha((0.2 * 255).round()),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Text(
-                  'Image 1',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 30),
+            // Container(
+            //   width: 250,
+            //   height: 250,
+            //   child: ClipRRect(
+            //     borderRadius: BorderRadius.circular(20),
+            //     child: Image.asset(
+            //       'assets/images/ssa.jpg',
+            //       fit: BoxFit.cover,
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height: 320),
             Expanded(
               child: PageView(
                 controller: _pageController,
                 onPageChanged: _onPageChanged,
                 children: [
-                  OnboardingPage(title: '꿈꾸는 이야기'),
-                  OnboardingPage(title: '나만의 동화 만들기'),
-                  OnboardingPage(title: '무료 동화'),
-                  OnboardingPage(title: '친구의 책장'),
-                  OnboardingPage(title: '캐릭터 꾸미기'),
-                  OnboardingPage(title: '나만의 이야기를 만들어 보아요.'),
+                  OnboardingPage(title: 'AI 창작 동화 : 꿈꾸는 이야기'),
+                  OnboardingPage(title: '우리 아이에게 필요한 교훈을\n 입력할 수 있어요'),
+                  OnboardingPage(title: '멋진 동화가 만들어졌다면\n 공유할 수 있어요'),
+                  OnboardingPage(title: '우리 아이가 상상하는 것을\n 현실로 만들어줄 수 있어요'),
+                  OnboardingPage(title: '무료 동화도 계속해서\n 업데이트 된답니다'),
+                  OnboardingPage(title: '이제 동화의 세계로\n 뛰어들어 볼까요?'),
                 ],
               ),
             ),
             ElevatedButton(
               onPressed: _currentPage < 5
                   ? () {
-                      _playButtonClickSound();
                       _pageController.nextPage(
                         duration: Duration(milliseconds: 300),
                         curve: Curves.ease,
                       );
                     }
                   : () {
-                      _playButtonClickSound();
                       _completeOnboarding();
                     },
               child: Text(_currentPage < 5 ? '다음' : '시작하기',
