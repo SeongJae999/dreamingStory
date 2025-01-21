@@ -76,8 +76,8 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
   void playNarration(String partKey) async {
     if (audioUrls != null && audioUrls![partKey] != null) {
       try {
-        Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrls![partKey]!);
-        await audioPlayer.play(UrlSource(fullUri.toString()));
+        await audioPlayer.play(AssetSource(
+            '${baseUrl?.replaceFirst('assets/', '') ?? ''}/audios/${audioUrls![partKey]}'));
         print("오디오 재생 성공.");
       } catch (e) {
         print("오디오 재생 오류: $e");
@@ -130,9 +130,9 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
 
                 // 페이지에 맞는 오디오 재생
                 String? partKey;
-                if (index == 0)
+                if (index == 0) {
                   partKey = "title";
-                else if (index == 1)
+                } else if (index == 1)
                   partKey = "first";
                 else if (index == 2)
                   partKey = "second";
@@ -157,12 +157,14 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                         )
                       : null,
                   child: Center(
-                    child: Text(
-                      data['text'] ?? data['fallback'],
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
+                    child: (currentPageIndex == 0)
+                        ? Text(
+                            data['text'] ?? data['fallback'],
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          )
+                        : SizedBox(),
                   ),
                 );
               }).toList(),
