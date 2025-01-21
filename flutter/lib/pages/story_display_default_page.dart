@@ -203,9 +203,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 SizedBox(width: 16.0),
                 IconButton(
                   onPressed: () {
-                    if (partKey != null) {
-                      playNarration(partKey!);
-                    }
+                    audioPlayer.pause();
                   },
                   icon: Image.asset('assets/images/pause.png',
                       width: 60, height: 60),
