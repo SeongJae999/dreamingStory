@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dreamingstory/pages/home.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class StoryDisplayDefaultPage extends StatefulWidget {
   @override
@@ -100,6 +101,104 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
     return null;
   }
 
+  void _showFeedbackForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        double rating = 0;
+        String? selectedError;
+        List<String> possibleErrors = [
+          '오디오가 재생되지 않음',
+          '이미지가 로드되지 않음',
+          '텍스트가 깨져 보임',
+          '애니메이션이 부자연스러움',
+          '앱이 느리게 동작함',
+          '기타'
+        ];
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(
+                '동화가 마음에 드셨나요?',
+                style: TextStyle(fontFamily: 'GodoB', fontSize: 18),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RatingBar.builder(
+                      initialRating: 0,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (value) {
+                        setState(() {
+                          rating = value;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      '문제가 있었다면 선택해주세요:',
+                      style: TextStyle(fontFamily: 'GodoB', fontSize: 16),
+                    ),
+                    SizedBox(height: 8),
+                    DropdownButton<String>(
+                      isExpanded: true,
+                      value: selectedError,
+                      hint: Text(selectedError ?? '문제 선택'),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedError = newValue;
+                        });
+                      },
+                      items: possibleErrors
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text(
+                    '제출',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'GodoB',
+                    ),
+                  ),
+                  onPressed: () {
+                    // TODO: 피드백 저장 로직 구현
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('소중한 의견 감사합니다!',
+                              style: TextStyle(
+                                fontFamily: 'GodoM',
+                                fontSize: 16,
+                              ))),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -118,6 +217,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
     ];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Padding(
@@ -130,7 +230,6 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   _currentText = pageData[index]['text'] as String?;
                 });
 
-                // 페이지에 맞는 오디오 재생
                 if (index == 0) {
                   partKey = "title";
                 } else if (index == 1)
@@ -141,10 +240,12 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   partKey = "third";
                 else if (index == 4)
                   partKey = "forth";
-                else if (index == 5) partKey = "wisdom";
+                else if (index == 5) {
+                  partKey = "wisdom";
+                  _showFeedbackForm();
+                }
               },
               children: pageData.map((data) {
-                bool isTitle = partKey == 'title';
                 return Container(
                   decoration: _getImagePath(data['text'] as String?) != null
                       ? BoxDecoration(
@@ -154,23 +255,6 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                           ),
                         )
                       : null,
-                  child: Center(
-                      child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: isTitle
-                        ? Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text(
-                              data['text'] ?? data['fallback'],
-                              style: TextStyle(
-                                  fontSize: 40,
-                                  fontFamily: 'GodoB',
-                                  backgroundColor: Colors.white),
-                              textAlign: TextAlign.left,
-                            ),
-                          )
-                        : SizedBox(),
-                  )),
                 );
               }).toList(),
             ),
@@ -260,14 +344,18 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _showTextContainer = !_showTextContainer;
-          });
-        },
-        child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
-      ),
+      floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
+          ? FloatingActionButton(
+              heroTag: 'btn1',
+              onPressed: () {
+                setState(() {
+                  _showTextContainer = !_showTextContainer;
+                });
+              },
+              child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
