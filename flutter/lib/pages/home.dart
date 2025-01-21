@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
+import 'package:dreamingstory/pages/account/login.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
 import 'package:dreamingstory/pages/story_display_default_page.dart';
@@ -77,7 +78,8 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontFamily: 'GodoM'),
               ),
               onTap: () {
-                // 사용 가이드 페이지로 이동하는 기능 구현 필요
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OnboardingMain()));
               },
             ),
             ListTile(
@@ -92,7 +94,7 @@ class HomePage extends StatelessWidget {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => OnboardingMain()),
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
             ),
