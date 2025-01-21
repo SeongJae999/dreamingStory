@@ -142,13 +142,9 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 else if (index == 4)
                   partKey = "forth";
                 else if (index == 5) partKey = "wisdom";
-
-                if (partKey != null) {
-                  playNarration(partKey!); // 해당 페이지의 오디오 재생
-                }
               },
               children: pageData.map((data) {
-                bool isTitle = partKey == title;
+                bool isTitle = partKey == 'title';
                 return Container(
                   decoration: _getImagePath(data['text'] as String?) != null
                       ? BoxDecoration(
@@ -196,7 +192,11 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                 ),
                 SizedBox(width: 16.0),
                 IconButton(
-                  onPressed: () => playNarration("title"), // 수정 필요
+                  onPressed: () {
+                    if (partKey != null) {
+                      playNarration(partKey!);
+                    }
+                  },
                   icon: Image.asset('assets/images/music.png',
                       width: 60, height: 60),
                 ),
@@ -237,12 +237,16 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
               child: Container(
                 padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
+                  color: Colors.black.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Text(
                   (_currentText ?? '').replaceAll(r'\n', '\n'),
-                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    fontFamily: 'GodoM',
+                  ),
                 ),
               ),
             ),
