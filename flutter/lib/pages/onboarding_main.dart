@@ -107,15 +107,17 @@ class _OnboardingMainState extends State<OnboardingMain> {
                 controller: _pageController,
                 onPageChanged: _onPageChanged,
                 children: [
-                  OnboardingPage(title: '꿈꾸는 이야기: START'),
+                  OnboardingPage(title: '꿈꾸는 이야기'),
+                  OnboardingPage(title: '나만의 동화 만들기'),
+                  OnboardingPage(title: '무료 동화'),
+                  OnboardingPage(title: '친구의 책장'),
+                  OnboardingPage(title: '캐릭터 꾸미기'),
                   OnboardingPage(title: '나만의 이야기를 만들어 보아요.'),
-                  OnboardingPage(title: '내가 캐릭터의 주인공이 될 수 있어요.'),
-                  OnboardingPage(title: '나만의 프로필을 설정해 보아요.'),
                 ],
               ),
             ),
             ElevatedButton(
-              onPressed: _currentPage < 3
+              onPressed: _currentPage < 5
                   ? () {
                       _playButtonClickSound();
                       _pageController.nextPage(
@@ -127,7 +129,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
                       _playButtonClickSound();
                       _completeOnboarding();
                     },
-              child: Text(_currentPage < 3 ? '다음' : '시작하기',
+              child: Text(_currentPage < 5 ? '다음' : '시작하기',
                   style: TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
@@ -144,7 +146,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
         margin: EdgeInsets.only(bottom: 100),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(4, (index) {
+          children: List.generate(6, (index) {
             return Container(
               margin: EdgeInsets.symmetric(horizontal: 4.0),
               width: 10.0,
