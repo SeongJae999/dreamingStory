@@ -197,7 +197,17 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                       playNarration(partKey!);
                     }
                   },
-                  icon: Image.asset('assets/images/music.png',
+                  icon: Image.asset('assets/images/play.png',
+                      width: 60, height: 60),
+                ),
+                SizedBox(width: 16.0),
+                IconButton(
+                  onPressed: () {
+                    if (partKey != null) {
+                      playNarration(partKey!);
+                    }
+                  },
+                  icon: Image.asset('assets/images/pause.png',
                       width: 60, height: 60),
                 ),
               ],
