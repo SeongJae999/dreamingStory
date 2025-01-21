@@ -6,6 +6,7 @@ import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
 import 'package:dreamingstory/pages/story_display_default_page.dart';
 import 'package:text_scroll/text_scroll.dart';
+import 'package:dreamingstory/pages/setting.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;
@@ -69,7 +70,8 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontFamily: 'GodoM'),
               ),
               onTap: () {
-                // 설정 페이지로 이동하는 기능 구현 필요
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingPage()));
               },
             ),
             ListTile(
@@ -80,22 +82,6 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OnboardingMain()));
-              },
-            ),
-            ListTile(
-              title: Text(
-                '로그아웃',
-                style: TextStyle(
-                  fontFamily: 'GodoM',
-                  color: Color.fromARGB(255, 217, 123, 102),
-                ),
-              ),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
               },
             ),
           ],

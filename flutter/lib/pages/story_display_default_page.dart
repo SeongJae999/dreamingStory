@@ -255,6 +255,24 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                           ),
                         )
                       : null,
+                  child: data['text'] == title
+                      ? Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(
+                              title ?? '제목이 없습니다.',
+                              style: TextStyle(
+                                fontFamily: 'GodoB',
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      : null,
                 );
               }).toList(),
             ),
@@ -271,7 +289,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                       MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   },
-                  icon: Image.asset('assets/images/home.png',
+                  icon: Image.asset('assets/images/homecs.png',
                       width: 60, height: 60),
                 ),
                 SizedBox(width: 16.0),
@@ -281,7 +299,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                       playNarration(partKey!);
                     }
                   },
-                  icon: Image.asset('assets/images/play.png',
+                  icon: Image.asset('assets/images/musiccs.png',
                       width: 60, height: 60),
                 ),
                 SizedBox(width: 16.0),
@@ -289,7 +307,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   onPressed: () {
                     audioPlayer.pause();
                   },
-                  icon: Image.asset('assets/images/pause.png',
+                  icon: Image.asset('assets/images/musicpause.png',
                       width: 60, height: 60),
                 ),
               ],
