@@ -1,17 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/component/user.dart';
+import 'package:dreamingstory/pages/drawer/sharing.dart';
+import 'package:dreamingstory/pages/drawer/setting.dart';
+import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
-import 'package:dreamingstory/pages/account/login.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_generate.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_selection.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final userInfo? user;
   const HomePage({Key? key, this.user}) : super(key: key);
 
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+
+  void _playBackgroundMusic() async {
+    await _backgroundMusicPlayer
+        .setSource(AssetSource('audios/dreaming_story.wav'));
+    _backgroundMusicPlayer.setVolume(0.5);
+    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+    _backgroundMusicPlayer.resume();
+  }
+
+  @override
+  void dispose() {
+    _backgroundMusicPlayer.dispose();
+    super.dispose();
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color.fromARGB(255, 242, 210, 114)),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'GodoM',
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //배경음악 재생
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _playBackgroundMusic();
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -23,81 +69,74 @@ class HomePage extends StatelessWidget {
         foregroundColor: const Color.fromARGB(255, 242, 210, 114),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                '메뉴',
-                style: TextStyle(
-                    color: const Color.fromARGB(255, 242, 210, 114),
-                    fontSize: 24,
-                    fontFamily: 'GodoB'),
-              ),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 27, 65, 89),
-              ),
-            ),
-            ListTile(
-              title: Text(
-                user?.email ?? '게스트 계정입니다.',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-            ),
-            ListTile(
-              title: Text(
-                '공유',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-              onTap: () {
-                // 공유 기능 구현 필요
-              },
-            ),
-            ListTile(
-              title: Text(
-                '구독 및 취소',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-              onTap: () {
-                // 구독 및 취소 기능 구현 필요
-              },
-            ),
-            ListTile(
-              title: Text(
-                '설정',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-              onTap: () {
-                // 설정 페이지로 이동하는 기능 구현 필요
-              },
-            ),
-            ListTile(
-              title: Text(
-                '사용 가이드',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OnboardingMain()));
-              },
-            ),
-            ListTile(
-              title: Text(
-                '로그아웃',
-                style: TextStyle(
-                  fontFamily: 'GodoM',
-                  color: Color.fromARGB(255, 217, 123, 102),
+        child: Container(
+          color: const Color.fromARGB(255, 27, 65, 89),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 242, 210, 114),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '메뉴',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 27, 65, 89),
+                        fontSize: 28,
+                        fontFamily: 'GodoB',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      widget.user?.email ?? '게스트 계정입니다.',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 27, 65, 89),
+                        fontSize: 14,
+                        fontFamily: 'GodoM',
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
+              _buildDrawerItem(
+                icon: Icons.share,
+                title: '공유',
+                onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-            ),
-          ],
+                  MaterialPageRoute(builder: (context) => SharingPage()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.subscriptions,
+                title: '구독 및 결제',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SubscribePage()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.settings,
+                title: '설정',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingPage()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.help_outline,
+                title: '사용 가이드',
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => OnboardingMain()),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: Container(
@@ -105,7 +144,10 @@ class HomePage extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
-            opacity: 0.7,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.1),
+              BlendMode.darken,
+            ),
           ),
         ),
         child: SingleChildScrollView(

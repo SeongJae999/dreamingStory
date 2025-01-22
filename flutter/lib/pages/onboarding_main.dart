@@ -105,7 +105,10 @@ class _OnboardingMainState extends State<OnboardingMain> {
                       _completeOnboarding();
                     },
               child: Text(_currentPage < 5 ? '다음' : '시작하기',
-                  style: TextStyle(fontSize: 16)),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'GodoB',
+                  )),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 shape: RoundedRectangleBorder(
@@ -147,14 +150,34 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-        textAlign: TextAlign.center,
+      child: Stack(
+        children: <Widget>[
+          // Stroke
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 1
+                ..color = Color.fromARGB(255, 27, 65, 89),
+              fontFamily: 'GodoB',
+            ),
+            textAlign: TextAlign.center,
+          ),
+          // Fill
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 242, 210, 114),
+              fontFamily: 'GodoB',
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

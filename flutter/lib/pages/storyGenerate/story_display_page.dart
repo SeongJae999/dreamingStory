@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
-import 'package:dreamingstory/pages/feedback.dart';
+import 'package:dreamingstory/pages/storyGenerate/feedback.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String storyId;
