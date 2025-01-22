@@ -1,24 +1,29 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:dreamingstory/component/user.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
+import 'package:dreamingstory/pages/feedback.dart';
 
 class StoryDisplayPage extends StatefulWidget {
-  final String topic;
+  final String storyId;
+  final bool freeStory;
+
+  final String? topic;
   final String? background;
-  final String? characters;
+  final String? character;
   final String? helper;
   final String? atmosphere;
 
   const StoryDisplayPage({
     Key? key,
-    required this.topic,
+    required this.storyId,
+    required this.freeStory,
+    this.topic,
     this.background,
-    this.characters,
+    this.character,
     this.helper,
     this.atmosphere,
   }) : super(key: key);
@@ -31,6 +36,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   bool _showTextContainer = false;
   int currentPageIndex = 0;
   String? _currentText;
+  String? partKey;
 
   String? title;
   String? wisdom;
@@ -38,9 +44,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? second;
   String? third;
   String? forth;
-  bool isLoading = true;
+  bool isLoading = false;
   Map<String, String>? audioUrls;
   Map<String, String>? imageUrls;
+
   List<String> pageAudioKeys = [
     "title",
     "first",
@@ -49,12 +56,14 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     "forth",
     "wisdom"
   ];
+
   final AudioPlayer audioPlayer = AudioPlayer();
   final baseUrl = dotenv.env['NGROK_URL'];
 
   @override
   void initState() {
     super.initState();
+    if (!widget.freeStory) isLoading = true;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -72,27 +81,28 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   Future<void> _fetchStory() async {
-    String? idToken = AuthService().idToken;
-
-    if (idToken == null) throw Exception("유효한 인증 토큰이 없습니다.");
+    final response;
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/stories/generate_story'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $idToken',
-        },
-        body: jsonEncode({
-          'topic': widget.topic,
-          'background': widget.background,
-          'characters': widget.characters,
-          'helper': widget.helper,
-          'atmosphere': widget.atmosphere
-        }),
-      );
-
+      if (widget.freeStory) {
+        response = await http.post(Uri.parse('$baseUrl/stories/free_story'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'story_id': widget.storyId}));
+      } else {
+        response = await http.post(Uri.parse('$baseUrl/stories/generate_story'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ${widget.storyId}',
+            },
+            body: jsonEncode({
+              'topic': widget.topic,
+              'background': widget.background,
+              'character': widget.character,
+              'helper': widget.helper,
+              'atmosphere': widget.atmosphere,
+            }));
+      }
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           title = data['title'];
           first = data['story']['first'];
@@ -105,7 +115,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           isLoading = false;
         });
       } else {
-        throw Exception('스토리를 불러오는데 실패했습니다');
+        throw Exception('동화를 불러오는데 실패했습니다');
       }
     } catch (e) {
       setState(() {
@@ -116,7 +126,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   void playNarration(String partKey) async {
-    if (audioUrls != null && audioUrls![partKey] != null) {
+    if (audioUrls![partKey] != null) {
       try {
         Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrls![partKey]!);
         await audioPlayer.play(UrlSource(fullUri.toString()));
@@ -130,28 +140,30 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   String? _getImagePath(String? text) {
-    if (imageUrls != null && imageUrls!['first'] != null) {
-      String imagePath = imageUrls!['first']!;
+    Uri fullUri = Uri.parse(baseUrl!).resolve(imageUrls!['first']!);
+    return fullUri.toString();
+  }
 
-      // baseUrl을 사용하여 절대 경로로 변환
-      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-        // 만약 이미 절대 URL이면 그대로 반환
-        return imagePath;
-      } else {
-        // 상대 URL이라면 baseUrl과 합쳐서 절대 경로로 만듬
-        Uri fullUri = Uri.parse(baseUrl!).resolve(imagePath);
-        return fullUri.toString();
-      }
-    }
-    return null;
+  String _getPartKey(int index) {
+    const partKeys = ["title", "first", "second", "third", "forth", "wisdom"];
+    return partKeys[index];
+  }
+
+  Widget _buildPageContent(String? text) {
+    return Container(
+      decoration: _getImagePath(text) != null
+          ? BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(_getImagePath(text)!),
+                fit: BoxFit.cover,
+              ),
+            )
+          : null,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-
     final PageController _pageController = PageController();
 
     List<Map<String, dynamic>> pageData = [
@@ -164,137 +176,128 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     ];
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (int index) {
-                setState(() {
-                  currentPageIndex = index;
-                  _currentText = pageData[index]['text'] as String?;
-                });
-
-                // 페이지에 맞는 오디오 재생
-                String? partKey;
-                if (index == 0)
-                  partKey = "title";
-                else if (index == 1)
-                  partKey = "first";
-                else if (index == 2)
-                  partKey = "second";
-                else if (index == 3)
-                  partKey = "third";
-                else if (index == 4)
-                  partKey = "forth";
-                else if (index == 5) partKey = "wisdom";
-
-                if (partKey != null) {
-                  playNarration(partKey); // 해당 페이지의 오디오 재생
-                }
-              },
-              children: pageData.map((data) {
-                return Container(
-                  decoration: _getImagePath(data['text'] as String?) != null
-                      ? BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(_getImagePath(data['text'])!),
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : null,
-                  child: Center(
-                    child: (currentPageIndex == 0)
-                        ? Text(
-                            data['text'] ?? data['fallback'],
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          )
-                        : SizedBox(),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          Positioned(
-            top: 16.0,
-            left: 16.0,
-            child: Row(
+      resizeToAvoidBottomInset: false,
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Stack(
               children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  },
-                  icon: Image.asset('assets/images/home.png',
-                      width: 60, height: 60),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (int index) {
+                      setState(() {
+                        currentPageIndex = index;
+                        _currentText = pageData[index]['text'] as String?;
+                      });
+
+                      partKey = _getPartKey(index);
+                      if (index == 5) {
+                        FeedbackForm.showFeedbackForm(context);
+                      }
+                    },
+                    children: pageData.map((data) {
+                      return _buildPageContent(data['text'] as String?);
+                    }).toList(),
+                  ),
                 ),
-                SizedBox(width: 16.0),
-                IconButton(
-                  onPressed: () => playNarration("title"),
-                  icon: Image.asset('assets/images/music.png',
-                      width: 60, height: 60),
+                Positioned(
+                  top: 16.0,
+                  left: 16.0,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        },
+                        icon: Image.asset('assets/images/home.png',
+                            width: 60, height: 60),
+                      ),
+                      SizedBox(width: 16.0),
+                      IconButton(
+                        onPressed: () {
+                          if (partKey != null) {
+                            playNarration(partKey!);
+                          }
+                        },
+                        icon: Image.asset('assets/images/play.png',
+                            width: 60, height: 60),
+                      ),
+                      SizedBox(width: 16.0),
+                      IconButton(
+                        onPressed: () {
+                          audioPlayer.pause();
+                        },
+                        icon: Image.asset('assets/images/pause.png',
+                            width: 60, height: 60),
+                      ),
+                    ],
+                  ),
                 ),
+                Positioned(
+                  left: 16.0,
+                  top: MediaQuery.of(context).size.height / 2 - 32.0,
+                  child: IconButton(
+                    onPressed: () {
+                      _pageController.previousPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    icon: Icon(Icons.arrow_back_ios,
+                        size: 60, color: Colors.blue),
+                  ),
+                ),
+                Positioned(
+                  right: 16.0,
+                  top: MediaQuery.of(context).size.height / 2 - 32.0,
+                  child: IconButton(
+                    onPressed: () {
+                      _pageController.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    icon: Icon(Icons.arrow_forward_ios,
+                        size: 60, color: Colors.blue),
+                  ),
+                ),
+                if (_showTextContainer)
+                  Positioned(
+                    bottom: 16.0,
+                    left: 16.0,
+                    right: 16.0,
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        (_currentText ?? '').replaceAll(r'\n', '\n'),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontFamily: 'GodoM',
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
-          ),
-          Positioned(
-            left: 16.0,
-            top: MediaQuery.of(context).size.height / 2 - 32.0,
-            child: IconButton(
+      floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
+          ? FloatingActionButton(
               onPressed: () {
-                _pageController.previousPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
+                setState(() {
+                  _showTextContainer = !_showTextContainer;
+                });
               },
-              icon: Icon(Icons.arrow_back_ios, size: 60, color: Colors.blue),
-            ),
-          ),
-          Positioned(
-            right: 16.0,
-            top: MediaQuery.of(context).size.height / 2 - 32.0,
-            child: IconButton(
-              onPressed: () {
-                _pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
-              icon: Icon(Icons.arrow_forward_ios, size: 60, color: Colors.blue),
-            ),
-          ),
-          if (_showTextContainer)
-            Positioned(
-              bottom: 16.0,
-              left: 16.0,
-              right: 16.0,
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Text(
-                  (_currentText ?? '').replaceAll(r'\n', '\n'),
-                  style: TextStyle(color: Colors.white, fontSize: 16.0),
-                ),
-              ),
-            ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _showTextContainer = !_showTextContainer;
-          });
-        },
-        child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
-      ),
+              child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
+            )
+          : null,
     );
   }
 }

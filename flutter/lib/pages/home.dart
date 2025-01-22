@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
 import 'package:dreamingstory/pages/account/login.dart';
-import 'package:dreamingstory/component/user.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
-import 'package:dreamingstory/pages/story_display_default_page.dart';
-import 'package:text_scroll/text_scroll.dart';
+import 'package:dreamingstory/pages/storyGenerate/story_generate.dart';
+import 'package:dreamingstory/pages/storyGenerate/story_selection.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;
@@ -115,7 +114,6 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 나만의 동화 만들기 섹션
                 Text(
                   '나만의 동화 만들기',
                   style: TextStyle(
@@ -142,75 +140,8 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 32),
-
-                // 인기 무료 섹션
-                Text(
-                  '인기 무료',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'GodoB'),
-                ),
-                SizedBox(height: 16),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 0.8,
-                  children: [
-                    _buildStoryCard(
-                      context,
-                      const TextScroll('반짝이의 이빨 모험'),
-                      'assets/무료 동화/반짝이의 이빨 모험/images/intro.png',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StoryDisplayDefaultPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildStoryCard(
-                      context,
-                      const TextScroll(
-                        '구름 궁전의 웃음 공주와 기다림의 마법',
-                        mode: TextScrollMode.endless,
-                        velocity: Velocity(pixelsPerSecond: Offset(30, 0)),
-                        numberOfReps: 200,
-                        delayBefore: Duration(milliseconds: 3000),
-                        pauseBetween:
-                            Duration(milliseconds: 1000), // 1000ms = 1s
-                      ),
-                      'assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/images/intro.png',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StoryDisplayDefaultPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildStoryCard(
-                      context,
-                      const TextScroll('흥부와 놀부'),
-                      'assets/무료 동화/흥부와 놀부/images/intro.png',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StoryDisplayDefaultPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                StorySelection(),
               ],
             ),
           ),
@@ -244,60 +175,10 @@ class HomePage extends StatelessWidget {
                   const TextStyle(fontFamily: 'GodoM', fontSize: 16),
               unselectedLabelStyle:
                   const TextStyle(fontFamily: 'GodoM', fontSize: 14),
-              onTap: (index) {
-                // 하단바 아이템 클릭 시 동작 구현 필요
-              },
+              onTap: (index) {},
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildStoryCard(
-    BuildContext context,
-    Widget title,
-    String imagePath,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  Image.asset(
-                    imagePath,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Icon(
-                      Icons.bookmark,
-                      color: Color.fromARGB(255, 217, 123, 102),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 8),
-          DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'GodoM',
-            ),
-            child: title,
-          ),
-        ],
       ),
     );
   }
