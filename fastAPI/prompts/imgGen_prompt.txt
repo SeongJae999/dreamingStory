@@ -1,0 +1,17 @@
+FLUX ai에게 이미지 생성 프롬프팅을 해야해. 아래의 조건과 스토리를 바탕으로 프롬프트를 작성해줘
+1. 언어 : 영어
+2. 이야기 제목 제외 단락별 프롬프트 생성. 아래의 9개의 항목에 맞게 단락별로 생성 
+- Description : 해당 단락의 내용을 한 장면을 정해서 그 상황을 이미지화 할 수 있도록 Description 프롬프트 항목으로 작성.
+- Leading Role : [도입부 내용]에 나오는 등장인물(주인공)에 대해 모든 단락에서 동일한 묘사 입력. 동물의 종 언급 필수
+- Subject: The main focus of the image.
+- Style: The artistic approach or visual aesthetic.
+- Composition: How elements are arranged within the frame.
+- Lighting: The type and quality of light in the scene.
+- Color Palette: The dominant colors or color scheme.
+- Mood/Atmosphere: The emotional tone or ambiance of the image.
+- Technical Details: Camera settings, perspective, or specific visual techniques.
+- Additional Elements: Supporting details or background information.3. json 형식으로 작성
+3. 형식 : json
+4. Let’s think step by step
+
+---
