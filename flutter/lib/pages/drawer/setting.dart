@@ -1,9 +1,9 @@
-import 'package:dreamingstory/pages/setting/account.dart';
-import 'package:dreamingstory/pages/setting/privacy.dart';
+import 'package:dreamingstory/pages/drawer/setting/account.dart';
+import 'package:dreamingstory/pages/drawer/setting/privacy.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/account/login.dart';
-import 'package:dreamingstory/pages/setting/help.dart';
+import 'package:dreamingstory/pages/drawer/setting/help.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});

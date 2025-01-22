@@ -1,5 +1,5 @@
-import 'package:dreamingstory/pages/sharing.dart';
-import 'package:dreamingstory/pages/subscribe1.dart';
+import 'package:dreamingstory/pages/drawer/sharing.dart';
+import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
@@ -8,7 +8,7 @@ import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
 import 'package:dreamingstory/pages/story_display_default_page.dart';
 import 'package:text_scroll/text_scroll.dart';
-import 'package:dreamingstory/pages/setting.dart';
+import 'package:dreamingstory/pages/drawer/setting.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dreamingstory/pages/home.dart';
-import 'package:dreamingstory/pages/feedback.dart';
+import 'package:dreamingstory/pages/storyGenerate/feedback.dart';
 
 class StoryDisplayDefaultPage extends StatefulWidget {
   @override
