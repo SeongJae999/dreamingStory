@@ -9,13 +9,29 @@ import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dar
 import 'package:dreamingstory/pages/story_display_default_page.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class HomePage extends StatelessWidget {
   final userInfo? user;
-  const HomePage({Key? key, this.user}) : super(key: key);
+  HomePage({Key? key, this.user}) : super(key: key);
+
+  // 배경음악 플레이어
+  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+
+  void _playBackgroundMusic() async {
+    await _backgroundMusicPlayer
+        .setSource(AssetSource('audios/dreaming_story.wav'));
+    _backgroundMusicPlayer.setVolume(0.5);
+    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+    _backgroundMusicPlayer.resume();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // 배경음악 재생
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _playBackgroundMusic();
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text(
