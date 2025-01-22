@@ -5,8 +5,8 @@ import 'package:dreamingstory/pages/drawer/sharing.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
 import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_generate.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_selection.dart';
+import 'package:dreamingstory/pages/story/story_generate.dart';
+import 'package:dreamingstory/pages/story/story_selection.dart';
 
 class HomePage extends StatefulWidget {
   final userInfo? user;

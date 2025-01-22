@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:dreamingstory/component/story.dart';
-import 'package:dreamingstory/pages/storyGenerate/story_display_page.dart';
+import 'package:dreamingstory/pages/story/story_display_page.dart';
 
 class StorySelection extends StatelessWidget {
   const StorySelection({Key? key}) : super(key: key);

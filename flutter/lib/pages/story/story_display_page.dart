@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
-import 'package:dreamingstory/pages/storyGenerate/feedback.dart';
+import 'package:dreamingstory/pages/story/feedback.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final String storyId;
@@ -139,22 +139,28 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     }
   }
 
-  String? _getImagePath(String? text) {
-    Uri fullUri = Uri.parse(baseUrl!).resolve(imageUrls!['first']!);
+  String? _getImagePath(String partKey) {
+    if (partKey == 'title')
+      partKey = 'first';
+    else if (partKey == 'wisdom') partKey = 'forth';
+
+    Map<String, String> imagePaths = {
+      'first': imageUrls!['first']!,
+      'second': imageUrls!['second']!,
+      'third': imageUrls!['third']!,
+      'forth': imageUrls!['forth']!,
+    };
+
+    Uri fullUri = Uri.parse(baseUrl!).resolve(imagePaths[partKey]!);
     return fullUri.toString();
   }
 
-  String _getPartKey(int index) {
-    const partKeys = ["title", "first", "second", "third", "forth", "wisdom"];
-    return partKeys[index];
-  }
-
-  Widget _buildPageContent(String? text) {
+  Widget _buildPageContent(String partKey) {
     return Container(
-      decoration: _getImagePath(text) != null
+      decoration: _getImagePath(partKey) != null
           ? BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(_getImagePath(text)!),
+                image: NetworkImage(_getImagePath(partKey)!),
                 fit: BoxFit.cover,
               ),
             )
@@ -162,17 +168,36 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     );
   }
 
+  String getTextForPage(String pageKey) {
+    switch (pageKey) {
+      case 'title':
+        return title ?? '제목이 없습니다.';
+      case 'first':
+        return first ?? '첫 번째 부분이 없습니다.';
+      case 'second':
+        return second ?? '두 번째 부분이 없습니다.';
+      case 'third':
+        return third ?? '세 번째 부분이 없습니다.';
+      case 'forth':
+        return forth ?? '네 번째 부분이 없습니다.';
+      case 'wisdom':
+        return wisdom ?? '교훈이 없습니다.';
+      default:
+        return '알 수 없는 페이지';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
 
-    List<Map<String, dynamic>> pageData = [
-      {'text': title, 'fallback': '제목이 없습니다.'},
-      {'text': first, 'fallback': '첫 번째 부분이 없습니다.'},
-      {'text': second, 'fallback': '두 번째 부분이 없습니다.'},
-      {'text': third, 'fallback': '세 번째 부분이 없습니다.'},
-      {'text': forth, 'fallback': '네 번째 부분이 없습니다.'},
-      {'text': wisdom, 'fallback': '교훈이 없습니다.'},
+    List<String> pageKeys = [
+      'title',
+      'first',
+      'second',
+      'third',
+      'forth',
+      'wisdom'
     ];
 
     return Scaffold(
@@ -188,16 +213,16 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                     onPageChanged: (int index) {
                       setState(() {
                         currentPageIndex = index;
-                        _currentText = pageData[index]['text'] as String?;
+                        _currentText = getTextForPage(pageKeys[index]);
                       });
 
-                      partKey = _getPartKey(index);
+                      partKey = pageKeys[index];
                       if (index == 5) {
                         FeedbackForm.showFeedbackForm(context);
                       }
                     },
-                    children: pageData.map((data) {
-                      return _buildPageContent(data['text'] as String?);
+                    children: pageKeys.map((key) {
+                      return _buildPageContent(key);
                     }).toList(),
                   ),
                 ),
