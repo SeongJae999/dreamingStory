@@ -1,7 +1,9 @@
+import 'package:dreamingstory/pages/setting/account.dart';
+import 'package:dreamingstory/pages/setting/privacy.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/account/login.dart';
-import 'package:dreamingstory/pages/help.dart';
+import 'package:dreamingstory/pages/setting/help.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
@@ -15,24 +17,23 @@ class SettingPage extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('알림 설정'),
+            leading: const Icon(Icons.account_box),
+            title: const Text('계정 관리'),
             onTap: () {
-              // 알림 설정 페이지로 이동
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AccountPage()),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.lock),
             title: const Text('개인정보 보호'),
             onTap: () {
-              // 개인정보 보호 페이지로 이동
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('언어 설정'),
-            onTap: () {
-              // 언어 설정 페이지로 이동
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PrivacyPage()),
+              );
             },
           ),
           const Divider(),
