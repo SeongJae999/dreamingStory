@@ -27,70 +27,74 @@ class HomePage extends StatelessWidget {
         foregroundColor: const Color.fromARGB(255, 242, 210, 114),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                '메뉴',
-                style: TextStyle(
-                    color: const Color.fromARGB(255, 242, 210, 114),
-                    fontSize: 24,
-                    fontFamily: 'GodoB'),
+        child: Container(
+          color: const Color.fromARGB(255, 27, 65, 89),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 242, 210, 114),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '메뉴',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 27, 65, 89),
+                        fontSize: 28,
+                        fontFamily: 'GodoB',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      user?.email ?? '게스트 계정입니다.',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 27, 65, 89),
+                        fontSize: 14,
+                        fontFamily: 'GodoM',
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 27, 65, 89),
-              ),
-            ),
-            ListTile(
-              title: Text(
-                user?.email ?? '게스트 계정입니다.',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-            ),
-            ListTile(
-              title: Text(
-                '공유',
-                style: TextStyle(fontFamily: 'GodoM'),
-              ),
-              onTap: () {
-                Navigator.push(
+              _buildDrawerItem(
+                icon: Icons.share,
+                title: '공유',
+                onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SharingPage()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text(
-                '구독 및 결제',
-                style: TextStyle(fontFamily: 'GodoM'),
+                ),
               ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SubscribePage()));
-              },
-            ),
-            ListTile(
-              title: Text(
-                '설정',
-                style: TextStyle(fontFamily: 'GodoM'),
+              _buildDrawerItem(
+                icon: Icons.subscriptions,
+                title: '구독 및 결제',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SubscribePage()),
+                ),
               ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingPage()));
-              },
-            ),
-            ListTile(
-              title: Text(
-                '사용 가이드',
-                style: TextStyle(fontFamily: 'GodoM'),
+              _buildDrawerItem(
+                icon: Icons.settings,
+                title: '설정',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingPage()),
+                ),
               ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OnboardingMain()));
-              },
-            ),
-          ],
+              _buildDrawerItem(
+                icon: Icons.help_outline,
+                title: '사용 가이드',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OnboardingMain()),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: Container(
@@ -243,6 +247,25 @@ class HomePage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color.fromARGB(255, 242, 210, 114)),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'GodoM',
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 
