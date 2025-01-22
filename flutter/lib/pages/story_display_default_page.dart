@@ -191,7 +191,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                       MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   },
-                  icon: Image.asset('assets/images/homecs.png',
+                  icon: Image.asset('assets/images/home.png',
                       width: 60, height: 60),
                 ),
                 SizedBox(width: 16.0),
@@ -201,7 +201,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                       playNarration(partKey!);
                     }
                   },
-                  icon: Image.asset('assets/images/musiccs.png',
+                  icon: Image.asset('assets/images/play.png',
                       width: 60, height: 60),
                 ),
                 SizedBox(width: 16.0),
@@ -209,7 +209,7 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   onPressed: () {
                     audioPlayer.pause();
                   },
-                  icon: Image.asset('assets/images/musicpause.png',
+                  icon: Image.asset('assets/images/pause.png',
                       width: 60, height: 60),
                 ),
               ],
@@ -225,7 +225,11 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   curve: Curves.easeInOut,
                 );
               },
-              icon: Icon(Icons.arrow_back_ios, size: 60, color: Colors.blue),
+              icon: Image.asset(
+                'assets/images/backward.png',
+                width: 48,
+                height: 48,
+              ),
             ),
           ),
           Positioned(
@@ -238,7 +242,11 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
                   curve: Curves.easeInOut,
                 );
               },
-              icon: Icon(Icons.arrow_forward_ios, size: 60, color: Colors.blue),
+              icon: Image.asset(
+                'assets/images/forward.png',
+                width: 48,
+                height: 48,
+              ),
             ),
           ),
           if (_showTextContainer)
@@ -265,14 +273,19 @@ class _StoryDisplayDefaultPageState extends State<StoryDisplayDefaultPage> {
         ],
       ),
       floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
-          ? FloatingActionButton(
-              heroTag: 'btn1',
-              onPressed: () {
+                ? GestureDetector(
+              onTap: () {
                 setState(() {
                   _showTextContainer = !_showTextContainer;
                 });
               },
-              child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
+              child: Image.asset(
+                _showTextContainer
+                    ? 'assets/images/delete.png'
+                    : 'assets/images/chat.png',
+                width: 56,
+                height: 56,
+              ),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
