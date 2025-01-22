@@ -1,3 +1,5 @@
+import 'package:dreamingstory/pages/sharing.dart';
+import 'package:dreamingstory/pages/subscribe1.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
@@ -52,16 +54,20 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontFamily: 'GodoM'),
               ),
               onTap: () {
-                // 공유 기능 구현 필요
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SharingPage()),
+                );
               },
             ),
             ListTile(
               title: Text(
-                '구독 및 취소',
+                '구독 및 결제',
                 style: TextStyle(fontFamily: 'GodoM'),
               ),
               onTap: () {
-                // 구독 및 취소 기능 구현 필요
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SubscribePage()));
               },
             ),
             ListTile(
