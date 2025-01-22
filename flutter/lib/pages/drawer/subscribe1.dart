@@ -7,7 +7,7 @@ class SubscribePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('구독 및 결제'),
+        title: const Text('구독 및 결제', style: TextStyle(fontFamily: 'GodoB')),
         backgroundColor: const Color.fromARGB(255, 27, 65, 89),
         foregroundColor: const Color.fromARGB(255, 242, 210, 114),
       ),

@@ -6,6 +6,7 @@ import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/storyGenerate/story_keywords_select_page.dart';
 import 'package:dreamingstory/pages/story_display_default_page.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
+import 'package:dreamingstory/pages/friend_bookshelf.dart';
 import 'package:audioplayers/audioplayers.dart';
 //import 'package:text_scroll/text_scroll.dart';
 //import 'package:dreamingstory/pages/account/login.dart';
@@ -356,7 +357,13 @@ class _HomePageState extends State<HomePage> {
         unselectedLabelStyle:
             const TextStyle(fontFamily: 'GodoM', fontSize: 12),
         onTap: (index) {
-          // Implement navigation logic here
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FriendBookshelfPage()),
+            );
+          }
+          // 다른 인덱스에 대한 로직은 필요에 따라 추가
         },
       ),
     );
