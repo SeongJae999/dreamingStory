@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'component/firebase_options.dart';
-import 'pages/onboarding_main.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:dreamingstory/component/firebase_options.dart';
+import 'package:dreamingstory/pages/onboarding_main.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  WakelockPlus.enable();
   await dotenv.load();
   runApp(MyApp());
 }
