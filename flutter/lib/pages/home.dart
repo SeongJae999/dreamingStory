@@ -33,30 +33,11 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: const Color.fromARGB(255, 242, 210, 114)),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'GodoM',
-          color: Colors.white,
-          fontSize: 16,
-        ),
-      ),
-      onTap: onTap,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _playBackgroundMusic();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _playBackgroundMusic();
+    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -168,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => StoryGenerationPage()),
+                          builder: (context) => StorySelectionPage()),
                     );
                   },
                   child: ClipRRect(
@@ -190,39 +171,66 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: LayoutBuilder(
-        builder: (context, constraints) {
-          double height = constraints.maxHeight * 0.1; // 화면 높이의 10%
-          return Container(
-            height: height,
-            child: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.collections_bookmark),
-                  label: '나의 책장',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.diversity_3),
-                  label: '친구의 책장',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.brush),
-                  label: '캐릭터 꾸미기',
-                ),
-              ],
-              currentIndex: 0,
-              selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
-              unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
-              backgroundColor: const Color.fromARGB(255, 27, 65, 89),
-              selectedLabelStyle:
-                  const TextStyle(fontFamily: 'GodoM', fontSize: 16),
-              unselectedLabelStyle:
-                  const TextStyle(fontFamily: 'GodoM', fontSize: 14),
-              onTap: (index) {},
-            ),
-          );
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(0, -3),
+          ),
+        ],
+      ),
+      child: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.collections_bookmark),
+            label: '나의 책장',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.diversity_3),
+            label: '친구의 책장',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.brush),
+            label: '캐릭터 꾸미기',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
+        unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
+        backgroundColor: const Color.fromARGB(255, 27, 65, 89),
+        selectedLabelStyle: const TextStyle(fontFamily: 'GodoM', fontSize: 14),
+        unselectedLabelStyle:
+            const TextStyle(fontFamily: 'GodoM', fontSize: 12),
+        onTap: (index) {
+          // Implement navigation logic here
         },
       ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color.fromARGB(255, 242, 210, 114)),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'GodoM',
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 }
