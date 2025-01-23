@@ -216,8 +216,8 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
-    String storyContent =
-        widget.response != null ? widget.response.body : 'No content available';
+    // String storyContent =
+    //     widget.response != null ? widget.response.body : 'No content available';
     List<String> pageKeys = [
       'title',
       'first',

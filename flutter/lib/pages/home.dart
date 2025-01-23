@@ -5,7 +5,7 @@ import 'package:dreamingstory/pages/drawer/sharing.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
 import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
-import 'package:dreamingstory/pages/story/story_generate.dart';
+// import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,13 +19,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
 
-  void _playBackgroundMusic() async {
-    await _backgroundMusicPlayer
-        .setSource(AssetSource('audios/dreaming_story.wav'));
-    _backgroundMusicPlayer.setVolume(0.5);
-    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-    _backgroundMusicPlayer.resume();
-  }
+  // void _playBackgroundMusic() async {
+  //   await _backgroundMusicPlayer
+  //       .setSource(AssetSource('audios/dreaming_story.wav'));
+  //   _backgroundMusicPlayer.setVolume(0.5);
+  //   _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+  //   _backgroundMusicPlayer.resume();
+  // }
 
   @override
   void dispose() {

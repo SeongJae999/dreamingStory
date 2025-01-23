@@ -58,13 +58,23 @@ class FeedbackForm {
 
     showDialog(
       context: context,
+      barrierDismissible: false, // 화면 터치로 다이얼로그가 사라지지 않도록 설정
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text(
-                '동화가 마음에 드셨나요?',
-                style: TextStyle(fontFamily: 'GodoB', fontSize: 18),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '동화가 마음에 드셨나요?',
+                    style: TextStyle(fontFamily: 'GodoB', fontSize: 18),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
               ),
               content: SingleChildScrollView(
                 child: Column(
