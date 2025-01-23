@@ -19,13 +19,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
 
-  // void _playBackgroundMusic() async {
-  //   await _backgroundMusicPlayer
-  //       .setSource(AssetSource('audios/dreaming_story.wav'));
-  //   _backgroundMusicPlayer.setVolume(0.5);
-  //   _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-  //   _backgroundMusicPlayer.resume();
-  // }
+  void _playBackgroundMusic() async {
+    await _backgroundMusicPlayer
+        .setSource(AssetSource('audios/dreaming_story.wav'));
+    _backgroundMusicPlayer.setVolume(0.5);
+    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+    _backgroundMusicPlayer.resume();
+  }
 
   @override
   void dispose() {

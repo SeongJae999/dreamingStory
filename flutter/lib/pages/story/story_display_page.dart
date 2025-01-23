@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
+import 'package:lottie/lottie.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final http.Response response;
@@ -185,7 +186,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Lottie.asset('assets/images/Main Scene.json'))
           : Stack(
               children: [
                 Padding(
