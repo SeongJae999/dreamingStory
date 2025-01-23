@@ -8,7 +8,7 @@ import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
 
 class StoryDisplayPage extends StatefulWidget {
-  final String storyId;
+  final http.Response response;
   final bool freeStory;
 
   final String? topic;
@@ -19,7 +19,7 @@ class StoryDisplayPage extends StatefulWidget {
 
   const StoryDisplayPage({
     Key? key,
-    required this.storyId,
+    required this.response,
     required this.freeStory,
     this.topic,
     this.background,
@@ -81,28 +81,9 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   Future<void> _fetchStory() async {
-    final response;
     try {
-      if (widget.freeStory) {
-        response = await http.post(Uri.parse('$baseUrl/stories/free_story'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'story_id': widget.storyId}));
-      } else {
-        response = await http.post(Uri.parse('$baseUrl/stories/generate_story'),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ${widget.storyId}',
-            },
-            body: jsonEncode({
-              'topic': widget.topic,
-              'background': widget.background,
-              'character': widget.character,
-              'helper': widget.helper,
-              'atmosphere': widget.atmosphere,
-            }));
-      }
-      if (response.statusCode == 200) {
-        final data = jsonDecode(utf8.decode(response.bodyBytes));
+      if (widget.response.statusCode == 200) {
+        final data = jsonDecode(utf8.decode(widget.response.bodyBytes));
         setState(() {
           title = data['title'];
           first = data['story']['first'];
@@ -190,7 +171,8 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
-
+    String storyContent =
+        widget.response != null ? widget.response.body : 'No content available';
     List<String> pageKeys = [
       'title',
       'first',

@@ -178,6 +178,23 @@ async def free_story(request: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching story: {str(e)}")
 
+@router.get("/recent_stories")
+async def get_recent_stories():
+    stories_ref = db.collection('story')
+    docs = stories_ref.dorder_by('created_at', direction=firestore.Query.DESCENDING).limit(5).stream()
+    
+    stories = []
+    for doc in docs:
+        story = doc.to_dict()
+        story['storyId'] = doc.id
+        
+        if story['storyId'].startswith('freeStory'):
+            continue
+        
+        stories.append(story)
+    
+    return stories 
+
 @router.post("/submit-feedback")
 async def submit_feedback(feedback: Feedback, current_user: User = Depends(get_current_user)):
     feedback_dict = {

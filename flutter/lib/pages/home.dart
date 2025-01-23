@@ -54,7 +54,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //배경음악 재생
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _playBackgroundMusic();
     });
@@ -169,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => StoryCreationPage()),
+                          builder: (context) => StorySelectionPage()),
                     );
                   },
                   child: ClipRRect(
@@ -182,8 +181,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                //SizedBox(height: 32),
+                //RecentStory(),
                 SizedBox(height: 32),
-                StorySelection(),
+                StorySelectionPage(),
               ],
             ),
           ),

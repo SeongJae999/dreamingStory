@@ -8,10 +8,11 @@ from utils.database import init_firebase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
 
 import logging
 import uvicorn
-
+import os
 
 logging.basicConfig(
     level=logging.DEBUG, 
@@ -22,6 +23,9 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
+load_dotenv()
+ngrok_url = os.getenv('NGROK_URL')
 
 init_firebase()
 
@@ -36,6 +40,7 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "https://your-frontend-domain.com",
+    ngrok_url,
 ]
 
 app.add_middleware(
