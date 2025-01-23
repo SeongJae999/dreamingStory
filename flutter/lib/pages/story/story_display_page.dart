@@ -147,6 +147,24 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               ),
             )
           : null,
+      child: partKey == 'title'
+          ? Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  title ?? '제목이 없습니다.',
+                  style: TextStyle(
+                    fontFamily: 'GodoB',
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 
