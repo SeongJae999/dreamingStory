@@ -37,6 +37,7 @@ class _OnboardingMainState extends State<OnboardingMain> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _playBackgroundMusic();
   }
 
