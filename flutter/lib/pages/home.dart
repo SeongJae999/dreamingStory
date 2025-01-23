@@ -19,13 +19,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
 
-  void _playBackgroundMusic() async {
-    await _backgroundMusicPlayer
-        .setSource(AssetSource('audios/dreaming_story.wav'));
-    _backgroundMusicPlayer.setVolume(0.5);
-    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-    _backgroundMusicPlayer.resume();
-  }
+  // void _playBackgroundMusic() async {
+  //   await _backgroundMusicPlayer
+  //       .setSource(AssetSource('audios/dreaming_story.wav'));
+  //   _backgroundMusicPlayer.setVolume(0.5);
+  //   _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+  //   _backgroundMusicPlayer.resume();
+  // }
 
   @override
   void dispose() {
@@ -33,30 +33,11 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: const Color.fromARGB(255, 242, 210, 114)),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'GodoM',
-          color: Colors.white,
-          fontSize: 16,
-        ),
-      ),
-      onTap: onTap,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _playBackgroundMusic();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _playBackgroundMusic();
+    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -149,80 +130,152 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '나만의 동화 만들기',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'GodoB'),
-                ),
-                SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StorySelectionPage()),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/images/준비중.jpg', // 이미지 경로 수정 필요
-                      width: double.infinity,
-                      height: 360,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                //SizedBox(height: 32),
-                //RecentStory(),
-                SizedBox(height: 32),
-                StorySelectionPage(),
-              ],
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('나만의 동화 만들기'),
+                  SizedBox(height: 16),
+                  _buildStoryCreationCard(context),
+                  SizedBox(height: 32),
+                  _buildSectionTitle('인기 무료'),
+                  SizedBox(height: 16),
+                  StorySelectionPage(),
+                ],
+              ),
             ),
           ),
         ),
       ),
-      bottomNavigationBar: LayoutBuilder(
-        builder: (context, constraints) {
-          double height = constraints.maxHeight * 0.1; // 화면 높이의 10%
-          return Container(
-            height: height,
-            child: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.collections_bookmark),
-                  label: '나의 책장',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.diversity_3),
-                  label: '친구의 책장',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.brush),
-                  label: '캐릭터 꾸미기',
-                ),
-              ],
-              currentIndex: 0,
-              selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
-              unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
-              backgroundColor: const Color.fromARGB(255, 27, 65, 89),
-              selectedLabelStyle:
-                  const TextStyle(fontFamily: 'GodoM', fontSize: 16),
-              unselectedLabelStyle:
-                  const TextStyle(fontFamily: 'GodoM', fontSize: 14),
-              onTap: (index) {},
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'GodoB',
+        color: Colors.white,
+        shadows: [
+          Shadow(
+            blurRadius: 10.0,
+            color: Colors.black.withOpacity(0.3),
+            offset: Offset(2.0, 2.0),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoryCreationCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => StorySelectionPage()),
+        );
+      },
+      child: Container(
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: Offset(0, 3),
             ),
-          );
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                'assets/images/준비중.jpg',
+                fit: BoxFit.cover,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(0, -3),
+          ),
+        ],
+      ),
+      child: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.collections_bookmark),
+            label: '나의 책장',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.diversity_3),
+            label: '친구의 책장',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.brush),
+            label: '캐릭터 꾸미기',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
+        unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
+        backgroundColor: const Color.fromARGB(255, 27, 65, 89),
+        selectedLabelStyle: const TextStyle(fontFamily: 'GodoM', fontSize: 14),
+        unselectedLabelStyle:
+            const TextStyle(fontFamily: 'GodoM', fontSize: 12),
+        onTap: (index) {
+          // Implement navigation logic here
         },
       ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color.fromARGB(255, 242, 210, 114)),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'GodoM',
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 }

@@ -35,42 +35,55 @@ class _StorySelectionState extends State<StorySelectionPage> {
           ),
         );
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  Image.asset(
-                    story.imagePath,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Icon(
-                      Icons.bookmark,
-                      color: Color.fromARGB(255, 217, 123, 102),
-                    ),
-                  ),
-                ],
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                story.imagePath,
+                fit: BoxFit.cover,
               ),
-            ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                left: 10,
+                right: 10,
+                child: Text(
+                  story.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'GodoM',
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 8),
-          DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'GodoM',
-            ),
-            child: TextScroll(story.title),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -80,15 +93,6 @@ class _StorySelectionState extends State<StorySelectionPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '인기 무료 동화',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'GodoB',
-          ),
-        ),
-        SizedBox(height: 16),
         GridView.count(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
