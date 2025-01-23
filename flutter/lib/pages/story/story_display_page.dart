@@ -234,7 +234,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           : Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.zero,
                   child: PageView(
                     controller: _pageController,
                     onPageChanged: (int index) {
@@ -341,19 +341,19 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             ),
       floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
           ? GestureDetector(
-        onTap: () {
-          setState(() {
-            _showTextContainer = !_showTextContainer;
-          });
-        },
-        child: Image.asset(
-          _showTextContainer
-              ? 'assets/images/delete.png'
-              : 'assets/images/chat.png',
-          width: 56,
-          height: 56,
-        ),
-      )
+              onTap: () {
+                setState(() {
+                  _showTextContainer = !_showTextContainer;
+                });
+              },
+              child: Image.asset(
+                _showTextContainer
+                    ? 'assets/images/delete.png'
+                    : 'assets/images/chat.png',
+                width: 56,
+                height: 56,
+              ),
+            )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
