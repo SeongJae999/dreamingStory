@@ -38,6 +38,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   int currentPageIndex = 0;
   String? _currentText;
   String? partKey;
+  bool isPlaying = false;
 
   String? title;
   String? wisdom;
@@ -187,6 +188,31 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     }
   }
 
+  void toggleNarration() async {
+    if (partKey == null) return;
+
+    if (isPlaying) {
+      await audioPlayer.pause();
+      setState(() {
+        isPlaying = false;
+      });
+    } else {
+      if (audioUrls![partKey] != null) {
+        try {
+          Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrls![partKey]!);
+          await audioPlayer.play(UrlSource(fullUri.toString()));
+          setState(() {
+            isPlaying = true;
+          });
+        } catch (e) {
+          print("오디오 재생 오류: $e");
+        }
+      } else {
+        print("오디오 URL이 없습니다.");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
@@ -244,21 +270,14 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                       ),
                       SizedBox(width: 16.0),
                       IconButton(
-                        onPressed: () {
-                          if (partKey != null) {
-                            playNarration(partKey!);
-                          }
-                        },
-                        icon: Image.asset('assets/images/play.png',
-                            width: 60, height: 60),
-                      ),
-                      SizedBox(width: 16.0),
-                      IconButton(
-                        onPressed: () {
-                          audioPlayer.pause();
-                        },
-                        icon: Image.asset('assets/images/pause.png',
-                            width: 60, height: 60),
+                        onPressed: toggleNarration,
+                        icon: Image.asset(
+                          isPlaying
+                              ? 'assets/images/pause.png'
+                              : 'assets/images/play.png',
+                          width: 60,
+                          height: 60,
+                        ),
                       ),
                     ],
                   ),
