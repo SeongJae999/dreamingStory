@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => StorySelectionPage()),
+                          builder: (context) => StoryGenerationPage()),
                     );
                   },
                   child: ClipRRect(

@@ -184,117 +184,113 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (int index) {
-                      setState(() {
-                        currentPageIndex = index;
-                        _currentText = getTextForPage(pageKeys[index]);
-                      });
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (int index) {
+                setState(() {
+                  currentPageIndex = index;
+                  _currentText = getTextForPage(pageKeys[index]);
+                });
 
-                      partKey = pageKeys[index];
-                      if (index == 5) {
-                        FeedbackForm.showFeedbackForm(context);
-                      }
-                    },
-                    children: pageKeys.map((key) {
-                      return _buildPageContent(key);
-                    }).toList(),
-                  ),
+                partKey = pageKeys[index];
+                if (index == 5) {
+                  FeedbackForm.showFeedbackForm(context);
+                }
+              },
+              children: pageKeys.map((key) {
+                return _buildPageContent(key);
+              }).toList(),
+            ),
+          ),
+          Positioned(
+            top: 16.0,
+            left: 16.0,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  icon: Image.asset('assets/images/home.png',
+                      width: 60, height: 60),
                 ),
-                Positioned(
-                  top: 16.0,
-                  left: 16.0,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
-                        icon: Image.asset('assets/images/home.png',
-                            width: 60, height: 60),
-                      ),
-                      SizedBox(width: 16.0),
-                      IconButton(
-                        onPressed: () {
-                          if (partKey != null) {
-                            playNarration(partKey!);
-                          }
-                        },
-                        icon: Image.asset('assets/images/play.png',
-                            width: 60, height: 60),
-                      ),
-                      SizedBox(width: 16.0),
-                      IconButton(
-                        onPressed: () {
-                          audioPlayer.pause();
-                        },
-                        icon: Image.asset('assets/images/pause.png',
-                            width: 60, height: 60),
-                      ),
-                    ],
-                  ),
+                SizedBox(width: 16.0),
+                IconButton(
+                  onPressed: () {
+                    if (partKey != null) {
+                      playNarration(partKey!);
+                    }
+                  },
+                  icon: Image.asset('assets/images/play.png',
+                      width: 60, height: 60),
                 ),
-                Positioned(
-                  left: 16.0,
-                  top: MediaQuery.of(context).size.height / 2 - 32.0,
-                  child: IconButton(
-                    onPressed: () {
-                      _pageController.previousPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    icon: Icon(Icons.arrow_back_ios,
-                        size: 60, color: Colors.blue),
-                  ),
+                SizedBox(width: 16.0),
+                IconButton(
+                  onPressed: () {
+                    audioPlayer.pause();
+                  },
+                  icon: Image.asset('assets/images/pause.png',
+                      width: 60, height: 60),
                 ),
-                Positioned(
-                  right: 16.0,
-                  top: MediaQuery.of(context).size.height / 2 - 32.0,
-                  child: IconButton(
-                    onPressed: () {
-                      _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    icon: Icon(Icons.arrow_forward_ios,
-                        size: 60, color: Colors.blue),
-                  ),
-                ),
-                if (_showTextContainer)
-                  Positioned(
-                    bottom: 16.0,
-                    left: 16.0,
-                    right: 16.0,
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        (_currentText ?? '').replaceAll(r'\n', '\n'),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontFamily: 'GodoM',
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
+          ),
+          Positioned(
+            left: 16.0,
+            top: MediaQuery.of(context).size.height / 2 - 32.0,
+            child: IconButton(
+              onPressed: () {
+                _pageController.previousPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              icon: Icon(Icons.arrow_back_ios, size: 60, color: Colors.blue),
+            ),
+          ),
+          Positioned(
+            right: 16.0,
+            top: MediaQuery.of(context).size.height / 2 - 32.0,
+            child: IconButton(
+              onPressed: () {
+                _pageController.nextPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              icon: Icon(Icons.arrow_forward_ios, size: 60, color: Colors.blue),
+            ),
+          ),
+          if (_showTextContainer)
+            Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Text(
+                  (_currentText ?? '').replaceAll(r'\n', '\n'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    fontFamily: 'GodoM',
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
       floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
           ? FloatingActionButton(
               onPressed: () {

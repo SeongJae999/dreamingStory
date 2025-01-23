@@ -179,9 +179,12 @@ async def free_story(request: dict):
         raise HTTPException(status_code=500, detail=f"Error fetching story: {str(e)}")
 
 @router.get("/recent_stories")
-async def get_recent_stories():
+async def get_recent_stories(current_user: User = Depends(get_current_user)):
     stories_ref = db.collection('story')
-    docs = stories_ref.dorder_by('created_at', direction=firestore.Query.DESCENDING).limit(5).stream()
+    docs = stories_ref.where('user_id', '==', current_user) \
+    .order_by('created_at', direction=firestore.Query.DESCENDING) \
+    .limit(1) \
+    .stream()
     
     stories = []
     for doc in docs:
