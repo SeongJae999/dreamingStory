@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/pages/drawer/sharing.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
@@ -18,41 +18,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
-  late AppLifecycleListener _lifecycleListener;
+  // final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  // late AppLifecycleListener _lifecycleListener;
 
-  Future<void> _playBackgroundMusic() async {
-    try {
-      await _backgroundMusicPlayer.setSource(
-        AssetSource('audios/dreaming_story.wav'),
-      );
-      _backgroundMusicPlayer.setVolume(0.5);
-      _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-      await _backgroundMusicPlayer.resume();
-    } catch (e) {
-      print('오디오 재생 중 오류 발생: $e');
-    }
-  }
+  // Future<void> _playBackgroundMusic() async {
+  //   try {
+  //     await _backgroundMusicPlayer.setSource(
+  //       AssetSource('audios/dreaming_story.wav'),
+  //     );
+  //     _backgroundMusicPlayer.setVolume(0.5);
+  //     _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+  //     await _backgroundMusicPlayer.resume();
+  //   } catch (e) {
+  //     print('오디오 재생 중 오류 발생: $e');
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    _playBackgroundMusic();
+    // _playBackgroundMusic();
 
-    _lifecycleListener = AppLifecycleListener(
-      onPause: () {
-        _backgroundMusicPlayer.pause();
-      },
-      onResume: () {
-        _backgroundMusicPlayer.resume();
-      },
-    );
+    // _lifecycleListener = AppLifecycleListener(
+    //   onPause: () {
+    //     _backgroundMusicPlayer.pause();
+    //   },
+    //   onResume: () {
+    //     _backgroundMusicPlayer.resume();
+    //   },
+    //);
   }
 
   @override
   void dispose() {
-    _lifecycleListener.dispose();
-    _backgroundMusicPlayer.dispose();
+    //_lifecycleListener.dispose();
+    // _backgroundMusicPlayer.dispose();
     super.dispose();
   }
 
@@ -160,6 +160,7 @@ class _HomePageState extends State<HomePage> {
                   _buildSectionTitle('나만의 동화 만들기'),
                   SizedBox(height: 16),
                   StoryCreationCarousel(),
+                  //_buildStoryCreationCard(context),
                   SizedBox(height: 32),
                   _buildSectionTitle('인기 무료'),
                   SizedBox(height: 16),
@@ -254,6 +255,52 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// Widget _buildStoryCreationCard(BuildContext context) {
+//   return GestureDetector(
+//     onTap: () {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => StorySelectionPage()),
+//       );
+//     },
+//     child: Container(
+//       height: 200,
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(20),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.2),
+//             spreadRadius: 2,
+//             blurRadius: 10,
+//             offset: Offset(0, 3),
+//           ),
+//         ],
+//       ),
+//       child: ClipRRect(
+//         borderRadius: BorderRadius.circular(20),
+//         child: Stack(
+//           fit: StackFit.expand,
+//           children: [
+//             Image.asset(
+//               'assets/images/준비중.jpg',
+//               fit: BoxFit.cover,
+//             ),
+//             Container(
+//               decoration: BoxDecoration(
+//                 gradient: LinearGradient(
+//                   begin: Alignment.topCenter,
+//                   end: Alignment.bottomCenter,
+//                   colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
 class StoryCreationCarousel extends StatefulWidget {
   @override
   _StoryCreationCarouselState createState() => _StoryCreationCarouselState();
@@ -268,8 +315,8 @@ class _StoryCreationCarouselState extends State<StoryCreationCarousel> {
 
   final List<String> captions = [
     "이미지를 눌러 나만의 동화를 만들어보세요!", // 첫 번째 이미지에 대한 설명
-    "창의적인 이야기를 지금 시작해보세요!",        // 두 번째 이미지에 대한 설명
-    "동화를 통해 상상력을 펼쳐보세요!",            // 세 번째 이미지에 대한 설명
+    "창의적인 이야기를 지금 시작해보세요!", // 두 번째 이미지에 대한 설명
+    "동화를 통해 상상력을 펼쳐보세요!", // 세 번째 이미지에 대한 설명
   ];
 
   int _currentIndex = 0;
@@ -286,7 +333,8 @@ class _StoryCreationCarouselState extends State<StoryCreationCarousel> {
             enableInfiniteScroll: true,
             autoPlay: true,
             autoPlayInterval: Duration(seconds: 5), // 슬라이드 간격을 5초로 조정
-            autoPlayAnimationDuration: Duration(milliseconds: 800), // 부드러운 애니메이션
+            autoPlayAnimationDuration:
+                Duration(milliseconds: 800), // 부드러운 애니메이션
             onPageChanged: (index, reason) {
               setState(() {
                 _currentIndex = index;

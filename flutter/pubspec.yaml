@@ -83,10 +83,10 @@ flutter:
     - assets/audios/ 
     - assets/audios/dreaming_story.wav
     - assets/fonts/
-    - assets/freeStory/freeStory001
-    - assets/freeStory/freeStory002    
-    - assets/freeStory/freeStory003    
-    - assets/freeStory/freeStory004    
+    - assets/freeStory/freeStory001/images/
+    - assets/freeStory/freeStory002/images/
+    - assets/freeStory/freeStory003/images/    
+    - assets/freeStory/freeStory004/images/    
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
