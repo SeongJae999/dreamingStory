@@ -254,68 +254,85 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class StoryCreationCarousel extends StatelessWidget {
+class StoryCreationCarousel extends StatefulWidget {
+  @override
+  _StoryCreationCarouselState createState() => _StoryCreationCarouselState();
+}
+
+class _StoryCreationCarouselState extends State<StoryCreationCarousel> {
   final List<String> imagePaths = [
     'assets/images/main01.png',
     'assets/images/main02.png',
     'assets/images/main03.png',
   ];
 
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 200,
-        enlargeCenterPage: true,
-        enableInfiniteScroll: true,
-        autoPlay: true,
-        autoPlayInterval: Duration(seconds: 3),
-        aspectRatio: 16 / 9,
-      ),
-      items: imagePaths.map((imagePath) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => StorySelectionPage()),
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset(
-                    imagePath,
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-                      ),
-                    ),
+    return Column(
+      children: [
+        CarouselSlider(
+          options: CarouselOptions(
+            height: 250,
+            enlargeCenterPage: true,
+            viewportFraction: 0.9,
+            enableInfiniteScroll: true,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 3),
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+          items: imagePaths.map((imagePath) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
-            ),
-          ),
-        );
-      }).toList(),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: imagePaths.asMap().entries.map((entry) {
+            return GestureDetector(
+              onTap: () => setState(() {
+                _currentIndex = entry.key;
+              }),
+              child: Container(
+                width: 12.0,
+                height: 12.0,
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: (Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black)
+                      .withOpacity(_currentIndex == entry.key ? 0.9 : 0.4),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }
