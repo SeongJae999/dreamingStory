@@ -81,7 +81,7 @@ flutter:
   assets:
     - assets/images/
     - assets/audios/ 
-    - aasets/audios/dreaming_story.wav
+    - assets/audios/dreaming_story.wav
     - assets/fonts/
     - assets/무료 동화/반짝이의 이빨 모험/images/
     - assets/무료 동화/반짝이의 이빨 모험/audios/
