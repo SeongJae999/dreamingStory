@@ -1,11 +1,22 @@
-/*
+/*import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:text_scroll/text_scroll.dart';
 import 'package:dreamingstory/component/story.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
 
 class StorySelection extends StatelessWidget {
   const StorySelection({Key? key}) : super(key: key);
+
+  Future<http.Response> fetchStory(String storyId) async {
+    final response = await http.post(
+      Uri.parse('${dotenv.env['NGROK_URL']}/stories/recent_stories'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'story_id': storyId}),
+    );
+    return response;
+  }
 
   Widget _buildStoryCard(Story story, BuildContext context) {
     return GestureDetector(

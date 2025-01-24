@@ -230,7 +230,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: isLoading
-          ? Center(child: Lottie.asset('assets/images/Main Scene.json'))
+          ? Center(child: CircularProgressIndicator())
           : Stack(
               children: [
                 Padding(

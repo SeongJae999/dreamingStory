@@ -1,25 +1,44 @@
-/*
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/keyword.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
 
-
-class StoryCreationPage extends StatefulWidget {
-  const StoryCreationPage({Key? key}) : super(key: key);
+class StoryGenerationPage extends StatefulWidget {
+  const StoryGenerationPage({Key? key}) : super(key: key);
 
   @override
-  _StoryCreationPageState createState() => _StoryCreationPageState();
+  _StoryGenerationPageState createState() => _StoryGenerationPageState();
 }
 
-class _StoryCreationPageState extends State<StoryCreationPage> {
+class _StoryGenerationPageState extends State<StoryGenerationPage> {
   String? topic;
   String? background;
   String? character;
   String? helper;
   String? atmosphere;
   int currentStep = 0;
-  bool isLoading = false;
+  bool isLoading = true;
+
+  Future<http.Response> fetchStory(String idToken) async {
+    final response = await http.post(
+      Uri.parse('${dotenv.env['NGROK_URL']}/stories/generate_story'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken',
+      },
+      body: jsonEncode({
+        'topic': topic,
+        'background': background,
+        'characters': characters,
+        'helper': helper,
+        'atmosphere': atmosphere
+      }),
+    );
+    return response;
+  }
 
   void _handleSelection(String selection, List<String> items) {
     String? idToken = AuthService().idToken;
@@ -31,19 +50,27 @@ class _StoryCreationPageState extends State<StoryCreationPage> {
       if (items == helpers) helper = selection;
       if (items == atmospheres) {
         atmosphere = selection;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => StoryDisplayPage(
-                    storyId: idToken!,
-                    freeStory: false,
-                    topic: topic,
-                    background: background,
-                    character: character,
-                    helper: helper,
-                    atmosphere: atmosphere,
-                  )),
-        );
+
+        isLoading = true;
+        fetchStory(idToken!).then((response) {
+          setState(() {
+            isLoading = false;
+          });
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoryDisplayPage(
+                      response: response,
+                      freeStory: false,
+                      topic: topic,
+                      background: background,
+                      character: character,
+                      helper: helper,
+                      atmosphere: atmosphere,
+                    )),
+          );
+        });
       }
       currentStep++;
     });
@@ -127,14 +154,16 @@ class _StoryCreationPageState extends State<StoryCreationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children: _buildGridItems(),
-              ),
-            ),
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      children: _buildGridItems(),
+                    ),
+                  ),
             if (currentStep > 0)
               ElevatedButton(
                 onPressed: () {
@@ -150,4 +179,3 @@ class _StoryCreationPageState extends State<StoryCreationPage> {
     );
   }
 }
-*/
