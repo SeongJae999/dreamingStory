@@ -9,12 +9,12 @@ class Story {
 final List<Story> stories = [
   Story(
     title: '반짝이의 이빨 모험',
-    imagePath: 'assets/title/teeth_title.png'
+    imagePath: 'assets/title/teeth_title.png',
     storyId: 'freeStory001',
   ),
   Story(
     title: '해와 달이 된 오누이',
-    imagePath: 'assets/title/sun_title.png'
+    imagePath: 'assets/title/sun_title.png',
     storyId: 'freeStory002',
   ),
   Story(
