@@ -150,7 +150,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           : null,
       child: partKey == 'title'
           ? Align(
-              alignment: Alignment.bottomLeft,
+              alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
@@ -159,8 +159,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                     fontFamily: 'GodoB',
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    backgroundColor: Colors.white,
+                    foreground: Paint()
+                      ..style = PaintingStyle.fill
+                      ..color = Colors.white,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(0, 0),
+                        blurRadius: 10,
+                        color: Colors.black,
+                      ),
+                      Shadow(
+                        offset: Offset(0, 0),
+                        blurRadius: 10,
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                 ),
               ),
