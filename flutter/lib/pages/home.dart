@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _playBackgroundMusic();
+    //_playBackgroundMusic();
 
     _lifecycleListener = AppLifecycleListener(
       onPause: () {
@@ -162,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 32),
                   _buildSectionTitle('인기 무료'),
                   SizedBox(height: 16),
-                  StorySelectionPage(),
+                  StorySelectionPage()
                 ],
               ),
             ),
@@ -195,10 +195,13 @@ class _HomePageState extends State<HomePage> {
   Widget _buildStoryCreationCard(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
+        _backgroundMusicPlayer.pause();
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => StorySelectionPage()),
-        );
+        ).then((_) {
+          _backgroundMusicPlayer.resume();
+        });
       },
       child: Container(
         height: 200,
