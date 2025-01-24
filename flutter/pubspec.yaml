@@ -43,6 +43,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.3.1
   wakelock_plus: ^1.2.10
+  carousel_slider: ^5.0.0
  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

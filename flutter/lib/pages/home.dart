@@ -7,6 +7,7 @@ import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
 // import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatefulWidget {
   final userInfo? user;
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    //_playBackgroundMusic();
+    _playBackgroundMusic();
 
     _lifecycleListener = AppLifecycleListener(
       onPause: () {
@@ -158,11 +159,11 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _buildSectionTitle('나만의 동화 만들기'),
                   SizedBox(height: 16),
-                  _buildStoryCreationCard(context),
+                  StoryCreationCarousel(),
                   SizedBox(height: 32),
                   _buildSectionTitle('인기 무료'),
                   SizedBox(height: 16),
-                  StorySelectionPage()
+                  StorySelectionPage(),
                 ],
               ),
             ),
@@ -188,55 +189,6 @@ class _HomePageState extends State<HomePage> {
             offset: Offset(2.0, 2.0),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStoryCreationCard(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _backgroundMusicPlayer.pause();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => StorySelectionPage()),
-        ).then((_) {
-          _backgroundMusicPlayer.resume();
-        });
-      },
-      child: Container(
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 10,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset(
-                'assets/images/준비중.jpg',
-                fit: BoxFit.cover,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -298,6 +250,72 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       onTap: onTap,
+    );
+  }
+}
+
+class StoryCreationCarousel extends StatelessWidget {
+  final List<String> imagePaths = [
+    'assets/images/main01.png',
+    'assets/images/main02.png',
+    'assets/images/main03.png',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 200,
+        enlargeCenterPage: true,
+        enableInfiniteScroll: true,
+        autoPlay: true,
+        autoPlayInterval: Duration(seconds: 3),
+        aspectRatio: 16 / 9,
+      ),
+      items: imagePaths.map((imagePath) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => StorySelectionPage()),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
