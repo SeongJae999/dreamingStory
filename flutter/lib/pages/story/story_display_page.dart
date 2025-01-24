@@ -6,7 +6,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
-import 'package:lottie/lottie.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final http.Response response;
@@ -145,6 +144,12 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               image: DecorationImage(
                 image: NetworkImage(_getImagePath(partKey)!),
                 fit: BoxFit.cover,
+                colorFilter: partKey == 'title'
+                    ? ColorFilter.mode(
+                        Colors.black.withOpacity(0.5),
+                        BlendMode.darken,
+                      )
+                    : null,
               ),
             )
           : null,
