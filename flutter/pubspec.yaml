@@ -43,8 +43,9 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.3.1
   wakelock_plus: ^1.2.10
+  carousel_slider: ^5.0.0
   flutter_secure_storage: ^9.2.4
- 
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -83,12 +84,10 @@ flutter:
     - assets/audios/ 
     - assets/audios/dreaming_story.wav
     - assets/fonts/
-    - assets/무료 동화/반짝이의 이빨 모험/images/
-    - assets/무료 동화/반짝이의 이빨 모험/audios/
-    - assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/images/
-    - assets/무료 동화/구름 궁전의 웃음 공주와 기다림의 마법/audios/
-    - assets/무료 동화/흥부와 놀부/images/
-    - assets/무료 동화/흥부와 놀부/audios/
+    - assets/freeStory/freeStory001/images/
+    - assets/freeStory/freeStory002/images/
+    - assets/freeStory/freeStory003/images/    
+    - assets/freeStory/freeStory004/images/    
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:

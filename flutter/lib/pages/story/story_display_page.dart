@@ -125,15 +125,13 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   String? _getImagePath(String partKey) {
-    if (partKey == 'title')
-      partKey = 'first';
-    else if (partKey == 'wisdom') partKey = 'forth';
-
     Map<String, String> imagePaths = {
+      'title': imageUrls!['title']!,
       'first': imageUrls!['first']!,
       'second': imageUrls!['second']!,
       'third': imageUrls!['third']!,
       'forth': imageUrls!['forth']!,
+      'feedback': imageUrls!['feedback']!,
     };
 
     Uri fullUri = Uri.parse(baseUrl!).resolve(imagePaths[partKey]!);
@@ -147,12 +145,18 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               image: DecorationImage(
                 image: NetworkImage(_getImagePath(partKey)!),
                 fit: BoxFit.cover,
+                colorFilter: partKey == 'title'
+                    ? ColorFilter.mode(
+                        Colors.black.withOpacity(0.5),
+                        BlendMode.darken,
+                      )
+                    : null,
               ),
             )
           : null,
       child: partKey == 'title'
           ? Align(
-              alignment: Alignment.bottomLeft,
+              alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
@@ -161,8 +165,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                     fontFamily: 'GodoB',
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    backgroundColor: Colors.white,
+                    foreground: Paint()
+                      ..style = PaintingStyle.fill
+                      ..color = Colors.white,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(0, 0),
+                        blurRadius: 10,
+                        color: Colors.black,
+                      ),
+                      Shadow(
+                        offset: Offset(0, 0),
+                        blurRadius: 10,
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                 ),
               ),

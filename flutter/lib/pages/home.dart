@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/auth_service.dart';
 import 'package:dreamingstory/pages/drawer/sharing.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
 import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding.dart';
-// import 'package:dreamingstory/pages/story/story_generate.dart';
+import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -21,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  //final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
   final AuthService _authService = AuthService();
   late AppLifecycleListener _lifecycleListener;
   bool _isLoading = false;
@@ -68,18 +67,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _playBackgroundMusic() async {
-    try {
-      await _backgroundMusicPlayer.setSource(
-        AssetSource('audios/dreaming_story.wav'),
-      );
-      _backgroundMusicPlayer.setVolume(0.5);
-      _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-      await _backgroundMusicPlayer.resume();
-    } catch (e) {
-      print('오디오 재생 중 오류 발생: $e');
-    }
-  }
+  // Future<void> _playBackgroundMusic() async {
+  //   try {
+  //     await _backgroundMusicPlayer.setSource(
+  //       AssetSource('audios/dreaming_story.wav'),
+  //     );
+  //     _backgroundMusicPlayer.setVolume(0.5);
+  //     _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+  //     await _backgroundMusicPlayer.resume();
+  //   } catch (e) {
+  //     print('오디오 재생 중 오류 발생: $e');
+  //   }
+  // }
 
   @override
   void initState() {
@@ -91,8 +90,9 @@ class _HomePageState extends State<HomePage> {
         print("사용자가 로그인 상태입니다: ${user.email}");
       }
     });
-    _playBackgroundMusic();
-
+    _fetchProtectedData();
+    //_playBackgroundMusic();
+    /*
     _lifecycleListener = AppLifecycleListener(
       onPause: () {
         _backgroundMusicPlayer.pause();
@@ -101,14 +101,13 @@ class _HomePageState extends State<HomePage> {
         _backgroundMusicPlayer.resume();
       },
     );
-
-    _fetchProtectedData();
+    */
   }
 
   @override
   void dispose() {
-    _lifecycleListener.dispose();
-    _backgroundMusicPlayer.dispose();
+    //_lifecycleListener.dispose();
+    // _backgroundMusicPlayer.dispose();
     super.dispose();
   }
 
@@ -215,6 +214,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _buildSectionTitle('나만의 동화 만들기'),
                   SizedBox(height: 16),
+                  // StoryCreationCarousel(),
                   _buildStoryCreationCard(context),
                   SizedBox(height: 32),
                   _buildSectionTitle('인기 무료'),
