@@ -216,8 +216,8 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   @override
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
-    String storyContent =
-        widget.response != null ? widget.response.body : 'No content available';
+    // String storyContent =
+    //     widget.response != null ? widget.response.body : 'No content available';
     List<String> pageKeys = [
       'title',
       'first',
@@ -234,7 +234,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           : Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.zero,
                   child: PageView(
                     controller: _pageController,
                     onPageChanged: (int index) {
@@ -292,8 +292,11 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                         curve: Curves.easeInOut,
                       );
                     },
-                    icon: Icon(Icons.arrow_back_ios,
-                        size: 60, color: Colors.blue),
+                    icon: Image.asset(
+                      'assets/images/backward.png',
+                      width: 48,
+                      height: 48,
+                    ),
                   ),
                 ),
                 Positioned(
@@ -306,8 +309,11 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                         curve: Curves.easeInOut,
                       );
                     },
-                    icon: Icon(Icons.arrow_forward_ios,
-                        size: 60, color: Colors.blue),
+                    icon: Image.asset(
+                      'assets/images/forward.png',
+                      width: 48,
+                      height: 48,
+                    ),
                   ),
                 ),
                 if (_showTextContainer)
@@ -334,15 +340,22 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               ],
             ),
       floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
-          ? FloatingActionButton(
-              onPressed: () {
+          ? GestureDetector(
+              onTap: () {
                 setState(() {
                   _showTextContainer = !_showTextContainer;
                 });
               },
-              child: Icon(_showTextContainer ? Icons.close : Icons.text_fields),
+              child: Image.asset(
+                _showTextContainer
+                    ? 'assets/images/delete.png'
+                    : 'assets/images/chat.png',
+                width: 56,
+                height: 56,
+              ),
             )
           : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

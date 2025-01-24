@@ -5,7 +5,7 @@ import 'package:dreamingstory/pages/drawer/sharing.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
 import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding_main.dart';
-import 'package:dreamingstory/pages/story/story_generate.dart';
+// import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,26 +18,45 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  late AppLifecycleListener _lifecycleListener;
 
-  void _playBackgroundMusic() async {
-    await _backgroundMusicPlayer
-        .setSource(AssetSource('audios/dreaming_story.wav'));
-    _backgroundMusicPlayer.setVolume(0.5);
-    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-    _backgroundMusicPlayer.resume();
+  Future<void> _playBackgroundMusic() async {
+    try {
+      await _backgroundMusicPlayer.setSource(
+        AssetSource('audios/dreaming_story.wav'),
+      );
+      _backgroundMusicPlayer.setVolume(0.5);
+      _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+      await _backgroundMusicPlayer.resume();
+    } catch (e) {
+      print('오디오 재생 중 오류 발생: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _playBackgroundMusic();
+
+    _lifecycleListener = AppLifecycleListener(
+      onPause: () {
+        _backgroundMusicPlayer.pause();
+      },
+      onResume: () {
+        _backgroundMusicPlayer.resume();
+      },
+    );
   }
 
   @override
   void dispose() {
+    _lifecycleListener.dispose();
     _backgroundMusicPlayer.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _playBackgroundMusic();
-    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -176,7 +195,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildStoryCreationCard(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => StorySelectionPage()),
         );
