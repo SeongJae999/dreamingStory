@@ -13,5 +13,8 @@ class Settings:
     GOOGLE_APPLICATION_CREDENTIALS: str = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+    NGROK_URL: str = os.getenv("NGROK_URL")
+    JWT_SECERT_KEY: str = os.getenv("JWT_SECRET_KEY")
+    FIREBASE_API_KEY: str = os.getenv("FIREBASE_API_KEY")
     
 settings = Settings()

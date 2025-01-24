@@ -8,24 +8,13 @@ from utils.database import init_firebase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from dotenv import load_dotenv
 
 import logging
 import uvicorn
 import os
 
-logging.basicConfig(
-    level=logging.DEBUG, 
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
-)
-
-logger = logging.getLogger(__name__)
-
-load_dotenv()
-ngrok_url = os.getenv('NGROK_URL')
+logger = logging.getLogger("myapp")
+logger.setLevel(logging.DEBUG)
 
 init_firebase()
 
@@ -36,11 +25,10 @@ app = FastAPI(
 )
 
 origins = [
-    "http://10.0.2.2:8000"
+    "http://10.0.2.2:8000",
     "http://localhost",
     "http://localhost:3000",
-    "https://your-frontend-domain.com",
-    ngrok_url,
+    os.getenv('NGROK_URL'),
 ]
 
 app.add_middleware(
@@ -62,6 +50,4 @@ def read_root():
 app.mount("/output", StaticFiles(directory="output"), name="output")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info", access_log=True)
-    logger.info("This is an info log.")
-    logger.error("This is an error log.")
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="debug", access_log=True)

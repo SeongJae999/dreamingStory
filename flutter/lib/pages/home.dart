@@ -1,12 +1,16 @@
+import 'dart:convert';
+import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/component/user.dart';
+import 'package:dreamingstory/component/auth_service.dart';
 import 'package:dreamingstory/pages/drawer/sharing.dart';
 import 'package:dreamingstory/pages/drawer/setting.dart';
 import 'package:dreamingstory/pages/drawer/subscribe1.dart';
-import 'package:dreamingstory/pages/onboarding_main.dart';
+import 'package:dreamingstory/pages/onboarding.dart';
 // import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   final userInfo? user;
@@ -18,7 +22,51 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  final AuthService _authService = AuthService();
   late AppLifecycleListener _lifecycleListener;
+  bool _isLoading = false;
+  String? _error;
+  String? _protectedData;
+
+  Future<void> _fetchProtectedData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      String? token = await _authService.getFirebaseIdToken();
+      if (token == null) {
+        throw Exception('로그인이 필요합니다.');
+      }
+
+      final response =
+          await _authService.getRequest('/auth/protected', headers: {
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _protectedData = data['message'];
+        });
+      } else {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _protectedData = data['detail'] ?? '데이터를 불러오지 못했습니다.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _protectedData = '오류가 발생했습니다: $e';
+      });
+      print('데이터 가져오기 오류: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   Future<void> _playBackgroundMusic() async {
     try {
@@ -36,6 +84,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print("사용자가 로그아웃 상태입니다.");
+      } else {
+        print("사용자가 로그인 상태입니다: ${user.email}");
+      }
+    });
     _playBackgroundMusic();
 
     _lifecycleListener = AppLifecycleListener(
@@ -46,6 +101,8 @@ class _HomePageState extends State<HomePage> {
         _backgroundMusicPlayer.resume();
       },
     );
+
+    _fetchProtectedData();
   }
 
   @override
@@ -131,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                 title: '사용 가이드',
                 onTap: () => Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => OnboardingMain()),
+                  MaterialPageRoute(builder: (context) => Onboarding()),
                 ),
               ),
             ],
@@ -163,6 +220,25 @@ class _HomePageState extends State<HomePage> {
                   _buildSectionTitle('인기 무료'),
                   SizedBox(height: 16),
                   StorySelectionPage(),
+                  SizedBox(height: 32),
+                  if (_isLoading)
+                    Center(child: CircularProgressIndicator())
+                  else if (_protectedData != null)
+                    Text(
+                      _protectedData!,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )
+                  else
+                    Text(
+                      '데이터를 불러오는 중입니다.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -197,7 +273,7 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => StorySelectionPage()),
+          MaterialPageRoute(builder: (context) => StoryGenerationPage()),
         );
       },
       child: Container(

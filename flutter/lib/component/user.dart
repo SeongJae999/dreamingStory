@@ -10,12 +10,11 @@ class userInfo {
       email: json['email'],
     );
   }
-}
 
-class AuthService {
-  static final AuthService _instance = AuthService._internal();
-  factory AuthService() => _instance;
-  AuthService._internal();
-
-  String? idToken;
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'email': email,
+    };
+  }
 }

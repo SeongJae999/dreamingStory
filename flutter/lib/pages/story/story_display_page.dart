@@ -6,7 +6,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
-import 'package:lottie/lottie.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final http.Response response;
@@ -46,7 +45,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   String? second;
   String? third;
   String? forth;
-  bool isLoading = false;
+  bool isLoading = true;
   Map<String, String>? audioUrls;
   Map<String, String>? imageUrls;
 
@@ -105,6 +104,9 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         isLoading = false;
       });
       print('오류가 발생했습니다: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('동화를 불러오는 중 오류가 발생했습니다.')),
+      );
     }
   }
 

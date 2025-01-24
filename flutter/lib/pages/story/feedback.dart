@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:dreamingstory/component/user.dart';
+import 'package:dreamingstory/component/auth_service.dart';
 
 class FeedbackForm {
   static Future<void> submitFeedback(
       double rating, String? selectedError, BuildContext context) async {
     final baseUrl = dotenv.env['NGROK_URL'];
     final String apiUrl = '$baseUrl/stories/submit-feedback';
-
+    final AuthService _authService = AuthService();
     final Map<String, dynamic> feedbackData = {
       'rating': rating,
       'error': selectedError,
     };
 
-    String? idToken = AuthService().idToken;
+    String? idToken = await _authService.getFirebaseIdToken();
 
     try {
       final response = await http.post(

@@ -33,7 +33,6 @@ class _RegisterPageState extends State<RegisterPage> {
           body: jsonEncode({
             'email': _emailController.text.trim(),
             'password': _passwordController.text.trim(),
-            'phone_number': _phoneController.text.trim(),
           }));
 
       if (response.statusCode == 200) {
@@ -84,13 +83,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 validator: (value) => value != null && value.contains('@')
                     ? null
                     : '유효한 이메일을 입력하세요',
-              ),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(labelText: '전화번호'),
-                validator: (value) => value != null && value.length >= 10
-                    ? null
-                    : '유효한 전화번호를 입력하세요',
               ),
               TextFormField(
                 controller: _passwordController,

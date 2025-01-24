@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:dreamingstory/component/firebase_options.dart';
-import 'package:dreamingstory/pages/onboarding_main.dart';
+import 'package:dreamingstory/pages/onboarding.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +24,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: OnboardingMain());
+        home: Onboarding());
   }
 }

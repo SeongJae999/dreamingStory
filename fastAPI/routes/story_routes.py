@@ -2,7 +2,7 @@
 from utils.story import generate_response
 from utils.tts import synthesize_speech_to_file
 from utils.auth import get_current_user
-#from utils.image import generate_image
+from utils.image import generate_image
 from utils.database import get_db
 from utils.config import settings
 from models.user import User
@@ -25,8 +25,6 @@ router = APIRouter(
 )
 
 db = get_db()
-        
-openai.api_key = ""
 
 class ChatRequest(BaseModel):
     topic: str
@@ -83,18 +81,18 @@ async def generate_story(request: ChatRequest, current_user: User = Depends(get_
         wisdom=parts[5]
         
         only_title = title.split("\n")[1]
-        base_dir = Path("output")
+        base_dir = Path("/output")
         save_dir = base_dir / current_user.uid / only_title
         
         user_image_dir = save_dir / "images"
         user_image_dir.mkdir(parents=True, exist_ok=True)
         
         image_urls = {}
-        story_parts = {"first": first}
+        story_parts = {"title": title, "first": first, "second": second, "third": third, "forth": forth, "wisdom":wisdom}
         for key, part in story_parts.items():
-           # prompt = await generate_image_prompt(part)
-           # file_name = generate_image(output_filename=user_image_dir, prompt=prompt)
-            image_urls[key] = f"output/{current_user.uid}/{only_title}/images/wow.png"
+            prompt = await generate_image_prompt(part)
+            file_name = generate_image(output_filename=user_image_dir, prompt=prompt)
+            image_urls[key] = f"/output/{current_user.uid}/{only_title}/images/{file_name}.png"
         
         user_audio_dir = save_dir / "audios"
         user_audio_dir.mkdir(parents=True, exist_ok=True)
@@ -117,7 +115,7 @@ async def generate_story(request: ChatRequest, current_user: User = Depends(get_
             synthesize_speech_to_file(text, output_filename=str(output_filepath))
             logger.info(f"{key} 부분 TTS 변환 완료: {filename}로 저장됨")
 
-            audio_urls[key] = f"output/{current_user.uid}/{only_title}/audios/{filename}"
+            audio_urls[key] = f"/output/{current_user.uid}/{only_title}/audios/{filename}"
         
         logger.info(f"TTS 변환 완료")
 

@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:dreamingstory/component/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/keyword.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
 
@@ -19,8 +19,9 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   String? character;
   String? helper;
   String? atmosphere;
+  bool? isLoading;
   int currentStep = 0;
-  bool isLoading = true;
+  final AuthService _authService = AuthService();
 
   Future<http.Response> fetchStory(String idToken) async {
     final response = await http.post(
@@ -40,40 +41,61 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
     return response;
   }
 
-  void _handleSelection(String selection, List<String> items) {
-    String? idToken = AuthService().idToken;
+  void _handleSelection(String selection, List<String> items) async {
+    try {
+      String? idToken = await _authService.getFirebaseIdToken();
 
-    setState(() {
-      if (items == topics) topic = selection;
-      if (items == backgrounds) background = selection;
-      if (items == characters) character = selection;
-      if (items == helpers) helper = selection;
-      if (items == atmospheres) {
-        atmosphere = selection;
-
-        isLoading = true;
-        fetchStory(idToken!).then((response) {
-          setState(() {
-            isLoading = false;
-          });
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => StoryDisplayPage(
-                      response: response,
-                      freeStory: false,
-                      topic: topic,
-                      background: background,
-                      character: character,
-                      helper: helper,
-                      atmosphere: atmosphere,
-                    )),
+      if (idToken == null) {
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('인증 토큰이 없습니다. 다시 로그인해주세요.')),
           );
         });
+        return;
       }
-      currentStep++;
-    });
+
+      setState(() {
+        if (items == topics) topic = selection;
+        if (items == backgrounds) background = selection;
+        if (items == characters) character = selection;
+        if (items == helpers) helper = selection;
+        if (items == atmospheres) {
+          atmosphere = selection;
+
+          fetchStory(idToken).then((response) {
+            setState(() {
+              isLoading = false;
+            });
+            if (response.statusCode == 200) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StoryDisplayPage(
+                    response: response,
+                    freeStory: false,
+                    topic: topic,
+                    background: background,
+                    character: character,
+                    helper: helper,
+                    atmosphere: atmosphere,
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('스토리 생성 실패: ${response.body}')),
+              );
+            }
+          });
+        }
+        currentStep++;
+      });
+    } catch (e) {
+      print('스토리 생성 중 오류 발생: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('스토리 생성 중 오류가 발생했습니다.')),
+      );
+    }
   }
 
   Widget _buildCard(String title, List<String> items) {
@@ -154,16 +176,14 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            isLoading
-                ? Center(child: CircularProgressIndicator())
-                : Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      children: _buildGridItems(),
-                    ),
-                  ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children: _buildGridItems(),
+              ),
+            ),
             if (currentStep > 0)
               ElevatedButton(
                 onPressed: () {

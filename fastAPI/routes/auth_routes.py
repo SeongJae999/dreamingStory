@@ -1,116 +1,124 @@
 # fastAPI/routes/auth_routes.py
 from utils.auth import get_current_user
+from utils.config import settings
 from utils.database import get_db
-from models.user import User
 
-from firebase_admin import auth as firebase_auth, firestore
+from firebase_admin import auth as firebase_auth
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 
-import phonenumbers
 import datetime
-import shutil
-import jwt
-import os
+import requests
+import secrets
 
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"]
 )
 
-class RegistrationData(BaseModel):
-    email: str
-    password: str
-    phone_number: str
-    
+FIREBASE_API_KEY = settings.FIREBASE_API_KEY
+JWT_SECRET_KEY = secrets.token_urlsafe(32)
+ALGORITHM = 'HS256'
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 class LoginRequest(BaseModel):
     email: str
     password: str
 
-def to_e164(phone: str, default_region: str = "KR") -> str:
-    try:
-        parsed_number = phonenumbers.parse(phone, default_region)
-        if not phonenumbers.is_possible_number(parsed_number) or not phonenumbers.is_valid_number(parsed_number):
-            raise ValueError(f"Invalid phone number: {phone}")
-        return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
-    except Exception as e:
-        raise ValueError(f"전화번호 변환 실패: {phone}, 에러: {str(e)}")
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+
+class GoogleLoginRequest(BaseModel):
+    id_token: str
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+db = get_db()
 
 @router.post("/register")
-async def register_user(data: RegistrationData):
-    user_record = None
-    user_doc_ref = None
-    user_audio_dir = None
-    
+async def register(request: RegisterRequest):
     try:
-        e164_phone = to_e164(data.phone_number, default_region="KR")
-        user_record = firebase_auth.create_user(
-            email = data.email,
-            password = data.password,
-            phone_number = e164_phone
-        )
-        user_id = user_record.uid
+        firebase_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}"
+        payload = {
+            "email": request.email,
+            "password": request.password,
+            "returnSecureToken": True
+        }
+        response = requests.post(firebase_url, json=payload)
+        data = response.json()
         
-        db = get_db()
+        if response.status_code != 200:
+            error_message = data.get('error', {}).get('message', 'Registration failed')
+            raise HTTPException(status_code=400, detail=error_message)
         
-        user_doc_ref = db.collection('users').document(user_id)
-        user_doc_ref.set({
-            'email': data.email,
-            'phone_number': data.phone_number,
-            'created_at': firestore.SERVER_TIMESTAMP,
-            'is_active': True
-        })
+        uid = data['localId']
+        email = data['email']
         
-        base_dir = "output"
-        user_audio_dir = os.path.join(base_dir, user_id, "audios")
-        os.makedirs(user_audio_dir, exist_ok=True)
+        user_data = {
+            "uid": uid,
+            "email": email,
+            "created_at": datetime.datetime.utcnow()
+        }
         
-        return User(
-            uid = user_record.uid,
-            email = user_record.email
-        )
+        db.collection("users").document(uid).set(user_data)
+        
+        return {"message": "Registration successful"}
+    
     except Exception as e:
-        if user_id and user_doc_ref is not None:
-            try:
-                user_doc_ref.delete()
-            except Exception as firestore_del_error:
-                print(f"Firestore 문서 삭제 실패: {firestore_del_error}")
+        raise HTTPException(status_code=400, detail=f"Registration failed: {str(e)}")
 
-        if user_record is not None:
-            try:
-                firebase_auth.delete_user(user_record.uid)
-            except Exception as auth_del_error:
-                print(f"Firebase 사용자 삭제 실패: {auth_del_error}")
-
-        if user_audio_dir and os.path.exists(user_audio_dir):
-            try:
-                shutil.rmtree(os.path.join("output", user_id))
-            except Exception as dir_del_error:
-                print(f"디렉토리 삭제 실패: {dir_del_error}")
-        raise HTTPException(status_code=400, detail=str(e))
-
-# 추후 해결 문제
 @router.post("/login")
 async def login(request: LoginRequest):
     try:
-        user = firebase_auth.get_user_by_email(request.email)
-
-        if not user:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+        firebase_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
 
         payload = {
-            "sub": user.uid,
-            "email": user.email,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+            "email": request.email,
+            "password": request.password,
+            "returnSecureToken": True
         }
         
-        token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+        response = requests.post(firebase_url, json=payload)
+        data = response.json()
         
-        return {"access_token": token, "token_type": "bearer"}
-
-    except firebase_admin.auth.AuthError as e:
-        raise HTTPException(status_code=400, detail="Authentication failed")
+        if response.status_code != 200:
+            error_message = data.get('error', {}).get('message', 'Authentication failed')
+            raise HTTPException(status_code=401, detail=error_message)
     
-@router.get("/current-user", response_model=User)
-def get_user(user: User = Depends(get_current_user)):
-    return user
+        id_token = data["idToken"]
+        
+        return {"id_token": id_token}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Login failed: {str(e)}")
+    
+@router.post("/google_login")
+async def google_login(request: GoogleLoginRequest):
+    try:
+        decoded_token = firebase_auth.verify_id_token(request.id_token)
+        uid = decoded_token['uid']
+        email = decoded_token.get('email', '')
+
+        return {"message": f"Google login successful for {email}"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Google login failed: {str(e)}")
+
+@router.post("/anonymous_login")
+async def anonymous_login():
+    try:
+        user_record = firebase_auth.create_user(
+            email=None,
+            email_verified=False,
+            disabled=False
+        )
+
+        return {"message": f"Anonymous user created with UID: {user_record.uid}"}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Anonymous login failed: {str(e)}")
+    
+@router.get("/protected")
+async def protected_route(user: dict = Depends(get_current_user)):
+    return {"message": f"Hello, {user.email}!"}

@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class OnboardingMain extends StatefulWidget {
+class Onboarding extends StatefulWidget {
   @override
-  _OnboardingMainState createState() => _OnboardingMainState();
+  _OnboardingState createState() => _OnboardingState();
 }
 
-class _OnboardingMainState extends State<OnboardingMain> {
+class _OnboardingState extends State<Onboarding> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
