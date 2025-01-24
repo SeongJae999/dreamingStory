@@ -130,44 +130,89 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '나만의 동화 만들기',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'GodoB'),
-                ),
-                SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StorySelectionPage()),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/images/준비중.jpg', // 이미지 경로 수정 필요
-                      width: double.infinity,
-                      height: 360,
-                      fit: BoxFit.cover,
-                    ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('나만의 동화 만들기'),
+                  SizedBox(height: 16),
+                  _buildStoryCreationCard(context),
+                  SizedBox(height: 32),
+                  _buildSectionTitle('인기 무료'),
+                  SizedBox(height: 16),
+                  StorySelectionPage(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'GodoB',
+        color: Colors.white,
+        shadows: [
+          Shadow(
+            blurRadius: 10.0,
+            color: Colors.black.withOpacity(0.3),
+            offset: Offset(2.0, 2.0),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoryCreationCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => StorySelectionPage()),
+        );
+      },
+      child: Container(
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                'assets/images/준비중.jpg',
+                fit: BoxFit.cover,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
                   ),
                 ),
-                //SizedBox(height: 32),
-                //RecentStory(),
-                SizedBox(height: 32),
-                StorySelectionPage(),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
