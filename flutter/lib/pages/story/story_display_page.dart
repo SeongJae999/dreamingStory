@@ -131,11 +131,16 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       'second': imageUrls!['second']!,
       'third': imageUrls!['third']!,
       'forth': imageUrls!['forth']!,
-      'feedback': imageUrls!['feedback']!,
+      'wisdom': imageUrls!['feedback']!,
     };
 
-    Uri fullUri = Uri.parse(baseUrl!).resolve(imagePaths[partKey]!);
-    return fullUri.toString();
+    String? imageUrl = imagePaths[partKey];
+    if (imageUrl == null) {
+      print('$partKey에 해당하는 이미지 URL이 없습니다.');
+      return null;
+    }
+
+    return Uri.parse(baseUrl!).resolve(imageUrl).toString();
   }
 
   Widget _buildPageContent(String partKey) {
