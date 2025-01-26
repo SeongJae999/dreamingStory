@@ -19,23 +19,20 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   String? character;
   String? helper;
   String? atmosphere;
+  String? taskId;
   bool? isLoading;
   int currentStep = 0;
   final AuthService _authService = AuthService();
 
-  Future<http.Response> fetchStory(String idToken) async {
+  Future<http.Response> startStoryGeneration(String idToken) async {
     final response = await http.post(
-      Uri.parse('${dotenv.env['NGROK_URL']}/stories/generate_story'),
+      Uri.parse('${dotenv.env['NGROK_URL']}/generate_stories/start_generation'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $idToken',
       },
       body: jsonEncode({
         'topic': topic,
-        'background': background,
-        'characters': characters,
-        'helper': helper,
-        'atmosphere': atmosphere
       }),
     );
     return response;
@@ -61,18 +58,23 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
         if (items == helpers) helper = selection;
         if (items == atmospheres) {
           atmosphere = selection;
-
-          fetchStory(idToken).then((response) {
+          startStoryGeneration(idToken).then((response) {
             setState(() {
               isLoading = false;
             });
             if (response.statusCode == 200) {
+              final data = jsonDecode(response.body);
+              setState(() {
+                taskId = data['task_id'];
+              });
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => StoryDisplayPage(
                     response: response,
                     freeStory: false,
+                    idToken: idToken,
+                    taskId: taskId,
                     topic: topic,
                     background: background,
                     character: character,

@@ -11,6 +11,8 @@ class StoryDisplayPage extends StatefulWidget {
   final http.Response response;
   final bool freeStory;
 
+  final String? idToken;
+  final String? taskId;
   final String? topic;
   final String? background;
   final String? character;
@@ -21,6 +23,8 @@ class StoryDisplayPage extends StatefulWidget {
     Key? key,
     required this.response,
     required this.freeStory,
+    this.idToken,
+    this.taskId,
     this.topic,
     this.background,
     this.character,
@@ -35,21 +39,33 @@ class StoryDisplayPage extends StatefulWidget {
 class _StoryDisplayPageState extends State<StoryDisplayPage> {
   bool _showTextContainer = false;
   int currentPageIndex = 0;
-  String? _currentText;
+  String? currentText;
+  String? currentImageUrl;
+  String? currentAudioUrl;
   String? partKey;
+  String? taskId;
+  String statusMessage = "";
+  int currentPartIndex = 0;
   bool isPlaying = false;
-
-  String? title;
-  String? wisdom;
-  String? first;
-  String? second;
-  String? third;
-  String? forth;
   bool isLoading = true;
-  Map<String, String>? audioUrls;
-  Map<String, String>? imageUrls;
+  bool _hasStartedGeneration = false;
 
-  List<String> pageAudioKeys = [
+  Map<String, String?> storyParts = {
+    "title": null,
+    "first": null,
+    "second": null,
+    "third": null,
+    "forth": null,
+    "wisdom": null,
+  };
+
+  Map<String, String?> audioUrls = {};
+  Map<String, String?> imageUrls = {};
+
+  final AudioPlayer audioPlayer = AudioPlayer();
+  final baseUrl = dotenv.env['NGROK_URL'];
+
+  final List<String> pageKeys = [
     "title",
     "first",
     "second",
@@ -58,22 +74,24 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     "wisdom"
   ];
 
-  final AudioPlayer audioPlayer = AudioPlayer();
-  final baseUrl = dotenv.env['NGROK_URL'];
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    if (!widget.freeStory) isLoading = true;
+    _pageController = PageController(initialPage: currentPageIndex);
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    _fetchStory();
+
+    widget.freeStory ? _loadFreeStory() : _initStepwiseGeneration();
   }
 
   @override
   void dispose() {
+    _pageController.dispose();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -81,74 +99,237 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     super.dispose();
   }
 
-  Future<void> _fetchStory() async {
+  Future<void> _loadFreeStory() async {
     try {
-      if (widget.response.statusCode == 200) {
-        final data = jsonDecode(utf8.decode(widget.response.bodyBytes));
-        setState(() {
-          title = data['title'];
-          first = data['story']['first'];
-          second = data['story']['second'];
-          third = data['story']['third'];
-          forth = data['story']['forth'];
-          wisdom = data['wisdom'];
-          audioUrls = Map<String, String>.from(data['audio_urls'] ?? {});
-          imageUrls = Map<String, String>.from(data['image_urls'] ?? {});
-          isLoading = false;
-        });
-      } else {
-        throw Exception('동화를 불러오는데 실패했습니다');
-      }
-    } catch (e) {
+      final data = jsonDecode(utf8.decode(widget.response.bodyBytes));
       setState(() {
+        storyParts = Map<String, String>.from(data['story'] ?? {})
+          ..addAll({
+            "title": data['title'] ?? "제목 없음",
+            "wisdom": data['wisdom'] ?? "교훈이 없습니다.",
+          });
+        ;
+        imageUrls = Map<String, String>.from(data['image_urls'] ?? {});
+        audioUrls = Map<String, String>.from(data['audio_urls'] ?? {});
         isLoading = false;
       });
-      print('오류가 발생했습니다: $e');
+    } catch (e) {
+      print('무료 동화 로드 오류: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('동화를 불러오는 중 오류가 발생했습니다.')),
+        SnackBar(content: Text('무료 동화를 불러오는 중 오류가 발생했습니다.')),
       );
     }
   }
 
-  void playNarration(String partKey) async {
-    if (audioUrls![partKey] != null) {
-      try {
-        Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrls![partKey]!);
-        await audioPlayer.play(UrlSource(fullUri.toString()));
-        print("오디오 재생 성공.");
-      } catch (e) {
-        print("오디오 재생 오류: $e");
-      }
-    } else {
-      print("오디오 URL이 없습니다.");
+  Future<void> _initStepwiseGeneration() async {
+    if (_hasStartedGeneration) {
+      print(">>> start_generation 이미 호출됨. 스킵.");
+      return;
     }
+    _hasStartedGeneration = true;
+
+    setState(() {
+      isLoading = true;
+      statusMessage = "start_generation 호출 중...";
+    });
+
+    print(">>> Calling start_generation");
+
+    final startResponse = await http.post(
+      Uri.parse('$baseUrl/generate_stories/start_generation'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${widget.idToken}'
+      },
+      body: jsonEncode({"topic": widget.topic ?? "내 동화 주제"}),
+    );
+
+    if (startResponse.statusCode == 200) {
+      final data = jsonDecode(startResponse.body);
+      taskId = data["task_id"];
+      statusMessage = "Task created: $taskId";
+
+      print(">>> Task created: $taskId");
+      await _generateAndFetchPart("title");
+    } else {
+      statusMessage = "start_generation 실패: ${startResponse.body}";
+      print(">>> start_generation 실패: ${startResponse.body}");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _generatePart(String part) async {
+    if (taskId == null) {
+      setState(() {
+        statusMessage = "taskId가 없습니다. start_generation 먼저 호출하세요.";
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      statusMessage = "$part 파트 생성 요청 중...";
+    });
+
+    print(">>> Generating part: $part");
+
+    final response = await http.post(
+      Uri.parse('${baseUrl}/generate_stories/generate_part/$taskId/$part'),
+      headers: {
+        'Authorization': 'Bearer ${widget.idToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      statusMessage = "$part 파트 백그라운드 생성 시작";
+      print(">>> $part 파트 백그라운드 생성 시작");
+    } else {
+      statusMessage = "$part 파트 생성 실패: ${response.body}";
+      print(">>> $part 파트 생성 실패: ${response.body}");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _fetchPart(String part) async {
+    if (taskId == null) {
+      setState(() {
+        statusMessage = "taskId가 없습니다. start_generation 먼저 호출하세요.";
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      statusMessage = "$part 파트를 불러오는 중...";
+    });
+
+    print(">>> Fetching part: $part");
+
+    final response = await http.get(
+      Uri.parse('${baseUrl}/generate_stories/fetch_part/$taskId/$part'),
+      headers: {
+        'Authorization': 'Bearer ${widget.idToken}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final content = data["content"];
+      // content: { "text": "...", "image_url": "...", "audio_url": "..." }
+
+      setState(() {
+        storyParts[part] = content["text"];
+        imageUrls[part] = content["image_url"];
+        audioUrls[part] = content["audio_url"];
+        statusMessage = "$part 파트 로드 성공!";
+      });
+
+      print(">>> $part 파트 로드 성공");
+    } else {
+      setState(() {
+        statusMessage = "$part 파트 로드 실패: ${response.body}";
+      });
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _generateAndFetchPart(String part) async {
+    await _generatePart(part);
+
+    bool partGenerated = false;
+    int retryCount = 0;
+    int maxRetries = 10;
+
+    while (!partGenerated && retryCount < maxRetries) {
+      await Future.delayed(Duration(seconds: 1));
+      final statusResponse = await http.get(
+        Uri.parse('$baseUrl/generate_stories/check_status/$taskId'),
+        headers: {
+          'Authorization': 'Bearer ${widget.idToken}',
+        },
+      );
+
+      if (statusResponse.statusCode == 200) {
+        final statusData = jsonDecode(statusResponse.body);
+        if (statusData['parts'][part] != null) {
+          partGenerated = true;
+          break;
+        }
+      } else {
+        print(">>> check_status 실패: ${statusResponse.body}");
+      }
+
+      retryCount++;
+    }
+    if (partGenerated) {
+      await _fetchPart(part);
+    } else {
+      setState(() {
+        statusMessage = "$part 파트 생성 실패 또는 시간이 초과되었습니다.";
+      });
+      print(">>> $part 파트 생성 실패 또는 시간이 초과되었습니다.");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void _onPageChanged(int index) async {
+    setState(() {
+      currentPageIndex = index;
+    });
+
+    if (index == pageKeys.length - 1) {
+      FeedbackForm.showFeedbackForm(context);
+      return;
+    }
+
+    if (widget.freeStory) return;
+
+    final partKey = pageKeys[index];
+    if (storyParts[partKey] != null) {
+      print(">>> Part '$partKey' already exists. Skipping generation.");
+      return;
+    }
+    await _generateAndFetchPart(partKey);
+  }
+
+  String getTextForPage(String pageKey) {
+    return storyParts[pageKey] ?? "내용을 불러오는 중입니다.";
   }
 
   String? _getImagePath(String partKey) {
-    Map<String, String> imagePaths = {
-      'title': imageUrls!['title']!,
-      'first': imageUrls!['first']!,
-      'second': imageUrls!['second']!,
-      'third': imageUrls!['third']!,
-      'forth': imageUrls!['forth']!,
-      'wisdom': imageUrls!['feedback']!,
-    };
-
-    String? imageUrl = imagePaths[partKey];
-    if (imageUrl == null) {
-      print('$partKey에 해당하는 이미지 URL이 없습니다.');
-      return null;
+    final url = imageUrls[partKey];
+    if (url != null && url.isNotEmpty) {
+      if (url.startsWith("http")) {
+        return url;
+      } else {
+        return Uri.parse(baseUrl!).resolve(url).toString();
+      }
     }
-
-    return Uri.parse(baseUrl!).resolve(imageUrl).toString();
+    return null;
   }
 
   Widget _buildPageContent(String partKey) {
+    final path = _getImagePath(partKey);
+
     return Container(
-      decoration: _getImagePath(partKey) != null
-          ? BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(_getImagePath(partKey)!),
+      decoration: BoxDecoration(
+        image: path != null
+            ? DecorationImage(
+                image: path.startsWith("http")
+                    ? NetworkImage(path)
+                    : AssetImage(path) as ImageProvider,
                 fit: BoxFit.cover,
                 colorFilter: partKey == 'title'
                     ? ColorFilter.mode(
@@ -156,16 +337,16 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                         BlendMode.darken,
                       )
                     : null,
-              ),
-            )
-          : null,
+              )
+            : null,
+      ),
       child: partKey == 'title'
           ? Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                  title ?? '제목이 없습니다.',
+                  getTextForPage(partKey),
                   style: TextStyle(
                     fontFamily: 'GodoB',
                     fontSize: 32,
@@ -189,31 +370,12 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                 ),
               ),
             )
-          : null,
+          : Center(),
     );
   }
 
-  String getTextForPage(String pageKey) {
-    switch (pageKey) {
-      case 'title':
-        return title ?? '제목이 없습니다.';
-      case 'first':
-        return first ?? '첫 번째 부분이 없습니다.';
-      case 'second':
-        return second ?? '두 번째 부분이 없습니다.';
-      case 'third':
-        return third ?? '세 번째 부분이 없습니다.';
-      case 'forth':
-        return forth ?? '네 번째 부분이 없습니다.';
-      case 'wisdom':
-        return wisdom ?? '교훈이 없습니다.';
-      default:
-        return '알 수 없는 페이지';
-    }
-  }
-
-  void toggleNarration() async {
-    if (partKey == null) return;
+  void toggleNarration(String partKey) async {
+    if (partKey.isEmpty) return;
 
     if (isPlaying) {
       await audioPlayer.pause();
@@ -221,9 +383,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         isPlaying = false;
       });
     } else {
-      if (audioUrls![partKey] != null) {
+      final audioUrl = audioUrls[partKey];
+      if (audioUrl != null) {
         try {
-          Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrls![partKey]!);
+          Uri fullUri = Uri.parse(baseUrl!).resolve(audioUrl);
           await audioPlayer.play(UrlSource(fullUri.toString()));
           setState(() {
             isPlaying = true;
@@ -239,130 +402,108 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
   @override
   Widget build(BuildContext context) {
-    final PageController _pageController = PageController();
-    // String storyContent =
-    //     widget.response != null ? widget.response.body : 'No content available';
-    List<String> pageKeys = [
-      'title',
-      'first',
-      'second',
-      'third',
-      'forth',
-      'wisdom'
-    ];
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Stack(
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
+            children: pageKeys.map((key) {
+              return _buildPageContent(key);
+            }).toList(),
+          ),
+          Positioned(
+            top: 16.0,
+            left: 16.0,
+            child: Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (int index) {
-                      setState(() {
-                        currentPageIndex = index;
-                        _currentText = getTextForPage(pageKeys[index]);
-                      });
-
-                      partKey = pageKeys[index];
-                      if (index == 5) {
-                        FeedbackForm.showFeedbackForm(context);
-                      }
-                    },
-                    children: pageKeys.map((key) {
-                      return _buildPageContent(key);
-                    }).toList(),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  icon: Image.asset('assets/images/home.png',
+                      width: 60, height: 60),
+                ),
+                SizedBox(width: 16.0),
+                IconButton(
+                  onPressed: () {
+                    toggleNarration(pageKeys[currentPageIndex]);
+                  },
+                  icon: Image.asset(
+                    isPlaying
+                        ? 'assets/images/pause.png'
+                        : 'assets/images/play.png',
+                    width: 60,
+                    height: 60,
                   ),
                 ),
-                Positioned(
-                  top: 16.0,
-                  left: 16.0,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
-                        },
-                        icon: Image.asset('assets/images/home.png',
-                            width: 60, height: 60),
-                      ),
-                      SizedBox(width: 16.0),
-                      IconButton(
-                        onPressed: toggleNarration,
-                        icon: Image.asset(
-                          isPlaying
-                              ? 'assets/images/pause.png'
-                              : 'assets/images/play.png',
-                          width: 60,
-                          height: 60,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 16.0,
-                  top: MediaQuery.of(context).size.height / 2 - 32.0,
-                  child: IconButton(
-                    onPressed: () {
-                      _pageController.previousPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/images/backward.png',
-                      width: 48,
-                      height: 48,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 16.0,
-                  top: MediaQuery.of(context).size.height / 2 - 32.0,
-                  child: IconButton(
-                    onPressed: () {
-                      _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/images/forward.png',
-                      width: 48,
-                      height: 48,
-                    ),
-                  ),
-                ),
-                if (_showTextContainer)
-                  Positioned(
-                    bottom: 16.0,
-                    left: 16.0,
-                    right: 16.0,
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        (_currentText ?? '').replaceAll(r'\n', '\n'),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontFamily: 'GodoM',
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
+          ),
+          Positioned(
+            left: 16.0,
+            top: MediaQuery.of(context).size.height / 2 - 32.0,
+            child: IconButton(
+              onPressed: () {
+                if (_pageController.hasClients) {
+                  _pageController.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              },
+              icon: Image.asset(
+                'assets/images/backward.png',
+                width: 48,
+                height: 48,
+              ),
+            ),
+          ),
+          Positioned(
+            right: 16.0,
+            top: MediaQuery.of(context).size.height / 2 - 32.0,
+            child: IconButton(
+              onPressed: () {
+                if (_pageController.hasClients) {
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              },
+              icon: Image.asset(
+                'assets/images/forward.png',
+                width: 48,
+                height: 48,
+              ),
+            ),
+          ),
+          if (isLoading) Center(child: CircularProgressIndicator()),
+          if (_showTextContainer)
+            Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  getTextForPage(pageKeys[currentPageIndex])
+                      .replaceAll(r'\n', '\n'),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16, fontFamily: 'GodoM'),
+                ),
+              ),
+            ),
+        ],
+      ),
       floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
           ? GestureDetector(
               onTap: () {
