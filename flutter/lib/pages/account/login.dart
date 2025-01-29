@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dreamingstory/pages/account/register.dart';
+import 'package:dreamingstory/pages/account/forgot_password.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/auth_service.dart';
@@ -87,9 +88,12 @@ class _LoginPageState extends State<LoginPage> {
           await googleUser.authentication;
       final String idToken = googleAuth.idToken!;
 
-      final response = await _authService.postRequest('/auth/google_login', {
-        'id_token': idToken,
-      });
+      final response = await _authService.postRequest(
+          '/auth/google_login',
+          {
+            'id_token': idToken,
+          },
+          requiresAuth: false);
 
       user = await _authService.handleLoginResponse(response);
 
@@ -211,7 +215,17 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 },
                 child: const Text('계정이 없으신가요? 등록하기'),
-              )
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ForgotPasswordPage()),
+                  );
+                },
+                child: const Text('비밀번호를 잊으셨나요?'),
+              ),
             ],
           ),
         ),

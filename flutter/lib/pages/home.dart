@@ -22,7 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   //final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
   final AuthService _authService = AuthService();
-  late AppLifecycleListener _lifecycleListener;
+  //late AppLifecycleListener _lifecycleListener;
   bool _isLoading = false;
   String? _error;
   String? _protectedData;

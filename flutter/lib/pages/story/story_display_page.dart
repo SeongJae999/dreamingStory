@@ -102,6 +102,8 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   Future<void> _loadFreeStory() async {
     try {
       final data = jsonDecode(utf8.decode(widget.response.bodyBytes));
+
+      if (!mounted) return;
       setState(() {
         storyParts = Map<String, String>.from(data['story'] ?? {})
           ..addAll({
@@ -135,27 +137,32 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
     print(">>> Calling start_generation");
 
-    final startResponse = await http.post(
-      Uri.parse('$baseUrl/generate_stories/start_generation'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${widget.idToken}'
-      },
-      body: jsonEncode({"topic": widget.topic ?? "내 동화 주제"}),
-    );
+    try {
+      final startResponse = await http.post(
+        Uri.parse('$baseUrl/generate_stories/start_generation'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${widget.idToken}'
+        },
+        body: jsonEncode({"topic": widget.topic ?? "내 동화 주제"}),
+      );
 
-    if (startResponse.statusCode == 200) {
-      final data = jsonDecode(startResponse.body);
-      taskId = data["task_id"];
-      statusMessage = "Task created: $taskId";
+      if (startResponse.statusCode == 200) {
+        final data = jsonDecode(startResponse.body);
+        taskId = data["task_id"];
+        statusMessage = "Task created: $taskId";
 
-      print(">>> Task created: $taskId");
-      await _generateAndFetchPart("title");
-    } else {
-      statusMessage = "start_generation 실패: ${startResponse.body}";
-      print(">>> start_generation 실패: ${startResponse.body}");
+        print(">>> Task created: $taskId");
+        await _generateAndFetchPart("title");
+      } else {
+        statusMessage = "start_generation 실패: ${startResponse.body}";
+        print(">>> start_generation 실패: ${startResponse.body}");
+      }
+    } catch (e) {
+      print(">>> start_generation 예외 발생: $e");
     }
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -176,21 +183,26 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
     print(">>> Generating part: $part");
 
-    final response = await http.post(
-      Uri.parse('${baseUrl}/generate_stories/generate_part/$taskId/$part'),
-      headers: {
-        'Authorization': 'Bearer ${widget.idToken}',
-      },
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('${baseUrl}/generate_stories/generate_part/$taskId/$part'),
+        headers: {
+          'Authorization': 'Bearer ${widget.idToken}',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      statusMessage = "$part 파트 백그라운드 생성 시작";
-      print(">>> $part 파트 백그라운드 생성 시작");
-    } else {
-      statusMessage = "$part 파트 생성 실패: ${response.body}";
-      print(">>> $part 파트 생성 실패: ${response.body}");
+      if (response.statusCode == 200) {
+        statusMessage = "$part 파트 백그라운드 생성 시작";
+        print(">>> $part 파트 백그라운드 생성 시작");
+      } else {
+        statusMessage = "$part 파트 생성 실패: ${response.body}";
+        print(">>> $part 파트 생성 실패: ${response.body}");
+      }
+    } catch (e) {
+      print(">>> generatePart($part) 예외 발생: $e");
     }
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -198,45 +210,54 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
   Future<void> _fetchPart(String part) async {
     if (taskId == null) {
+      if (!mounted) return;
       setState(() {
         statusMessage = "taskId가 없습니다. start_generation 먼저 호출하세요.";
       });
       return;
     }
 
+    if (!mounted) return;
     setState(() {
       isLoading = true;
       statusMessage = "$part 파트를 불러오는 중...";
     });
 
     print(">>> Fetching part: $part");
+    try {
+      final response = await http.get(
+        Uri.parse('${baseUrl}/generate_stories/fetch_part/$taskId/$part'),
+        headers: {
+          'Authorization': 'Bearer ${widget.idToken}',
+        },
+      );
 
-    final response = await http.get(
-      Uri.parse('${baseUrl}/generate_stories/fetch_part/$taskId/$part'),
-      headers: {
-        'Authorization': 'Bearer ${widget.idToken}',
-      },
-    );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
+        final content = data["content"];
+        print("Full response data: $data");
+        print("data['content'] is: ${data['content']}");
+        // content: { "text": "...", "image_url": "...", "audio_url": "..." }
+        print("Fetched text for part '$part': ${content["text"]}");
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final content = data["content"];
-      // content: { "text": "...", "image_url": "...", "audio_url": "..." }
+        setState(() {
+          storyParts[part] = content["text"];
+          imageUrls[part] = content["image_url"];
+          audioUrls[part] = content["audio_url"];
+          statusMessage = "$part 파트 로드 성공!";
+        });
 
-      setState(() {
-        storyParts[part] = content["text"];
-        imageUrls[part] = content["image_url"];
-        audioUrls[part] = content["audio_url"];
-        statusMessage = "$part 파트 로드 성공!";
-      });
-
-      print(">>> $part 파트 로드 성공");
-    } else {
-      setState(() {
-        statusMessage = "$part 파트 로드 실패: ${response.body}";
-      });
+        print(">>> $part 파트 로드 성공");
+      } else {
+        if (!mounted) return;
+        setState(() {
+          statusMessage = "$part 파트 로드 실패: ${response.body}";
+        });
+      }
+    } catch (e) {
+      print(">>> fetchPart($part) 예외 발생: $e");
     }
-
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -273,18 +294,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     if (partGenerated) {
       await _fetchPart(part);
     } else {
+      if (!mounted) return;
       setState(() {
         statusMessage = "$part 파트 생성 실패 또는 시간이 초과되었습니다.";
       });
       print(">>> $part 파트 생성 실패 또는 시간이 초과되었습니다.");
     }
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
   }
 
   void _onPageChanged(int index) async {
+    if (!mounted) return;
     setState(() {
       currentPageIndex = index;
     });
@@ -305,6 +329,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   }
 
   String getTextForPage(String pageKey) {
+    print("getTextForPage($pageKey) => ${storyParts[pageKey]}");
     return storyParts[pageKey] ?? "내용을 불러오는 중입니다.";
   }
 
@@ -379,6 +404,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
     if (isPlaying) {
       await audioPlayer.pause();
+      if (!mounted) return;
       setState(() {
         isPlaying = false;
       });
@@ -507,6 +533,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       floatingActionButton: currentPageIndex != 0 && currentPageIndex != 5
           ? GestureDetector(
               onTap: () {
+                if (!mounted) return;
                 setState(() {
                   _showTextContainer = !_showTextContainer;
                 });

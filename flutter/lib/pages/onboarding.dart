@@ -1,8 +1,11 @@
-import 'package:dreamingstory/pages/account/login.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dreamingstory/pages/account/login.dart';
+import 'package:dreamingstory/pages/home.dart';
+import 'package:dreamingstory/component/user.dart';
+import 'package:dreamingstory/component/auth_service.dart';
 
 class Onboarding extends StatefulWidget {
   @override
@@ -13,6 +16,7 @@ class _OnboardingState extends State<Onboarding> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  final AuthService _authService = AuthService();
 
   void _onPageChanged(int page) {
     setState(() {
@@ -20,14 +24,22 @@ class _OnboardingState extends State<Onboarding> {
     });
   }
 
-  Future<void> _completeOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_onboarded', true);
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => LoginPage()),
-    );
+  void _completeOnboarding(BuildContext context) async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              HomePage(user: userInfo(uid: user.uid, email: user.email ?? '')),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    }
   }
 
   @override
@@ -103,7 +115,7 @@ class _OnboardingState extends State<Onboarding> {
                       );
                     }
                   : () {
-                      _completeOnboarding();
+                      _completeOnboarding(context);
                     },
               child: Text(_currentPage < 5 ? '다음' : '시작하기',
                   style: TextStyle(
