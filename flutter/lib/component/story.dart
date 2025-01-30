@@ -28,3 +28,31 @@ final List<Story> stories = [
     storyId: 'freeStory004',
   ),
 ];
+
+class RecentStory {
+  final String storyId;
+  final String title;
+  final String imageUrl;
+  final String audioUrl;
+  final DateTime createdAt;
+
+  RecentStory({
+    required this.storyId,
+    required this.title,
+    required this.imageUrl,
+    required this.audioUrl,
+    required this.createdAt,
+  });
+
+  factory RecentStory.fromJson(Map<String, dynamic> json) {
+    return RecentStory(
+      storyId: json['storyId'] ?? '',
+      title: json['title'] ?? '',
+      imageUrl: json['image_url'] ?? '',
+      audioUrl: json['audio_url'] ?? '',
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+    );
+  }
+}

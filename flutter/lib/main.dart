@@ -24,15 +24,6 @@ class MyApp extends StatelessWidget {
 
   MyApp({Key? key}) : super(key: key);
 
-  Future<Widget> _getInitialScreen() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      return HomePage(user: userInfo(uid: user.uid, email: user.email ?? ''));
-    } else {
-      return Onboarding();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

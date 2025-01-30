@@ -59,6 +59,15 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     "wisdom": null,
   };
 
+  Map<String, bool> isGenerating = {
+    "title": false,
+    "first": false,
+    "second": false,
+    "third": false,
+    "forth": false,
+    "wisdom": false,
+  };
+
   Map<String, String?> audioUrls = {};
   Map<String, String?> imageUrls = {};
 
@@ -263,48 +272,78 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     });
   }
 
-  Future<void> _generateAndFetchPart(String part) async {
-    await _generatePart(part);
+  void _triggerNextPartGeneration(String currentPart) async {
+    int currentIndex = pageKeys.indexOf(currentPart);
 
-    bool partGenerated = false;
-    int retryCount = 0;
-    int maxRetries = 10;
+    int nextIndex = currentIndex + 1;
 
-    while (!partGenerated && retryCount < maxRetries) {
-      await Future.delayed(Duration(seconds: 1));
-      final statusResponse = await http.get(
-        Uri.parse('$baseUrl/generate_stories/check_status/$taskId'),
-        headers: {
-          'Authorization': 'Bearer ${widget.idToken}',
-        },
-      );
+    if (nextIndex < pageKeys.length) {
+      String nextPart = pageKeys[nextIndex];
 
-      if (statusResponse.statusCode == 200) {
-        final statusData = jsonDecode(statusResponse.body);
-        if (statusData['parts'][part] != null) {
-          partGenerated = true;
-          break;
-        }
-      } else {
-        print(">>> check_status 실패: ${statusResponse.body}");
+      if (storyParts[nextPart] == null) {
+        print(">>> Triggering generation for next part '$nextPart'");
+        await _generateAndFetchPart(nextPart);
       }
-
-      retryCount++;
     }
-    if (partGenerated) {
-      await _fetchPart(part);
-    } else {
-      if (!mounted) return;
-      setState(() {
-        statusMessage = "$part 파트 생성 실패 또는 시간이 초과되었습니다.";
-      });
-      print(">>> $part 파트 생성 실패 또는 시간이 초과되었습니다.");
+  }
+
+  Future<void> _generateAndFetchPart(String part) async {
+    if (isGenerating[part] == true) {
+      print(">>> Part '$part' is already being generated. Skipping.");
+      return;
     }
 
-    if (!mounted) return;
-    setState(() {
-      isLoading = false;
-    });
+    isGenerating[part] = true;
+    print(">>> Starting generation for part '$part'");
+
+    try {
+      await _generatePart(part);
+
+      bool isDone = false;
+      int retryCount = 0;
+      int maxRetries = 20;
+
+      while (!isDone && retryCount < maxRetries) {
+        await Future.delayed(Duration(seconds: 10));
+        final statusResponse = await http.get(
+          Uri.parse('$baseUrl/generate_stories/check_status/$taskId'),
+          headers: {
+            'Authorization': 'Bearer ${widget.idToken}',
+          },
+        );
+
+        if (statusResponse.statusCode == 200) {
+          final statusData = jsonDecode(statusResponse.body);
+          final partData = statusData['parts'][part];
+          if (partData != null) {
+            final imgUrl = partData['image_url'];
+            final audioUrl = partData['audio_url'];
+
+            if (imgUrl != null &&
+                imgUrl.isNotEmpty &&
+                audioUrl != null &&
+                audioUrl.isNotEmpty) {
+              isDone = true;
+              print(">>> Part '$part' is ready.");
+            }
+          }
+        }
+        retryCount++;
+        print(">>> Polling attempt $retryCount for part '$part'");
+      }
+      if (isDone) {
+        await _fetchPart(part);
+
+        _triggerNextPartGeneration(part);
+      } else {
+        setState(() {
+          statusMessage = "$part 파트가 생성되지 않거나 시간이 초과되었습니다.";
+        });
+        print(">>> $part 파트 생성이 실패했거나 시간이 초과되었습니다.");
+      }
+    } finally {
+      isGenerating[part] = false;
+    }
   }
 
   void _onPageChanged(int index) async {
@@ -318,11 +357,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       return;
     }
 
-    if (widget.freeStory) return;
-
     final partKey = pageKeys[index];
     if (storyParts[partKey] != null) {
       print(">>> Part '$partKey' already exists. Skipping generation.");
+      _triggerNextPartGeneration(partKey);
       return;
     }
     await _generateAndFetchPart(partKey);

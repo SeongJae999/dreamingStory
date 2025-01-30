@@ -9,6 +9,7 @@ import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding.dart';
 import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
+import 'package:dreamingstory/pages/slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
@@ -214,8 +215,11 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _buildSectionTitle('나만의 동화 만들기'),
                   SizedBox(height: 16),
-                  // StoryCreationCarousel(),
                   _buildStoryCreationCard(context),
+                  SizedBox(height: 32),
+                  _buildSectionTitle('최근 동화'),
+                  SizedBox(height: 16),
+                  StoryCreationCarouselPage(),
                   SizedBox(height: 32),
                   _buildSectionTitle('인기 무료'),
                   SizedBox(height: 16),
