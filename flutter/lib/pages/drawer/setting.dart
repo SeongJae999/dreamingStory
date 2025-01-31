@@ -28,7 +28,7 @@ class SettingPage extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.lock),
-            title: const Text('개인정보 보호'),
+            title: const Text('앱 정보'),
             onTap: () {
               Navigator.push(
                 context,
