@@ -1,7 +1,9 @@
+import 'dart:ui';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dreamingstory/utils/login_text.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
   String? _error;
 
   Future<void> _register() async {
@@ -53,7 +57,247 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  // 컨트롤러 해제
+  Widget _buildGlassContainer(Size size) {
+    double containerWidth = size.width;
+    if (size.width > 600) {
+      containerWidth = size.width * 0.6;
+    }
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: containerWidth),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Container(
+                padding: EdgeInsets.all(size.width > 600 ? 40 : 30),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.2)),
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: size.height * 0.04),
+                      _buildNameField(),
+                      SizedBox(height: size.height * 0.02),
+                      _buildEmailField(),
+                      SizedBox(height: size.height * 0.02),
+                      _buildPasswordField(),
+                      SizedBox(height: size.height * 0.02),
+                      _buildConfirmPasswordField(),
+                      SizedBox(height: size.height * 0.03),
+                      _buildRegisterButton(),
+                      SizedBox(height: size.height * 0.02),
+                      _buildLoginButton(),
+                    ],
+                  ),
+                )),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return TextButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: const TextUtil(
+        text: "이미 계정이 있으신가요? 로그인",
+        fontFamily: 'GodoM',
+        size: 14,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildBottomText() {
+    return const TextUtil(
+      text: "회원가입 시 이용약관 및 개인정보 처리방침에 동의하게 됩니다.",
+      fontFamily: 'GodoM',
+      size: 12,
+      color: Colors.white,
+    );
+  }
+
+  Widget _buildRegisterButton() {
+    return ElevatedButton(
+      onPressed: _isLoading ? null : () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        minimumSize: const Size(double.infinity, 50),
+      ),
+      child: _isLoading
+          ? const CircularProgressIndicator()
+          : const TextUtil(
+              text: "회원가입",
+              fontFamily: 'GodoM',
+              size: 16,
+            ),
+    );
+  }
+
+  Widget _buildConfirmPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TextUtil(
+          text: "비밀번호 확인",
+          fontFamily: 'GodoM',
+          size: 14,
+          color: Colors.white,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.black.withOpacity(0.2),
+          ),
+          child: TextFormField(
+            style: const TextStyle(color: Colors.white),
+            obscureText: !_isConfirmPasswordVisible,
+            decoration: InputDecoration(
+              hintText: "비밀번호를 다시 입력하세요",
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+              prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isConfirmPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                  });
+                },
+              ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNameField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TextUtil(
+          text: "이름",
+          fontFamily: 'GodoM',
+          size: 14,
+          color: Colors.white,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.black.withOpacity(0.2),
+          ),
+          child: TextFormField(
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "이름을 입력하세요",
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+              prefixIcon: const Icon(Icons.person_outline, color: Colors.white),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmailField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TextUtil(
+          text: "이메일 주소",
+          fontFamily: 'GodoM',
+          size: 14,
+          color: Colors.white,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.black.withOpacity(0.2),
+          ),
+          child: TextFormField(
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "이메일을 입력하세요",
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+              prefixIcon: const Icon(Icons.mail_outline, color: Colors.white),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TextUtil(
+          text: "비밀번호",
+          fontFamily: 'GodoM',
+          size: 14,
+          color: Colors.white,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.black.withOpacity(0.2),
+          ),
+          child: TextFormField(
+            style: const TextStyle(color: Colors.white),
+            obscureText: !_isPasswordVisible,
+            decoration: InputDecoration(
+              hintText: "비밀번호를 입력하세요",
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+              prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -62,48 +306,44 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  // UI 빌드
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('회원가입')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              if (_error != null) ...[
-                Text(_error!, style: TextStyle(color: Colors.red)),
-                SizedBox(height: 10),
-              ],
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: '이메일'),
-                validator: (value) => value != null && value.contains('@')
-                    ? null
-                    : '유효한 이메일을 입력하세요',
-              ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: '비밀번호'),
-                obscureText: true,
-                validator: (value) => value != null && value.length >= 6
-                    ? null
-                    : '최소 6자 이상 입력하세요',
-              ),
-              SizedBox(height: 20),
-              _isLoading
-                  ? CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _register();
-                        }
-                      },
-                      child: const Text('등록'),
-                    ),
-            ],
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.png"),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.5),
+              BlendMode.darken,
+            ),
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: LayoutBuilder(builder: (context, constraints) {
+              double horizontalPadding = size.width * 0.05;
+              if (size.width > 600) {
+                horizontalPadding = size.width * 0.2;
+              }
+
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  children: [
+                    SizedBox(height: size.height * 0.08),
+                    _buildGlassContainer(size),
+                    SizedBox(height: size.height * 0.02),
+                    _buildBottomText(),
+                  ],
+                ),
+              );
+            }),
           ),
         ),
       ),

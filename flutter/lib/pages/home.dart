@@ -112,147 +112,6 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '나의 책장',
-          style: TextStyle(fontFamily: 'GodoB'),
-        ),
-        backgroundColor: const Color.fromARGB(255, 27, 65, 89),
-        elevation: 0,
-        foregroundColor: const Color.fromARGB(255, 242, 210, 114),
-      ),
-      drawer: Drawer(
-        child: Container(
-          color: const Color.fromARGB(255, 27, 65, 89),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 242, 210, 114),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      '메뉴',
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 27, 65, 89),
-                        fontSize: 28,
-                        fontFamily: 'GodoB',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      widget.user?.email ?? '게스트 계정입니다.',
-                      style: TextStyle(
-                        color: const Color.fromARGB(255, 27, 65, 89),
-                        fontSize: 14,
-                        fontFamily: 'GodoM',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              _buildDrawerItem(
-                icon: Icons.share,
-                title: '공유',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SharingPage()),
-                ),
-              ),
-              _buildDrawerItem(
-                icon: Icons.subscriptions,
-                title: '구독 및 결제',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SubscribePage()),
-                ),
-              ),
-              _buildDrawerItem(
-                icon: Icons.settings,
-                title: '설정',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingPage()),
-                ),
-              ),
-              _buildDrawerItem(
-                icon: Icons.help_outline,
-                title: '사용 가이드',
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Onboarding()),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.1),
-              BlendMode.darken,
-            ),
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionTitle('나만의 동화 만들기'),
-                  SizedBox(height: 16),
-                  _buildStoryCreationCard(context),
-                  SizedBox(height: 32),
-                  _buildSectionTitle('최근 동화'),
-                  SizedBox(height: 16),
-                  StoryCreationCarouselPage(),
-                  SizedBox(height: 32),
-                  _buildSectionTitle('인기 무료'),
-                  SizedBox(height: 16),
-                  StorySelectionPage(),
-                  SizedBox(height: 32),
-                  if (_isLoading)
-                    Center(child: CircularProgressIndicator())
-                  else if (_protectedData != null)
-                    Text(
-                      _protectedData!,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    )
-                  else
-                    Text(
-                      '데이터를 불러오는 중입니다.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
@@ -320,6 +179,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBottomNavigationBar() {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.1,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -334,7 +194,7 @@ class _HomePageState extends State<HomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.collections_bookmark),
-            label: '나의 책장',
+            label: '꿈꾸는 이야기',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.diversity_3),
@@ -375,6 +235,129 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       onTap: onTap,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          '꿈꾸는 이야기',
+          style: TextStyle(fontFamily: 'GodoB'),
+        ),
+        backgroundColor: const Color.fromARGB(255, 27, 65, 89),
+        elevation: 0,
+        foregroundColor: const Color.fromARGB(255, 242, 210, 114),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: const Color.fromARGB(255, 27, 65, 89),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 242, 210, 114),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '메뉴',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 27, 65, 89),
+                        fontSize: 28,
+                        fontFamily: 'GodoB',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      widget.user?.email ?? '테스트 중',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 27, 65, 89),
+                        fontSize: 14,
+                        fontFamily: 'GodoM',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.share,
+                title: '공유',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SharingPage()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.subscriptions,
+                title: '구독 및 결제',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SubscribePage()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.settings,
+                title: '설정',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingPage()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.help_outline,
+                title: '사용 가이드',
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Onboarding()),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/home.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.1),
+              BlendMode.darken,
+            ),
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('나만의 동화 만들기'),
+                  SizedBox(height: 16),
+                  _buildStoryCreationCard(context),
+                  SizedBox(height: 32),
+                  _buildSectionTitle('최근 동화'),
+                  SizedBox(height: 16),
+                  StoryCreationCarouselPage(),
+                  SizedBox(height: 32),
+                  _buildSectionTitle('인기 무료'),
+                  SizedBox(height: 16),
+                  StorySelectionPage(),
+                  SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 }
