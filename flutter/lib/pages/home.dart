@@ -9,7 +9,7 @@ import 'package:dreamingstory/pages/drawer/subscribe1.dart';
 import 'package:dreamingstory/pages/onboarding.dart';
 import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
-import 'package:dreamingstory/pages/slider.dart';
+import 'package:dreamingstory/pages/story/recnet_story.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {

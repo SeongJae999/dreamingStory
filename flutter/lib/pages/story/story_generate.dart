@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:dreamingstory/component/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dreamingstory/component/keyword.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
+import 'package:dreamingstory/pages/home.dart';
 
 class StoryGenerationPage extends StatefulWidget {
   const StoryGenerationPage({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   String? helper;
   String? atmosphere;
   String? taskId;
-  bool? isLoading;
+  bool isLoading = false;
   int currentStep = 0;
   final AuthService _authService = AuthService();
 
@@ -36,6 +38,17 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
       }),
     );
     return response;
+  }
+
+  void _cancelGeneration() {
+    setState(() {
+      isLoading = false;
+    });
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
   }
 
   void _handleSelection(String selection, List<String> items) async {
@@ -58,15 +71,25 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
         if (items == helpers) helper = selection;
         if (items == atmospheres) {
           atmosphere = selection;
+          setState(() {
+            isLoading = true;
+          });
+
           startStoryGeneration(idToken).then((response) {
             setState(() {
               isLoading = false;
             });
             if (response.statusCode == 200) {
               final data = jsonDecode(response.body);
+
               setState(() {
                 taskId = data['task_id'];
               });
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('동화 생성이 완료되었습니다!')),
+              );
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -172,31 +195,47 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getAppBarTitle()),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: _cancelGeneration,
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children: _buildGridItems(),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    children: _buildGridItems(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.black45,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset('assets/images/Main Scene.json',
+                        width: 100, height: 100),
+                    const SizedBox(height: 16),
+                    const Text(
+                      '동화를 생성 중입니다...',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
             ),
-            if (currentStep > 0)
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    currentStep--;
-                  });
-                },
-                child: Text('이전 단계'),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }

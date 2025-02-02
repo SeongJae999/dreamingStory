@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:lottie/lottie.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
@@ -274,7 +275,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
   void _triggerNextPartGeneration(String currentPart) async {
     int currentIndex = pageKeys.indexOf(currentPart);
-
     int nextIndex = currentIndex + 1;
 
     if (nextIndex < pageKeys.length) {
@@ -284,6 +284,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         print(">>> Triggering generation for next part '$nextPart'");
         await _generateAndFetchPart(nextPart);
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('모든 파트가 생성 완료되었습니다!')),
+      );
     }
   }
 
@@ -294,6 +298,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     }
 
     isGenerating[part] = true;
+    setState(() {
+      isLoading = true;
+      statusMessage = "$part 파트 생성 + 페치 진행 중...";
+    });
     print(">>> Starting generation for part '$part'");
 
     try {
@@ -305,6 +313,11 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
 
       while (!isDone && retryCount < maxRetries) {
         await Future.delayed(Duration(seconds: 10));
+
+        setState(() {
+          statusMessage = "$part 파트 생성 중... ${retryCount + 1}회 시도";
+        });
+
         final statusResponse = await http.get(
           Uri.parse('$baseUrl/generate_stories/check_status/$taskId'),
           headers: {
@@ -343,6 +356,9 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       }
     } finally {
       isGenerating[part] = false;
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -546,7 +562,25 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               ),
             ),
           ),
-          if (isLoading) Center(child: CircularProgressIndicator()),
+          const SizedBox(height: 20),
+          if (isLoading)
+            Container(
+              color: Colors.black45, // 반투명 배경
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset('assets/images/Main Scene.json',
+                        width: 100, height: 100),
+                    const SizedBox(height: 16),
+                    const Text(
+                      '동화를 불러오는 중입니다...',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           if (_showTextContainer)
             Positioned(
               bottom: 16.0,
