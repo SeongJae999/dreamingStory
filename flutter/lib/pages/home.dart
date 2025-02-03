@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             fit: StackFit.expand,
             children: [
               Image.asset(
-                'assets/images/준비중.jpg',
+                'assets/images/app_icon.png',
                 fit: BoxFit.cover,
               ),
               Container(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/account/login.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/component/user.dart';
