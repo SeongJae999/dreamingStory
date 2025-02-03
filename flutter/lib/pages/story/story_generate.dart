@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:dreamingstory/component/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:lottie/lottie.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'package:dreamingstory/component/auth_service.dart';
 import 'package:dreamingstory/component/keyword.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
 import 'package:dreamingstory/pages/home.dart';
@@ -25,6 +25,28 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   bool isLoading = false;
   int currentStep = 0;
   final AuthService _authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    // 가로 모드 고정
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // 화면 방향 설정 해제
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
+  }
 
   Future<http.Response> startStoryGeneration(String idToken) async {
     final response = await http.post(
@@ -195,47 +217,71 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: _cancelGeneration,
-        ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    children: _buildGridItems(),
-                  ),
-                ),
-              ],
-            ),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        title: Text(
+          _getAppBarTitle(),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: 'GodoB',
+            color: Color.fromARGB(255, 242, 210, 114),
           ),
-          if (isLoading)
-            Container(
-              color: Colors.black45,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Lottie.asset('assets/images/Main Scene.json',
-                        width: 100, height: 100),
-                    const SizedBox(height: 16),
-                    const Text(
-                      '동화를 생성 중입니다...',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+        ),
+        backgroundColor: Color.fromARGB(255, 27, 65, 89),
+        actions: [
+          if (currentStep > 0)
+            IconButton(
+              icon: Icon(Icons.arrow_back,
+                  color: Color.fromARGB(255, 242, 210, 114)),
+              onPressed: () {
+                setState(() {
+                  currentStep--;
+                });
+              },
+            )
+          else
+            IconButton(
+              icon: Icon(Icons.home, color: Color.fromARGB(255, 242, 210, 114)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              },
+            )
+        ],
+      ),
+      body: Container(
+        color: Color.fromARGB(200, 27, 65, 89), // 단색으로 변경
+        child: SafeArea(
+          child: Column(
+            children: [
+              LinearProgressIndicator(
+                value: (currentStep + 1) / 5,
+                backgroundColor: Colors.grey[200],
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color.fromARGB(255, 242, 210, 114),
                 ),
               ),
-            ),
-        ],
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    child: GridView.count(
+                      key: ValueKey<int>(currentStep),
+                      crossAxisCount: 4,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 1.4,
+                      children: _buildGridItems(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
