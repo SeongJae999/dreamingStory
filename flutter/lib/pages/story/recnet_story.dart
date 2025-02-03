@@ -125,7 +125,48 @@ class _StoryCreationCarouselState extends State<StoryCreationCarouselPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (stories.isEmpty) return const Center(child: Text('최근 스토리가 없습니다.'));
+    if (stories.isEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 16),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.auto_stories_rounded,
+                  size: 40,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  '최근 스토리가 없습니다.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.7),
+                    fontFamily: 'GodoM',
+                    height: 1.4,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Column(
       children: [
