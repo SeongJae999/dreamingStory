@@ -32,16 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = AuthService();
 
   Future<void> _login() async {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(user: user)),
-    );
-    // setState(
-    //   () {
-    //     _isLoading = true;
-    //     _error = null;
-    //   },
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => HomePage(user: user)),
     // );
+    setState(
+      () {
+        _isLoading = true;
+        _error = null;
+      },
+    );
 
     await playbtnSoundMusic();
 

@@ -150,14 +150,14 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
 
   Widget _buildCard(String title, List<String> items) {
     String imagePath;
-    if (items == topics) {
-      imagePath = 'assets/button/교훈/$title.png';
+    if (items == characters) {
+      imagePath = 'assets/button/등장인물/$title.png';
     } else if (items == backgrounds) {
       imagePath = 'assets/button/배경/$title.png';
-    } else if (items == characters) {
-      imagePath = 'assets/button/등장인물/$title.png';
     } else if (items == helpers) {
       imagePath = 'assets/button/조력자/$title.png';
+    } else if (items == topics) {
+      imagePath = 'assets/button/교훈/$title.png';
     } else if (items == atmospheres) {
       imagePath = 'assets/button/감정과 분위기/$title.png';
     } else {
@@ -200,13 +200,13 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   List<Widget> _buildGridItems() {
     switch (currentStep) {
       case 0:
-        return topics.map((t) => _buildCard(t, topics)).toList();
+        return characters.map((c) => _buildCard(c, characters)).toList();
       case 1:
         return backgrounds.map((b) => _buildCard(b, backgrounds)).toList();
       case 2:
-        return characters.map((c) => _buildCard(c, characters)).toList();
-      case 3:
         return helpers.map((h) => _buildCard(h, helpers)).toList();
+      case 3:
+        return topics.map((t) => _buildCard(t, topics)).toList();
       case 4:
         return atmospheres.map((a) => _buildCard(a, atmospheres)).toList();
       default:
@@ -217,13 +217,13 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   String _getAppBarTitle() {
     switch (currentStep) {
       case 0:
-        return '나만의 동화 만들기';
+        return '주인공 선택하기';
       case 1:
         return '배경 선택하기';
       case 2:
-        return '캐릭터 선택하기';
+        return '친구 선택하기';
       case 3:
-        return '조력자 선택하기';
+        return '교훈 선택하기';
       case 4:
         return '분위기 선택하기';
       default:
