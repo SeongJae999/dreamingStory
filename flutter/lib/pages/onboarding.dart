@@ -68,18 +68,18 @@ class _OnboardingState extends State<Onboarding> {
         padding: EdgeInsets.only(top: 140),
         child: Column(
           children: [
-            // Container(
-            //   width: 250,
-            //   height: 250,
-            //   child: ClipRRect(
-            //     borderRadius: BorderRadius.circular(20),
-            //     child: Image.asset(
-            //       'assets/images/ssa.jpg',
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
-            SizedBox(height: 320),
+            Container(
+              width: 250,
+              height: 250,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  'assets/images/준비중.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(height: 60), // 320
             Expanded(
               child: PageView(
                 controller: _pageController,
