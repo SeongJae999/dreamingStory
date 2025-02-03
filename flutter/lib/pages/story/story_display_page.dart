@@ -148,27 +148,16 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     print(">>> Calling start_generation");
 
     try {
-      final startResponse = await http.post(
-        Uri.parse('$baseUrl/generate_stories/start_generation'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${widget.idToken}'
-        },
-        body: jsonEncode({
-          "topic": widget.topic ?? "내 동화 주제",
-        }),
-      );
-
-      if (startResponse.statusCode == 200) {
-        final data = jsonDecode(startResponse.body);
+      if (widget.response.statusCode == 200) {
+        final data = jsonDecode(widget.response.body);
         taskId = data["task_id"];
         statusMessage = "Task created: $taskId";
 
         print(">>> Task created: $taskId");
         await _generateAndFetchPart("title");
       } else {
-        statusMessage = "start_generation 실패: ${startResponse.body}";
-        print(">>> start_generation 실패: ${startResponse.body}");
+        statusMessage = "start_generation 실패: ${widget.response.body}";
+        print(">>> start_generation 실패: ${widget.response.body}");
       }
     } catch (e) {
       print(">>> start_generation 예외 발생: $e");
