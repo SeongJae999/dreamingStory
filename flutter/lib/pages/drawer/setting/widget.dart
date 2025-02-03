@@ -227,7 +227,7 @@ Widget buildVersionInfo(String version) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: Text(
-      '버전: $version',
+      'Copyright : $version',
       style: const TextStyle(
         fontSize: 14,
         fontFamily: 'GodoM',

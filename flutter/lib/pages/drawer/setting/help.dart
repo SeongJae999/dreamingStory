@@ -59,27 +59,6 @@ class HelpPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            buildSectionCard(
-              title: '앱 정보',
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.update),
-                  title: const Text('버전 및 업데이트'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('현재 버전: test'),
-                      Text('최신 버전: test'),
-                      Text('업데이트 날짜: 2025-01-21'),
-                    ],
-                  ),
-                  onTap: () {
-                    // 업데이트 정보 확인 기능 구현
-                  },
-                ),
-              ],
-            ),
           ],
         ),
       ),
