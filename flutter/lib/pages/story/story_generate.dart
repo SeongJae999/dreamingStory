@@ -149,6 +149,21 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
   }
 
   Widget _buildCard(String title, List<String> items) {
+    String imagePath;
+    if (items == topics) {
+      imagePath = 'assets/button/교훈/$title.png';
+    } else if (items == backgrounds) {
+      imagePath = 'assets/button/배경/$title.png';
+    } else if (items == characters) {
+      imagePath = 'assets/button/등장인물/$title.png';
+    } else if (items == helpers) {
+      imagePath = 'assets/button/조력자/$title.png';
+    } else if (items == atmospheres) {
+      imagePath = 'assets/button/감정과 분위기/$title.png';
+    } else {
+      imagePath = 'assets/images/background.png';
+    }
+
     return GestureDetector(
       onTap: () => _handleSelection(title, items),
       child: Card(
@@ -162,7 +177,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                 child: Image.asset(
-                  'assets/images/background.png',
+                  imagePath,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

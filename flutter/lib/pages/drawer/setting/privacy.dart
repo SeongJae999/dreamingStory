@@ -84,7 +84,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
               ),
             ),
           ),
-          buildVersionInfo('버전 1.0.0'),
+          buildVersionInfo('1.0.0 / ICONS BY ICONS8'),
         ],
       ),
     );
