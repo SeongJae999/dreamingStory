@@ -49,7 +49,7 @@ class FeedbackForm {
     }
   }
 
-  static void showFeedbackForm(BuildContext context) {
+  static Future<void> showFeedbackForm(BuildContext context) async {
     double rating = 0;
     String? selectedError;
     final TextEditingController otherErrorController = TextEditingController();
@@ -61,7 +61,7 @@ class FeedbackForm {
       '기타',
     ];
 
-    showDialog(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {

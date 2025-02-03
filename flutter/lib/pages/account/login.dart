@@ -8,6 +8,7 @@ import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/utils/login_text.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/auth_service.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -35,6 +36,8 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
       _error = null;
     });
+
+    await playbtnSoundMusic();
 
     final String email = _emailController.text.trim();
     final String password = _passwordController.text.trim();
@@ -76,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
       _error = null;
     });
+
+    await playbtnSoundMusic();
 
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();

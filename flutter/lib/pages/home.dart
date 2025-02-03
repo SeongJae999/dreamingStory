@@ -77,8 +77,8 @@ class _HomePageState extends State<HomePage> {
         print("사용자가 로그인 상태입니다: ${user.email}");
       }
     });
-    _fetchProtectedData();
     playBackgroundMusic();
+    _fetchProtectedData();
   }
 
   @override
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             fit: StackFit.expand,
             children: [
               Image.asset(
-                'assets/images/준비중.jpg',
+                'assets/images/app_icon.png',
                 fit: BoxFit.cover,
               ),
               Container(
@@ -312,7 +312,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/home.jpg'),
+            image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.1),
