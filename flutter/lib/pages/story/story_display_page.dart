@@ -105,7 +105,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
     _pageController.dispose();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
     ]);
     super.dispose();
   }
@@ -369,10 +368,10 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
       currentPageIndex = index;
     });
 
-    if (index == pageKeys.length - 1) {
-      FeedbackForm.showFeedbackForm(context);
-      return;
-    }
+    // if (index == pageKeys.length - 1) {
+    //   FeedbackForm.showFeedbackForm(context);
+    //   return;
+    // }
 
     final partKey = pageKeys[index];
     if (storyParts[partKey] != null) {
@@ -501,7 +500,11 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    if (currentPageIndex == pageKeys.length - 1) {
+                      await FeedbackForm.showFeedbackForm(context);
+                      print('다이얼로그 출력');
+                    }
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomePage()),
