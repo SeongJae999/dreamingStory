@@ -60,6 +60,7 @@ class SettingPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => AccountPage()),
                     );
                   },
+                  enableFeedback: false,
                 ),
               ),
               const SizedBox(height: 16),
@@ -83,6 +84,7 @@ class SettingPage extends StatelessWidget {
                           builder: (context) => const PrivacyPage()),
                     );
                   },
+                  enableFeedback: false,
                 ),
               ),
               const SizedBox(height: 16),
@@ -105,6 +107,7 @@ class SettingPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => HelpPage()),
                     );
                   },
+                  enableFeedback: false,
                 ),
               ),
               const SizedBox(height: 16),
@@ -130,6 +133,7 @@ class SettingPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => LoginPage()),
                     );
                   },
+                  enableFeedback: false,
                 ),
               ),
             ],
