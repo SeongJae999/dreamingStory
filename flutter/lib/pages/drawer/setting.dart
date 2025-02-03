@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/account/login.dart';
 import 'package:dreamingstory/pages/drawer/setting/help.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
@@ -19,7 +20,8 @@ class SettingPage extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.account_box),
             title: const Text('계정 관리'),
-            onTap: () {
+            onTap: () async {
+              await playbtnSoundMusic();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AccountPage()),
@@ -29,7 +31,8 @@ class SettingPage extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.lock),
             title: const Text('앱 정보'),
-            onTap: () {
+            onTap: () async {
+              await playbtnSoundMusic();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const PrivacyPage()),
@@ -40,7 +43,8 @@ class SettingPage extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('도움말 및 지원'),
-            onTap: () {
+            onTap: () async {
+              await playbtnSoundMusic();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => HelpPage()),
@@ -56,6 +60,7 @@ class SettingPage extends StatelessWidget {
               ),
             ),
             onTap: () async {
+              await playbtnSoundMusic();
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
                 context,

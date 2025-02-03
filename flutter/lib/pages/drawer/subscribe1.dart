@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class SubscribePage extends StatelessWidget {
   const SubscribePage({Key? key}) : super(key: key);
@@ -81,8 +82,8 @@ class SubscribePage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  // 결제 처리 로직 구현
+                onPressed: () async {
+                  await playbtnSoundMusic();
                   _handlePayment(context);
                 },
                 style: ElevatedButton.styleFrom(
@@ -114,7 +115,10 @@ class SubscribePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
-        onTap: onTap,
+        onTap: () async {
+          await playbtnSoundMusic();
+          onTap();
+        },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -164,6 +168,6 @@ class SubscribePage extends StatelessWidget {
         content: Text('결제가 완료되었습니다.', style: TextStyle(fontFamily: 'GodoM')),
       ),
     );
-    Navigator.pop(context);
+    //Navigator.pop(context);
   }
 }

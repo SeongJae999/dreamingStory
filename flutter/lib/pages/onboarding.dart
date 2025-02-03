@@ -16,6 +16,7 @@ class _OnboardingState extends State<Onboarding> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  final AudioPlayer _btnSoundPlayer = AudioPlayer();
   final AuthService _authService = AuthService();
 
   void _onPageChanged(int page) {
@@ -24,20 +25,17 @@ class _OnboardingState extends State<Onboarding> {
     });
   }
 
-  void _completeOnboarding(BuildContext context) async {
+  Future<void> _completeOnboarding(BuildContext context) async {
     var user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) =>
-              HomePage(user: userInfo(uid: user.uid, email: user.email ?? '')),
-        ),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     }
   }
@@ -59,6 +57,13 @@ class _OnboardingState extends State<Onboarding> {
     _backgroundMusicPlayer.setVolume(0.5);
     _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
     _backgroundMusicPlayer.resume();
+  }
+
+  Future<void> _playbtnSoundMusic() async {
+    await _btnSoundPlayer.setSource(AssetSource('audios/btn_sound.mp3'));
+    _btnSoundPlayer.setVolume(0.8);
+    _btnSoundPlayer.setReleaseMode(ReleaseMode.stop);
+    _btnSoundPlayer.resume();
   }
 
   @override
@@ -107,23 +112,27 @@ class _OnboardingState extends State<Onboarding> {
               ),
             ),
             ElevatedButton(
-              onPressed: _currentPage < 5
-                  ? () {
-                      _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    }
-                  : () {
-                      _completeOnboarding(context);
-                    },
-              child: Text(_currentPage < 5 ? '다음' : '시작하기',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'GodoB',
-                  )),
+              onPressed: () async {
+                await _playbtnSoundMusic();
+                if (_currentPage < 5) {
+                  await _pageController.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                  );
+                } else {
+                  await _completeOnboarding(context);
+                }
+              },
+              child: Text(
+                _currentPage < 5 ? '다음' : '시작하기',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'GodoB',
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
