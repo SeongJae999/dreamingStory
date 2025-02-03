@@ -9,8 +9,13 @@ logger = logging.getLogger(__name__)
 tts_client = texttospeech.TextToSpeechClient()
 
 def synthesize_speech_to_file(text: str, output_filename: str = "output.mp3"):
+    print(">>> TTS start, text type =", type(text), "value =", text)
+    
+    if not isinstance(text, str):
+        raise ValueError(f"Expected `text` to be str, got {type(text)}: {text}")
+    
     cleaned_text = re.sub(r'\(.*?\)', '', text)
-
+    
     paragraphs = cleaned_text.strip().split('\n\n')
     ssml_paragraphs = []
     for paragraph in paragraphs:
@@ -26,7 +31,7 @@ def synthesize_speech_to_file(text: str, output_filename: str = "output.mp3"):
         language_code='ko-KR',
         name='ko-KR-Standard-D'
     )
-
+    
     audio_config = texttospeech.AudioConfig(
         audio_encoding=texttospeech.AudioEncoding.MP3,
         speaking_rate=0.8,

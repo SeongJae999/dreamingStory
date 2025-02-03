@@ -154,7 +154,9 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${widget.idToken}'
         },
-        body: jsonEncode({"topic": widget.topic ?? "내 동화 주제"}),
+        body: jsonEncode({
+          "topic": widget.topic ?? "내 동화 주제",
+        }),
       );
 
       if (startResponse.statusCode == 200) {

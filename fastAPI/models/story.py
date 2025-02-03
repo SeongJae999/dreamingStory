@@ -1,6 +1,13 @@
 # fastAPI/app/models/story.py
 from pydantic import BaseModel
 
+class StartGenerationRequest(BaseModel):
+    topic: str
+    background: str
+    character: str
+    helper: str
+    atmosphere: str
+    
 class StoryRequest(BaseModel):
     theme: str
     characters: str

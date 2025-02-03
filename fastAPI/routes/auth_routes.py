@@ -33,6 +33,12 @@ class RegisterRequest(BaseModel):
 class GoogleLoginRequest(BaseModel):
     id_token: str
 
+class FindIdRequest(BaseModel):
+    email: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 db = get_db()
 
@@ -118,7 +124,45 @@ async def anonymous_login():
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Anonymous login failed: {str(e)}")
+
+@router.post("/find_id")
+async def find_id(request: FindIdRequest):
+    try:
+        user_doc = db.collection("users").where("email", "==", request.email).get()
+        if not user_doc:
+            raise HTTPException(status_code=404, detail="해당 이메일로 등록된 사용자가 없습니다.")
+
+        user_data = user_doc[0].to_dict()
+        uid = user_data.get("uid")
+
+        return {"uid": uid, "email": request.email}
     
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"ID 찾기 실패: {str(e)}")
+    
+@router.post("/forgot_password")
+async def forgot_password(request: ForgotPasswordRequest):
+    try:
+        firebase_url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={FIREBASE_API_KEY}"
+        payload = {
+            "requestType": "PASSWORD_RESET",
+            "email": request.email
+        }
+        response = requests.post(firebase_url, json=payload)
+        data = response.json()
+
+        if response.status_code != 200:
+            error_message = data.get('error', {}).get('message', 'Failed to send password reset email')
+            raise HTTPException(status_code=400, detail=error_message)
+
+        return {"message": "비밀번호 재설정 이메일이 전송되었습니다."}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"비밀번호 재설정 실패: {str(e)}")
+    
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"ID 찾기 실패: {str(e)}")
+
 @router.get("/protected")
 async def protected_route(user: dict = Depends(get_current_user)):
     return {"message": f"Hello, {user.email}!"}

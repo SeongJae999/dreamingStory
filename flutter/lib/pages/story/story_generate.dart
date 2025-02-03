@@ -57,6 +57,10 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
       },
       body: jsonEncode({
         'topic': topic,
+        'background': background,
+        'character': character,
+        'helper': helper,
+        'atmosphere': atmosphere,
       }),
     );
     return response;

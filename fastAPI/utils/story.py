@@ -1,6 +1,7 @@
 # fastAPI/utils/story.py
 from utils.config import settings
 from utils.database import get_db
+from models.story import StartGenerationRequest 
 
 from firebase_admin import firestore
 from langchain_anthropic import ChatAnthropic
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 anthropic_api_key = settings.ANTHROPIC_API_KEY
 
 def make_chain():
-    with open('/prompts/textGen_prompt.txt', 'r', encoding='utf-8') as file:
+    with open('/home/jeonlaejohgun/fastAPI/prompts/textGen_prompt.txt', 'r', encoding='utf-8') as file:
          prompt_text = file.read()
 
     prompt = ChatPromptTemplate.from_messages([
@@ -30,15 +31,22 @@ def make_chain():
 
     return chain
 
-def generate_response(topic):
-    logger.info(f"주제 : {topic}")
-    
+def generate_response(req: StartGenerationRequest) -> str:
+    logger.info(f"주제 : {req.topic}")
+    '''
+    logger.info(f"배경 : {req.background}")
+    logger.info(f"캐릭터 : {req.character}")
+    logger.info(f"조력자 : {req.helper}")
+    logger.info(f"분위기 : {req.atmosphere}")
+    '''
     logger.info("체인을 생성합니다.")
     chain = make_chain()
     logger.info("체인이 생성되었습니다.")
 
     logger.info("요청을 보냅니다.")
-    response = chain.invoke({'topic':topic}).content
+    response = chain.invoke({
+        'topic': req.topic,
+    }).content
     logger.info("응답을 받았습니다.")
 
     return response
