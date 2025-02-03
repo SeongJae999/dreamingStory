@@ -87,7 +87,12 @@ flutter:
     - assets/freeStory/freeStory001/images/
     - assets/freeStory/freeStory002/images/
     - assets/freeStory/freeStory003/images/    
-    - assets/freeStory/freeStory004/images/    
+    - assets/freeStory/freeStory004/images/
+    - assets/button/교훈/   
+    - assets/button/등장인물/ 
+    - assets/button/배경/ 
+    - assets/button/조력자/ 
+    - assets/button/감정과 분위기/  
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:

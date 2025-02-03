@@ -32,10 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = AuthService();
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => HomePage(user: user)),
+    // );
+    setState(
+      () {
+        _isLoading = true;
+        _error = null;
+      },
+    );
 
     await playbtnSoundMusic();
 
@@ -403,6 +409,7 @@ class _LoginPageState extends State<LoginPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         height: double.infinity,
         width: double.infinity,

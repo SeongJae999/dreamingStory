@@ -6,7 +6,7 @@ final List<String> topics = [
   '잠자리에 일찍 들어요',
   '엄마 아빠 말씀을 잘 들어요',
   '정리정돈이 재미있어요',
-  '기다리는 것을 배워요',
+  '건너뛰기',
 ];
 
 final List<String> backgrounds = [
@@ -23,12 +23,12 @@ final List<String> backgrounds = [
 final List<String> characters = [
   '소년',
   '소녀',
-  '웃음 많은 공주님',
-  '모험을 좋아하는 강아지',
-  '웃음쟁이 아기 토끼',
-  '용감한 꼬마 로봇',
-  '작은 드래곤',
-  '먹보 판다',
+  '공주님',
+  '강아지',
+  '아기 토끼',
+  '꼬마 로봇',
+  '꼬마 드래곤',
+  '판다',
 ];
 
 final List<String> helpers = [
@@ -38,8 +38,8 @@ final List<String> helpers = [
   '작은 요정 친구',
   '미소를 짓는 해님',
   '장난꾸러기 바람',
-  '지혜로운 부엉이',
   '빛나는 별',
+  '건너뛰기',
 ];
 
 final List<String> atmospheres = [
@@ -49,6 +49,6 @@ final List<String> atmospheres = [
   '꿈처럼 환상적인 이야기',
   '포근하고 안락한 이야기',
   '웃음이 가득한 이야기',
-  '반짝이는 희망의 이야기',
   '동화 같은 사랑 이야기',
+  '건너뛰기',
 ];

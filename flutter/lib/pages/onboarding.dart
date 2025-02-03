@@ -28,7 +28,7 @@ class _OnboardingState extends State<Onboarding> {
     if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     } else {
       Navigator.pushReplacement(

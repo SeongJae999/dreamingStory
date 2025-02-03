@@ -49,6 +49,7 @@ Widget buildInfoTile({
         )),
     trailing: const Icon(Icons.chevron_right),
     onTap: onTap,
+    enableFeedback: false,
   );
 }
 
@@ -72,6 +73,7 @@ Widget buildActionTile({
     ),
     trailing: const Icon(Icons.chevron_right),
     onTap: onTap,
+    enableFeedback: false,
   );
 }
 
@@ -173,6 +175,7 @@ Widget buildExpandableTile({
         color: const Color.fromARGB(255, 242, 210, 114),
       ),
       onExpansionChanged: (expanded) => onTap(),
+      enableFeedback: false,
       children: [
         Container(
           height: 300, // 고정 높이 설정
@@ -224,7 +227,7 @@ Widget buildVersionInfo(String version) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: Text(
-      '버전: $version',
+      'Copyright : $version',
       style: const TextStyle(
         fontSize: 14,
         fontFamily: 'GodoM',
@@ -279,6 +282,7 @@ Widget buildFAQItem({
         color: Color.fromARGB(255, 27, 65, 89),
       ),
     ),
+    enableFeedback: false,
     children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -322,5 +326,6 @@ Widget buildContactTile({
     ),
     trailing: const Icon(Icons.chevron_right),
     onTap: onTap,
+    enableFeedback: false,
   );
 }

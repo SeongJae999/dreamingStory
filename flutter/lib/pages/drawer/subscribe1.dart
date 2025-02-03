@@ -120,6 +120,7 @@ class SubscribePage extends StatelessWidget {
           onTap();
         },
         borderRadius: BorderRadius.circular(12),
+        enableFeedback: false,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
