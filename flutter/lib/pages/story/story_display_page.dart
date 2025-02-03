@@ -103,6 +103,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
   @override
   void dispose() {
     _pageController.dispose();
+    audioPlayer.dispose();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
