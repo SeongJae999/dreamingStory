@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class SharingPage extends StatelessWidget {
   const SharingPage({Key? key}) : super(key: key);
@@ -47,7 +48,10 @@ class SharingPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _launchGitHub,
+              onPressed: () async {
+                await playbtnSoundMusic();
+                _launchGitHub();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 27, 65, 89),
                 foregroundColor: const Color.fromARGB(255, 242, 210, 114),

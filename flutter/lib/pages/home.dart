@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:dreamingstory/pages/friend_bookshelf.dart';
 import 'package:flutter/material.dart';
-// import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/auth_service.dart';
 import 'package:dreamingstory/pages/drawer/sharing.dart';
@@ -11,6 +11,7 @@ import 'package:dreamingstory/pages/story/story_generate.dart';
 import 'package:dreamingstory/pages/story/story_selection.dart';
 import 'package:dreamingstory/pages/story/recnet_story.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class HomePage extends StatefulWidget {
   final userInfo? user;
@@ -21,9 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
   final AuthService _authService = AuthService();
-  //late AppLifecycleListener _lifecycleListener;
   bool _isLoading = false;
   String? _error;
   String? _protectedData;
@@ -68,19 +67,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Future<void> _playBackgroundMusic() async {
-  //   try {
-  //     await _backgroundMusicPlayer.setSource(
-  //       AssetSource('audios/dreaming_story.wav'),
-  //     );
-  //     _backgroundMusicPlayer.setVolume(0.5);
-  //     _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-  //     await _backgroundMusicPlayer.resume();
-  //   } catch (e) {
-  //     print('오디오 재생 중 오류 발생: $e');
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -92,23 +78,13 @@ class _HomePageState extends State<HomePage> {
       }
     });
     _fetchProtectedData();
-    //_playBackgroundMusic();
-    /*
-    _lifecycleListener = AppLifecycleListener(
-      onPause: () {
-        _backgroundMusicPlayer.pause();
-      },
-      onResume: () {
-        _backgroundMusicPlayer.resume();
-      },
-    );
-    */
+    playBackgroundMusic();
   }
 
   @override
   void dispose() {
     //_lifecycleListener.dispose();
-    // _backgroundMusicPlayer.dispose();
+    backgroundMusicPlayer.dispose();
     super.dispose();
   }
 
@@ -133,7 +109,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildStoryCreationCard(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        await playbtnSoundMusic();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => StoryGenerationPage()),
@@ -212,9 +189,16 @@ class _HomePageState extends State<HomePage> {
         selectedLabelStyle: const TextStyle(fontFamily: 'GodoM', fontSize: 14),
         unselectedLabelStyle:
             const TextStyle(fontFamily: 'GodoM', fontSize: 12),
-        onTap: (index) {
-          // Implement navigation logic here
+        onTap: (index) async {
+          await playbtnSoundMusic();
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FriendBookshelfPage()),
+            );
+          }
         },
+        enableFeedback: false,
       ),
     );
   }
@@ -234,7 +218,11 @@ class _HomePageState extends State<HomePage> {
           fontSize: 16,
         ),
       ),
-      onTap: onTap,
+      onTap: () async {
+        await playbtnSoundMusic();
+        onTap();
+      },
+      enableFeedback: false,
     );
   }
 
