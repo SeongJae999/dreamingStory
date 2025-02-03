@@ -7,6 +7,7 @@ import 'package:dreamingstory/component/auth_service.dart';
 import 'package:dreamingstory/component/keyword.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
 import 'package:dreamingstory/pages/home.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class StoryGenerationPage extends StatefulWidget {
   const StoryGenerationPage({Key? key}) : super(key: key);
@@ -38,12 +39,9 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
 
   @override
   void dispose() {
-    // 화면 방향 설정 해제
+    // 세로 모드 고정
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
     ]);
     super.dispose();
   }
@@ -75,6 +73,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
 
   void _handleSelection(String selection, List<String> items) async {
     try {
+      await playbtnSoundMusic();
       String? idToken = await _authService.getFirebaseIdToken();
 
       if (idToken == null) {
@@ -243,7 +242,7 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
             IconButton(
               icon: Icon(Icons.home, color: Color.fromARGB(255, 242, 210, 114)),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => HomePage()),
                 );

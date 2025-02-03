@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final http.Response response;
@@ -463,6 +464,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         isPlaying = false;
       });
     } else {
+      await playbtnSoundMusic();
       final audioUrl = audioUrls[partKey];
       if (audioUrl != null) {
         try {

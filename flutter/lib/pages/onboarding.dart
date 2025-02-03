@@ -6,6 +6,7 @@ import 'package:dreamingstory/pages/account/login.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/auth_service.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class Onboarding extends StatefulWidget {
   @override
@@ -15,8 +16,6 @@ class Onboarding extends StatefulWidget {
 class _OnboardingState extends State<Onboarding> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
-  final AudioPlayer _btnSoundPlayer = AudioPlayer();
   final AuthService _authService = AuthService();
 
   void _onPageChanged(int page) {
@@ -48,27 +47,12 @@ class _OnboardingState extends State<Onboarding> {
       DeviceOrientation.portraitUp,
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    _playBackgroundMusic();
-  }
-
-  void _playBackgroundMusic() async {
-    await _backgroundMusicPlayer
-        .setSource(AssetSource('audios/dreaming_story.wav'));
-    _backgroundMusicPlayer.setVolume(0.5);
-    _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-    _backgroundMusicPlayer.resume();
-  }
-
-  Future<void> _playbtnSoundMusic() async {
-    await _btnSoundPlayer.setSource(AssetSource('audios/btn_sound.mp3'));
-    _btnSoundPlayer.setVolume(0.8);
-    _btnSoundPlayer.setReleaseMode(ReleaseMode.stop);
-    _btnSoundPlayer.resume();
+    playBackgroundMusic();
   }
 
   @override
   void dispose() {
-    _backgroundMusicPlayer.dispose();
+    backgroundMusicPlayer.dispose();
     super.dispose();
   }
 
@@ -113,7 +97,7 @@ class _OnboardingState extends State<Onboarding> {
             ),
             ElevatedButton(
               onPressed: () async {
-                await _playbtnSoundMusic();
+                await playbtnSoundMusic();
                 if (_currentPage < 5) {
                   await _pageController.nextPage(
                     duration: const Duration(milliseconds: 300),

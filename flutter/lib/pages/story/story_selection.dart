@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:dreamingstory/component/story.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
+import 'package:dreamingstory/component/audioplayer.dart';
 
 class StorySelectionPage extends StatefulWidget {
   const StorySelectionPage({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _StorySelectionState extends State<StorySelectionPage> {
   Widget _buildStoryCard(Story story, BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        await playbtnSoundMusic();
         http.Response response = await fetchStory(story.storyId);
         Navigator.push(
           context,
