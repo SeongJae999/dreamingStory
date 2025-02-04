@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     setState(() {
       _isLoading = true;
-      _error = '';
+      _error = null;
     });
 
     final String email = _emailController.text.trim();
@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       setState(() {
-        _error = '로그인 실패: $e';
+        _error = '로그인 실패: 아이디 혹은 비밀번호가 올바르지 않습니다.';
       });
       _formKey.currentState!.validate();
       print('로그인 오류: $e');
@@ -267,6 +267,13 @@ class _LoginPageState extends State<LoginPage> {
           child: TextFormField(
             controller: _emailController,
             style: const TextStyle(color: Colors.white),
+            onChanged: (value) {
+              if (_error != null) {
+                setState(() {
+                  _error = null;
+                });
+              }
+            },
             decoration: InputDecoration(
               hintText: "이메일을 입력하세요",
               hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
@@ -302,6 +309,13 @@ class _LoginPageState extends State<LoginPage> {
             controller: _passwordController,
             style: const TextStyle(color: Colors.white),
             obscureText: !_isPasswordVisible,
+            onChanged: (value) {
+              if (_error != null) {
+                setState(() {
+                  _error = null;
+                });
+              }
+            },
             decoration: InputDecoration(
               hintText: "비밀번호를 입력하세요",
               hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
