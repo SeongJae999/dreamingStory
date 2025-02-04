@@ -31,42 +31,49 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final AuthService _authService = AuthService();
 
-  Future<void> _login() async {
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => HomePage(user: user)),
-    // );
-    setState(
-      () {
-        _isLoading = true;
-        _error = null;
-      },
-    );
-
-    await playbtnSoundMusic();
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+      _error = '';
+    });
 
     final String email = _emailController.text.trim();
     final String password = _passwordController.text.trim();
 
+    // 이메일과 비밀번호 검증
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _error = '이메일과 비밀번호를 모두 입력해주세요.';
+        _isLoading = false;
+      });
+      return;
+    }
+
     try {
-      UserCredential userCredential =
+      // Firebase Authentication으로 로그인
+      final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
+      // 서버로 로그인 요청
       final response = await _authService.postRequest('/auth/login', {
         'email': email,
         'password': password,
       });
 
-      user = await _authService.handleLoginResponse(response);
-
+      // 로그인 응답 처리
+      final user = await _authService.handleLoginResponse(response);
       if (user != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage(user: user)),
         );
+      } else {
+        setState(() {
+          _error = '사용자 정보를 불러오지 못했습니다.';
+        });
       }
     } catch (e) {
       setState(() {
@@ -74,9 +81,11 @@ class _LoginPageState extends State<LoginPage> {
       });
       print('로그인 오류: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
