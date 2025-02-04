@@ -418,29 +418,35 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Text(
-                  getTextForPage(partKey),
-                  style: TextStyle(
-                    fontFamily: 'GodoB',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    foreground: Paint()
-                      ..style = PaintingStyle.fill
-                      ..color = Colors.white,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(0, 0),
-                        blurRadius: 10,
-                        color: Colors.black,
+                child: storyParts[partKey] != null
+                    ? Text(
+                        getTextForPage(partKey),
+                        style: TextStyle(
+                          fontFamily: 'GodoB',
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          foreground: Paint()
+                            ..style = PaintingStyle.fill
+                            ..color = Colors.white,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 0),
+                              blurRadius: 10,
+                              color: Colors.black,
+                            ),
+                            Shadow(
+                              offset: Offset(0, 0),
+                              blurRadius: 10,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
+                      )
+                    : Lottie.asset(
+                        'assets/images/Main Scene.json',
+                        width: 100,
+                        height: 100,
                       ),
-                      Shadow(
-                        offset: Offset(0, 0),
-                        blurRadius: 10,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                ),
               ),
             )
           : Center(),

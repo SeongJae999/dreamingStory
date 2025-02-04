@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     setState(() {
       _isLoading = true;
-      _error = '';
+      _error = null;
     });
 
     final String email = _emailController.text.trim();
@@ -77,8 +77,9 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       setState(() {
-        _error = '로그인 실패: $e';
+        _error = '로그인 실패: 아이디 혹은 비밀번호가 올바르지 않습니다.';
       });
+      _formKey.currentState!.validate();
       print('로그인 오류: $e');
     } finally {
       if (mounted) {
@@ -171,12 +172,35 @@ class _LoginPageState extends State<LoginPage> {
                       _buildPasswordField(),
                       SizedBox(height: size.height * 0.03),
                       _buildLoginButton(),
+                      FormField(
+                        validator: (_) {
+                          return _error;
+                        },
+                        builder: (FormFieldState state) {
+                          return state.hasError
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 12, left: 16),
+                                  child: Text(
+                                    state.errorText ?? '',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
                       SizedBox(height: size.height * 0.02),
                       _buildDivider(),
                       SizedBox(height: size.height * 0.02),
                       _buildGoogleSignInButton(),
                       SizedBox(height: size.height * 0.02),
                       _buildSignUpButton(),
+                      SizedBox(height: size.height * 0.02),
+                      _buildFindPassword(),
                     ],
                   ),
                 )),
@@ -243,6 +267,13 @@ class _LoginPageState extends State<LoginPage> {
           child: TextFormField(
             controller: _emailController,
             style: const TextStyle(color: Colors.white),
+            onChanged: (value) {
+              if (_error != null) {
+                setState(() {
+                  _error = null;
+                });
+              }
+            },
             decoration: InputDecoration(
               hintText: "이메일을 입력하세요",
               hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
@@ -250,6 +281,8 @@ class _LoginPageState extends State<LoginPage> {
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
             ),
+            validator: (value) =>
+                value != null && value.contains('@') ? null : '유효한 이메일을 입력하세요',
           ),
         ),
       ],
@@ -276,6 +309,13 @@ class _LoginPageState extends State<LoginPage> {
             controller: _passwordController,
             style: const TextStyle(color: Colors.white),
             obscureText: !_isPasswordVisible,
+            onChanged: (value) {
+              if (_error != null) {
+                setState(() {
+                  _error = null;
+                });
+              }
+            },
             decoration: InputDecoration(
               hintText: "비밀번호를 입력하세요",
               hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
@@ -294,6 +334,8 @@ class _LoginPageState extends State<LoginPage> {
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
             ),
+            validator: (value) =>
+                value != null && value.length >= 6 ? null : '최소 6자 이상 입력하세요',
           ),
         ),
       ],
@@ -362,6 +404,23 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: const TextUtil(
         text: "계정이 없으신가요? 회원가입",
+        fontFamily: 'GodoM',
+        size: 14,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildFindPassword() {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+        );
+      },
+      child: const TextUtil(
+        text: "비밀번호를 잊으셨나요?",
         fontFamily: 'GodoM',
         size: 14,
         color: Colors.white,
