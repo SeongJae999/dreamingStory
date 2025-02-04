@@ -199,6 +199,8 @@ class _LoginPageState extends State<LoginPage> {
                       _buildGoogleSignInButton(),
                       SizedBox(height: size.height * 0.02),
                       _buildSignUpButton(),
+                      SizedBox(height: size.height * 0.02),
+                      _buildFindPassword(),
                     ],
                   ),
                 )),
@@ -388,6 +390,23 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: const TextUtil(
         text: "계정이 없으신가요? 회원가입",
+        fontFamily: 'GodoM',
+        size: 14,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildFindPassword() {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+        );
+      },
+      child: const TextUtil(
+        text: "비밀번호를 잊으셨나요?",
         fontFamily: 'GodoM',
         size: 14,
         color: Colors.white,

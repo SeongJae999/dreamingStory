@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dreamingstory/pages/account/login.dart';
 import 'package:dreamingstory/pages/home.dart';
+import 'package:dreamingstory/component/user.dart';
 import 'package:dreamingstory/component/audioplayer.dart';
 
 class Onboarding extends StatefulWidget {
