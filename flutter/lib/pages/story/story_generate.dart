@@ -8,6 +8,8 @@ import 'package:dreamingstory/component/keyword.dart';
 import 'package:dreamingstory/pages/story/story_display_page.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/component/audioplayer.dart';
+import 'package:dreamingstory/component/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class StoryGenerationPage extends StatefulWidget {
   const StoryGenerationPage({Key? key}) : super(key: key);
@@ -64,16 +66,16 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
     return response;
   }
 
-  void _cancelGeneration() {
-    setState(() {
-      isLoading = false;
-    });
+  // void _cancelGeneration() {
+  //   setState(() {
+  //     isLoading = false;
+  //   });
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
-  }
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const HomePage()),
+  //   );
+  // }
 
   void _handleSelection(String selection, List<String> items) async {
     try {
@@ -263,7 +265,14 @@ class _StoryGenerationPageState extends State<StoryGenerationPage> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                            user: userInfo(
+                                uid: FirebaseAuth.instance.currentUser!.uid,
+                                email:
+                                    FirebaseAuth.instance.currentUser!.email ??
+                                        ''),
+                          )),
                 );
               },
             )

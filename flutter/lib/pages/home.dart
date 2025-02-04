@@ -154,9 +154,58 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Widget _buildBottomNavigationBar() {
+  //   return Container(
+  //     height: MediaQuery.of(context).size.height * 0.1,
+  //     decoration: BoxDecoration(
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.1),
+  //           spreadRadius: 0,
+  //           blurRadius: 10,
+  //           offset: Offset(0, -3),
+  //         ),
+  //       ],
+  //     ),
+  //     child: BottomNavigationBar(
+  //       items: <BottomNavigationBarItem>[
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.collections_bookmark),
+  //           label: '꿈꾸는 이야기',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.diversity_3),
+  //           label: '친구의 책장',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.brush),
+  //           label: '캐릭터 꾸미기',
+  //         ),
+  //       ],
+  //       currentIndex: 0,
+  //       selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
+  //       unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
+  //       backgroundColor: const Color.fromARGB(255, 27, 65, 89),
+  //       selectedLabelStyle: const TextStyle(fontFamily: 'GodoM', fontSize: 14),
+  //       unselectedLabelStyle:
+  //           const TextStyle(fontFamily: 'GodoM', fontSize: 12),
+  //       onTap: (index) async {
+  //         await playbtnSoundMusic();
+  //         if (index == 1) {
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(builder: (context) => FriendBookshelfPage()),
+  //           );
+  //         }
+  //       },
+  //       enableFeedback: false,
+  //     ),
+  //   );
+  // }
+
   Widget _buildBottomNavigationBar() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.1,
+      height: 36,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -168,37 +217,18 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       child: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.collections_bookmark),
-            label: '꿈꾸는 이야기',
+            icon: Icon(null, size: 0),
+            label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.diversity_3),
-            label: '친구의 책장',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.brush),
-            label: '캐릭터 꾸미기',
+            icon: Icon(null, size: 0),
+            label: '',
           ),
         ],
-        currentIndex: 0,
-        selectedItemColor: const Color.fromARGB(255, 242, 210, 114),
-        unselectedItemColor: const Color.fromARGB(100, 242, 210, 114),
         backgroundColor: const Color.fromARGB(255, 27, 65, 89),
-        selectedLabelStyle: const TextStyle(fontFamily: 'GodoM', fontSize: 14),
-        unselectedLabelStyle:
-            const TextStyle(fontFamily: 'GodoM', fontSize: 12),
-        onTap: (index) async {
-          await playbtnSoundMusic();
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FriendBookshelfPage()),
-            );
-          }
-        },
-        enableFeedback: false,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

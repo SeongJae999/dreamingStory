@@ -23,7 +23,7 @@ class _OnboardingState extends State<Onboarding> {
     });
   }
 
-  Future<void> _completeOnboarding(BuildContext context) async {
+  static void completeOnboarding(BuildContext context) async {
     var user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       Navigator.pushReplacement(
@@ -106,7 +106,7 @@ class _OnboardingState extends State<Onboarding> {
                     curve: Curves.ease,
                   );
                 } else {
-                  await _completeOnboarding(context);
+                  completeOnboarding(context);
                 }
               },
               child: Text(

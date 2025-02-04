@@ -8,6 +8,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dreamingstory/pages/home.dart';
 import 'package:dreamingstory/pages/story/feedback.dart';
 import 'package:dreamingstory/component/audioplayer.dart';
+import 'package:dreamingstory/component/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class StoryDisplayPage extends StatefulWidget {
   final http.Response response;
@@ -497,10 +499,21 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                       await FeedbackForm.showFeedbackForm(context);
                       print('다이얼로그 출력');
                     }
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                    {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: userInfo(
+                                      uid: FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      email: FirebaseAuth
+                                              .instance.currentUser!.email ??
+                                          ''),
+                                )),
+                      );
+                    }
+                    ;
                   },
                   icon: Image.asset('assets/images/home.png',
                       width: 60, height: 60),

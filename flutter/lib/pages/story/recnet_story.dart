@@ -259,30 +259,30 @@ class _StoryCreationCarouselState extends State<StoryCreationCarouselPage> {
             },
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: stories.asMap().entries.map((entry) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  _currentIndex = entry.key;
-                });
-              },
-              child: Container(
-                width: 12.0,
-                height: 12.0,
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: (Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black)
-                      .withOpacity(_currentIndex == entry.key ? 0.9 : 0.4),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: stories.asMap().entries.map((entry) {
+        //     return GestureDetector(
+        //       onTap: () {
+        //         setState(() {
+        //           _currentIndex = entry.key;
+        //         });
+        //       },
+        //       child: Container(
+        //         width: 12.0,
+        //         height: 12.0,
+        //         margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        //         decoration: BoxDecoration(
+        //           shape: BoxShape.rectangle,
+        //           color: (Theme.of(context).brightness == Brightness.dark
+        //                   ? Colors.white
+        //                   : Colors.black)
+        //               .withOpacity(_currentIndex == entry.key ? 0.9 : 0.4),
+        //         ),
+        //       ),
+        //     );
+        //   }).toList(),
+        // ),
       ],
     );
   }
