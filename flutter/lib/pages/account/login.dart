@@ -72,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _error = '로그인 실패: $e';
       });
+      _formKey.currentState!.validate();
       print('로그인 오류: $e');
     } finally {
       setState(() {
@@ -162,6 +163,27 @@ class _LoginPageState extends State<LoginPage> {
                       _buildPasswordField(),
                       SizedBox(height: size.height * 0.03),
                       _buildLoginButton(),
+                      FormField(
+                        validator: (_) {
+                          return _error;
+                        },
+                        builder: (FormFieldState state) {
+                          return state.hasError
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 12, left: 16),
+                                  child: Text(
+                                    state.errorText ?? '',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
                       SizedBox(height: size.height * 0.02),
                       _buildDivider(),
                       SizedBox(height: size.height * 0.02),
@@ -241,6 +263,8 @@ class _LoginPageState extends State<LoginPage> {
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
             ),
+            validator: (value) =>
+                value != null && value.contains('@') ? null : '유효한 이메일을 입력하세요',
           ),
         ),
       ],
@@ -285,6 +309,8 @@ class _LoginPageState extends State<LoginPage> {
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
             ),
+            validator: (value) =>
+                value != null && value.length >= 6 ? null : '최소 6자 이상 입력하세요',
           ),
         ),
       ],
