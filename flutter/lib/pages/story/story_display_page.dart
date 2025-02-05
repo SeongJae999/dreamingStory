@@ -455,7 +455,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                           const Text(
                             '동화를 생성중입니다...',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
