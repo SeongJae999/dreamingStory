@@ -1,0 +1,10 @@
+폴더 PATH의 목록입니다.
+볼륨 일련 번호는 40BF-023D입니다.
+C:.
+├─component
+├─pages
+│  ├─account
+│  ├─drawer
+│  │  └─setting
+│  └─story
+└─utils

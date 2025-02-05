@@ -442,10 +442,25 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
                           ],
                         ),
                       )
-                    : Lottie.asset(
-                        'assets/images/Main Scene.json',
-                        width: 100,
-                        height: 100,
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Lottie.asset(
+                            'assets/images/Main Scene.json',
+                            width: 100,
+                            height: 100,
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            '동화를 생성중입니다...',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
               ),
             )
@@ -585,6 +600,7 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Lottie.asset('assets/images/Main Scene.json',
                         width: 100, height: 100),
