@@ -81,13 +81,6 @@ class _OnboardingState extends State<Onboarding> {
             Container(
               width: 250,
               height: 250,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  pageImages[_currentPage],
-                  fit: BoxFit.cover,
-                ),
-              ),
             ),
             SizedBox(height: 60), // 320
             Expanded(
