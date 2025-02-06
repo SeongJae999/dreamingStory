@@ -15,6 +15,15 @@ class _OnboardingState extends State<Onboarding> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  final List<String> pageImages = [
+    'assets/images/page2.jpg',
+    'assets/images/page2.jpg',
+    'assets/images/page2.jpg',
+    'assets/images/page2.jpg',
+    'assets/images/page2.jpg',
+    'assets/images/page2.jpg',
+  ];
+
   void _onPageChanged(int page) {
     setState(() {
       _currentPage = page;
@@ -75,7 +84,7 @@ class _OnboardingState extends State<Onboarding> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/준비중.jpg',
+                  pageImages[_currentPage],
                   fit: BoxFit.cover,
                 ),
               ),
