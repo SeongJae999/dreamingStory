@@ -123,118 +123,119 @@ Tech Stack
 ---------------------
 - 프로젝트 폴더 구조 정리
   - flutter dict  
-    '''
-    📦lib
-    ┣ 📂component
-    ┃ ┣ 📜audioplayer.dart
-    ┃ ┣ 📜auth_service.dart
-    ┃ ┣ 📜firebase_options.dart
-    ┃ ┣ 📜keyword.dart
-    ┃ ┣ 📜story.dart
-    ┃ ┗ 📜user.dart
-    ┣ 📂pages
-    ┃ ┣ 📂account
-    ┃ ┃ ┣ 📜forgot_password.dart
-    ┃ ┃ ┣ 📜login.dart
-    ┃ ┃ ┗ 📜register.dart
-    ┃ ┣ 📂drawer
-    ┃ ┃ ┣ 📂setting
-    ┃ ┃ ┃ ┣ 📜account.dart
-    ┃ ┃ ┃ ┣ 📜help.dart
-    ┃ ┃ ┃ ┣ 📜privacy.dart
-    ┃ ┃ ┃ ┣ 📜terms.dart
-    ┃ ┃ ┃ ┗ 📜widget.dart
-    ┃ ┃ ┣ 📜setting.dart
-    ┃ ┃ ┣ 📜sharing.dart
-    ┃ ┃ ┗ 📜subscribe1.dart
-    ┃ ┣ 📂story
-    ┃ ┃ ┣ 📜feedback.dart
-    ┃ ┃ ┣ 📜recnet_story.dart
-    ┃ ┃ ┣ 📜story_display_page.dart
-    ┃ ┃ ┣ 📜story_generate.dart
-    ┃ ┃ ┗ 📜story_selection.dart
-    ┃ ┣ 📜friend_bookshelf.dart
-    ┃ ┣ 📜home.dart
-    ┃ ┗ 📜onboarding.dart
-    ┣ 📂utils
-    ┃ ┗ 📜login_text.dart
-    ┣ 📜main.dart
-    ┗ 📜test.txt
-    ''' 
+    ```
+    📦lib  
+    ┣ 📂component  
+    ┃ ┣ 📜audioplayer.dart  
+    ┃ ┣ 📜auth_service.dart  
+    ┃ ┣ 📜firebase_options.dart  
+    ┃ ┣ 📜keyword.dart  
+    ┃ ┣ 📜story.dart  
+    ┃ ┗ 📜user.dart  
+    ┣ 📂pages  
+    ┃ ┣ 📂account  
+    ┃ ┃ ┣ 📜forgot_password.dart  
+    ┃ ┃ ┣ 📜login.dart  
+    ┃ ┃ ┗ 📜register.dart  
+    ┃ ┣ 📂drawer  
+    ┃ ┃ ┣ 📂setting  
+    ┃ ┃ ┃ ┣ 📜account.dart  
+    ┃ ┃ ┃ ┣ 📜help.dart  
+    ┃ ┃ ┃ ┣ 📜privacy.dart  
+    ┃ ┃ ┃ ┣ 📜terms.dart  
+    ┃ ┃ ┃ ┗ 📜widget.dart  
+    ┃ ┃ ┣ 📜setting.dart  
+    ┃ ┃ ┣ 📜sharing.dart  
+    ┃ ┃ ┗ 📜subscribe1.dart  
+    ┃ ┣ 📂story  
+    ┃ ┃ ┣ 📜feedback.dart  
+    ┃ ┃ ┣ 📜recnet_story.dart  
+    ┃ ┃ ┣ 📜story_display_page.dart  
+    ┃ ┃ ┣ 📜story_generate.dart  
+    ┃ ┃ ┗ 📜story_selection.dart  
+    ┃ ┣ 📜friend_bookshelf.dart  
+    ┃ ┣ 📜home.dart  
+    ┃ ┗ 📜onboarding.dart  
+    ┣ 📂utils  
+    ┃ ┗ 📜login_text.dart  
+    ┣ 📜main.dart  
+    ┗ 📜test.txt  
+    ```
 
-  - server dict  
-    📦fastAPI
-    ┣ 📂models
-    ┃ ┣ 📜story.py
-    ┃ ┗ 📜user.py
-    ┣ 📂output
-    ┃ ┣ 📂1MG9Qkc7BFSf7SR0QXYPLW63KEH2
-    ┃ ┃ ┗ 📂story_1738832935
-    ┃ ┃ ┃ ┣ 📂audios
-    ┃ ┃ ┃ ┃ ┣ 📜first_1738833037.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜forth_1738833170.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜second_1738833082.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜third_1738833126.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜title_1738832994.mp3
-    ┃ ┃ ┃ ┃ ┗ 📜wisdom_1738833213.mp3
-    ┃ ┃ ┃ ┗ 📂images
-    ┃ ┃ ┃ ┃ ┣ 📜images_00001_.png
-    ┃ ┃ ┃ ┃ ┣ 📜images_00002_.png
-    ┃ ┃ ┃ ┃ ┣ 📜images_00003_.png
-    ┃ ┃ ┃ ┃ ┣ 📜images_00004_.png
-    ┃ ┃ ┃ ┃ ┣ 📜images_00005_.png
-    ┃ ┃ ┃ ┃ ┗ 📜images_00006_.png
-    ┃ ┣ 📂freeStory001
-    ┃ ┃ ┗ 📂반짝이의 이빨 모험
-    ┃ ┃ ┃ ┣ 📂audios
-    ┃ ┃ ┃ ┃ ┣ 📜first_narration.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜forth_narration.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜second_narration.mp3
-    ┃ ┃ ┃ ┃ ┣ 📜third_narration.mp3
-    ┃ ┃ ┃ ┃ ┗ 📜title_narration.mp3
-    ┃ ┃ ┃ ┗ 📂images
-    ┃ ┃ ┃ ┃ ┣ 📜climax.png
-    ┃ ┃ ┃ ┃ ┣ 📜conclusion.png
-    ┃ ┃ ┃ ┃ ┣ 📜development.png
-    ┃ ┃ ┃ ┃ ┣ 📜feedback.png
-    ┃ ┃ ┃ ┃ ┣ 📜introduction.png
-    ┃ ┃ ┃ ┃ ┗ 📜title.png
-    ┃ ┣ 📂freeStory002
-    ┃ ┃ ┗ 📂Sun_and_moon
-    ┃ ┃ ┃ ┣ 📂audios
-    ┃ ┃ ┃ ┗ 📂images
-    ┃ ┣ 📂freeStory003
-    ┃ ┃ ┗ 📂brothers
-    ┃ ┃ ┃ ┣ 📂audios
-    ┃ ┃ ┃ ┗ 📂images
-    ┃ ┗ 📂freeStory004
-    ┃ ┃ ┗ 📂axes
-    ┃ ┃ ┃ ┣ 📂audios
-    ┃ ┃ ┃ ┗ 📂images
-    ┣ 📂prompts
-    ┃ ┣ 📜imgGen_prompt.txt
-    ┃ ┣ 📜imgGen_prompt_v3.txt
-    ┃ ┗ 📜textGen_prompt.txt
-    ┣ 📂routes
-    ┃ ┣ 📜auth_routes.py
-    ┃ ┣ 📜generate_story_routes.py
-    ┃ ┗ 📜story_routes.py
-    ┣ 📂utils
-    ┃ ┣ 📜auth.py
-    ┃ ┣ 📜comfyui_utils.py
-    ┃ ┣ 📜config.py
-    ┃ ┣ 📜database.py
-    ┃ ┣ 📜image.py
-    ┃ ┣ 📜story.py
-    ┃ ┣ 📜tts.py
-    ┃ ┗ 📜__init__.py
-    ┣ 📜.bashrc
-    ┣ 📜.env
-    ┣ 📜app_logs.log
-    ┣ 📜demo_service_account.json
-    ┣ 📜dreamingstory-63139-firebase-adminsdk-gnmm4-d61eb7678f.json
-    ┗ 📜main.py
-
+  - server dict
+    ```  
+    📦fastAPI  
+    ┣ 📂models  
+    ┃ ┣ 📜story.py  
+    ┃ ┗ 📜user.py  
+    ┣ 📂output  
+    ┃ ┣ 📂1MG9Qkc7BFSf7SR0QXYPLW63KEH2  
+    ┃ ┃ ┗ 📂story_1738832935  
+    ┃ ┃ ┃ ┣ 📂audios  
+    ┃ ┃ ┃ ┃ ┣ 📜first_1738833037.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜forth_1738833170.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜second_1738833082.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜third_1738833126.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜title_1738832994.mp3  
+    ┃ ┃ ┃ ┃ ┗ 📜wisdom_1738833213.mp3  
+    ┃ ┃ ┃ ┗ 📂images  
+    ┃ ┃ ┃ ┃ ┣ 📜images_00001_.png  
+    ┃ ┃ ┃ ┃ ┣ 📜images_00002_.png  
+    ┃ ┃ ┃ ┃ ┣ 📜images_00003_.png  
+    ┃ ┃ ┃ ┃ ┣ 📜images_00004_.png  
+    ┃ ┃ ┃ ┃ ┣ 📜images_00005_.png  
+    ┃ ┃ ┃ ┃ ┗ 📜images_00006_.png  
+    ┃ ┣ 📂freeStory001  
+    ┃ ┃ ┗ 📂반짝이의 이빨 모험  
+    ┃ ┃ ┃ ┣ 📂audios  
+    ┃ ┃ ┃ ┃ ┣ 📜first_narration.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜forth_narration.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜second_narration.mp3  
+    ┃ ┃ ┃ ┃ ┣ 📜third_narration.mp3  
+    ┃ ┃ ┃ ┃ ┗ 📜title_narration.mp3  
+    ┃ ┃ ┃ ┗ 📂images  
+    ┃ ┃ ┃ ┃ ┣ 📜climax.png  
+    ┃ ┃ ┃ ┃ ┣ 📜conclusion.png  
+    ┃ ┃ ┃ ┃ ┣ 📜development.png  
+    ┃ ┃ ┃ ┃ ┣ 📜feedback.png  
+    ┃ ┃ ┃ ┃ ┣ 📜introduction.png  
+    ┃ ┃ ┃ ┃ ┗ 📜title.png  
+    ┃ ┣ 📂freeStory002  
+    ┃ ┃ ┗ 📂Sun_and_moon  
+    ┃ ┃ ┃ ┣ 📂audios  
+    ┃ ┃ ┃ ┗ 📂images  
+    ┃ ┣ 📂freeStory003  
+    ┃ ┃ ┗ 📂brothers  
+    ┃ ┃ ┃ ┣ 📂audios  
+    ┃ ┃ ┃ ┗ 📂images  
+    ┃ ┗ 📂freeStory004  
+    ┃ ┃ ┗ 📂axes  
+    ┃ ┃ ┃ ┣ 📂audios  
+    ┃ ┃ ┃ ┗ 📂images  
+    ┣ 📂prompts  
+    ┃ ┣ 📜imgGen_prompt.txt  
+    ┃ ┣ 📜imgGen_prompt_v3.txt  
+    ┃ ┗ 📜textGen_prompt.txt  
+    ┣ 📂routes  
+    ┃ ┣ 📜auth_routes.py  
+    ┃ ┣ 📜generate_story_routes.py  
+    ┃ ┗ 📜story_routes.py  
+    ┣ 📂utils  
+    ┃ ┣ 📜auth.py  
+    ┃ ┣ 📜comfyui_utils.py  
+    ┃ ┣ 📜config.py  
+    ┃ ┣ 📜database.py  
+    ┃ ┣ 📜image.py  
+    ┃ ┣ 📜story.py  
+    ┃ ┣ 📜tts.py  
+    ┃ ┗ 📜__init__.py  
+    ┣ 📜.bashrc  
+    ┣ 📜.env  
+    ┣ 📜app_logs.log  
+    ┣ 📜demo_service_account.json  
+    ┣ 📜dreamingstory-63139-firebase-adminsdk-gnmm4-d61eb7678f.json  
+    ┗ 📜main.py  
+    ```
 
 <br>
 
