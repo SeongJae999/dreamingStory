@@ -16,6 +16,9 @@ from typing import Optional
 from openai import OpenAI
 
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
+import datetime
+import json
 import time
 import re
 
@@ -35,31 +38,51 @@ class FetchPartResponse(BaseModel):
 
 db = get_db()
 
+now = datetime.datetime.now()
+
 def generate_image_prompt(user_prompt: str) -> str:
+    raw_prompt = None
     try:
+        print(f"이미지 프롬프트 생성 시작 {now}")
         with open('/home/jeonlaejohgun/fastAPI/prompts/imgGen_prompt_v3.txt', 'r', encoding='utf-8') as file:
             system_prompt = file.read()
         if not isinstance(user_prompt, str):
-            import json
             user_prompt = json.dumps(user_prompt, ensure_ascii=False)
             
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
             temperature=0.2,
-            max_tokens=512,
+            max_tokens=1024
         )
-        image_prompt = response.choices[0].message.content.strip()
-
-        return image_prompt
+        raw_prompt = response.choices[0].message.content.strip()
+        
     except Exception as e:
         print(f"GPT API 호출 중 오류 발생: {e}")
         raise e
+    
+    if raw_prompt is not None:
+        # 코드 블록 제거
+        raw_prompt = re.sub(r"```(?:json)?", "", raw_prompt)
+        raw_prompt = re.sub(r"```", "", raw_prompt)
+        raw_prompt = raw_prompt.strip()
 
-def split_story_into_parts(story_text: str) -> dict:
+        # JSON 파싱
+        try:
+            image_prompt_dict = json.loads(raw_prompt)
+            print("이미지 프롬프트 생성 완료", now)
+            return image_prompt_dict  # dict 반환
+        except json.JSONDecodeError as jde:
+            print("[ERROR] ChatGPT 응답이 JSON 형식이 아님:", jde)
+            raise ValueError("ChatGPT가 JSON 형태로 응답하지 않았습니다.")
+    else:
+        # raw_prompt가 None이라는 것은 GPT 호출에서 뭔가 문제가 생긴 경우
+        raise ValueError("GPT 응답이 없습니다 (raw_prompt is None).")
+
+def split_story_into_parts(story_text: str, prompt: dict = None) -> dict:
     try:
         sections = story_text.split('---')
         if len(sections) < 2:
@@ -87,37 +110,58 @@ def split_story_into_parts(story_text: str) -> dict:
         mapped_parts = {}
         for part_name, part_text in split_parts.items():
             if part_name == "도입부 내용":
-                mapped_parts["first"] = {"text": part_text, "image_url": None, "audio_url": None}
+                mapped_parts["first"] = {"text": part_text, "image_prompt": None, "image_url": None, "audio_url": None}
             elif part_name == "전개부 내용":
-                mapped_parts["second"] = {"text": part_text, "image_url": None, "audio_url": None}
+                mapped_parts["second"] = {"text": part_text, "image_prompt": None, "image_url": None, "audio_url": None}
             elif part_name == "절정부 내용":
-                mapped_parts["third"] = {"text": part_text, "image_url": None, "audio_url": None}
+                mapped_parts["third"] = {"text": part_text, "image_prompt": None, "image_url": None, "audio_url": None}
             elif part_name == "결말부 내용":
-                mapped_parts["forth"] = {"text": part_text, "image_url": None, "audio_url": None}
+                mapped_parts["forth"] = {"text": part_text, "image_prompt": None, "image_url": None, "audio_url": None}
             elif part_name == "이 이야기를 통해 아이와 같이 나눠보면 좋을 내용":
-                mapped_parts["wisdom"] = {"text": part_text, "image_url": None, "audio_url": None}
+                mapped_parts["wisdom"] = {"text": part_text, "image_prompt": None, "image_url": None, "audio_url": None}
             else:
                 print(f"Unknown part name: {part_name}")
                 pass
 
-        mapped_parts["title"] = {"text": title, "image_url": None, "audio_url": None}
+        mapped_parts["title"] = {"text": title, "image_prompt": None, "image_url": None, "audio_url": None}
         
+        for key in mapped_parts.keys():
+            if prompt and key in prompt:
+                mapped_parts[key]["image_prompt"] = prompt[key]
+                    
         print(f"Mapped parts: {mapped_parts.keys()}")
 
         return mapped_parts
+    
     except Exception as e:
         print(f"스토리 텍스트 분할 중 오류 발생: {e}")
         raise e
 
+def remap_image_prompt_keys(original_prompt: dict) -> dict:
+    key_mapping = {
+        "Title": "title",
+        "Introduction": "first",
+        "Development": "second",
+        "Climax": "third",
+        "Conclusion": "fourth",
+        "Feedback": "fifth"
+    }
 
+    new_prompt = {}
+    for old_key, new_key in key_mapping.items():
+        if old_key in original_prompt:
+            new_prompt[new_key] = original_prompt[old_key]
+    return new_prompt
 
 @router.post("/start_generation")
 async def start_story_generation(request: StartGenerationRequest, current_user: User = Depends(get_current_user)):
     task_id = f"story_{int(time.time())}"
 
     story_text = generate_response(request)
+    image_prompt = generate_image_prompt(story_text)
+    
     try:
-        split_parts = split_story_into_parts(story_text)
+        split_parts = split_story_into_parts(story_text, prompt=image_prompt)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"텍스트 분할 실패: {str(e)}")
 
@@ -170,6 +214,8 @@ async def trigger_generate_part(
         raise HTTPException(status_code=404, detail="작업을 찾을 수 없습니다.")
 
     part_text = task.get("parts", {}).get(part)
+    image_prompt = part_text.get("image_prompt", "")
+    
     if not part_text:
         raise HTTPException(status_code=400, detail=f"{part} 파트의 텍스트가 없습니다.")
 
@@ -183,7 +229,6 @@ async def trigger_generate_part(
             image_dir.mkdir(parents=True, exist_ok=True)
             audio_dir.mkdir(parents=True, exist_ok=True)
 
-            image_prompt = generate_image_prompt(part_text)
             image_filename = generate_image(output_filename=image_dir, prompt=image_prompt)
             image_url = str(task_dir / "images" / image_filename)
             

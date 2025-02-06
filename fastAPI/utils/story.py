@@ -20,7 +20,7 @@ def make_chain():
     prompt = ChatPromptTemplate.from_messages([
             ("system", prompt_text), ('human', '지금부터 동화를 생성해주세요.')
         ])
-    logger.info("프롬프트가 생성되었습니다.")
+    print("프롬프트가 생성되었습니다.")
 
     llm = ChatAnthropic(api_key=anthropic_api_key,
                         model="claude-3-5-sonnet-20240620",
@@ -32,22 +32,24 @@ def make_chain():
     return chain
 
 def generate_response(req: StartGenerationRequest) -> str:
-    logger.info(f"주제 : {req.topic}")
-    '''
-    logger.info(f"배경 : {req.background}")
-    logger.info(f"캐릭터 : {req.character}")
-    logger.info(f"조력자 : {req.helper}")
-    logger.info(f"분위기 : {req.atmosphere}")
-    '''
-    logger.info("체인을 생성합니다.")
+    print(f"주제 : {req.topic}")
+    print(f"배경 : {req.background}")
+    print(f"캐릭터 : {req.character}")
+    print(f"조력자 : {req.helper}")
+    print(f"분위기 : {req.atmosphere}")
+    print("체인을 생성합니다.")
     chain = make_chain()
-    logger.info("체인이 생성되었습니다.")
+    print("체인이 생성되었습니다.")
 
-    logger.info("요청을 보냅니다.")
+    print("요청을 보냅니다.")
     response = chain.invoke({
         'topic': req.topic,
+        'background': req.background,
+        'character': req.character,
+        'helper': req.helper,
+        'atmosphere': req.atmosphere,
     }).content
-    logger.info("응답을 받았습니다.")
+    print("응답을 받았습니다.")
 
     return response
 
