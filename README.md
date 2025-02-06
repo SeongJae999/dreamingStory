@@ -1,12 +1,23 @@
 🦄 AI 창작동화: 꿈꾸는 이야기에 오신 것을 환영합니다 🦄
 ====================
+<br>
 
-📝 서비스 소개(그림 추가) 📝
+📝 꿈꾸는 이야기란? 📝
 ---------------------
-- 생성형 AI 활용한 창작동화 애플리케이션
-- 대상 : 4~6세 미취학 아동 및 학부모
-- 차별점 : 버튼식 프롬프트 구조 활용하여 동화 생성에 사용자가 참여
-- 사진(버튼식 프롬프트 선택하는 gif 어떨까?) <- 추가하기
+<div align="center">
+  <img src="flutter/assets/images/app_icon.png" alt="앱 아이콘" width="100">
+  
+### 꿈꾸는 이야기는 만 4~6세의 미취학 아동을 위한 
+### 생성형 AI를 활용한 창작동화 애플리케이션입니다.
+<br> 
+
+#### 버튼식 프롬프트 구조를 활용하여
+#### 글을 모르는 아이들도 직접 원하는 동화를 창작할 수 있으며
+#### 보호자가 원하는 교훈을 담은 동화를 생성해낼 수 있습니다.
+</div>
+
+<br>
+
 
 👬👨🏻‍💻 전래좋군 소개 👨🏻‍💻👬
 ---------------------
@@ -17,20 +28,24 @@
 |이동수([@Lee-Dongsu](https://github.com/Lee-Dongsu)) <br>ehdtnehdtn95@naver.com |AI, NLP, Prompt Engineer    |- Prompt design and AI model experimentation <br>- QA, User, and Mobile service testing|
 |김우찬([@chanxxw](https://github.com/chanxxw)) <br>strauss2327@gmail.com |Project Manager, Prompt Engineer  |- Strategic planning, research and marketing <br>- Image prompt engineering|
 
-- 여기에 링크드인을 달지 깃헙을 달지 생각해봅시다. 나는 링크드인이 맞을 것 같은 느낌이다
+<br>
 
 🤖 서비스 소개 🤖
 ---------------------
-1. 서비스 개요
+1. 꿈꾸는 이야기 개요
 - 이 앱이 무엇을 하는지 한 문장으로 정리
-2. 동화 텍스트, 삽화 이미지, TTS 서비스를 동시에 제공 
-  - 텍스트 생성: Claude 3.5 Sonnet, Text Prompting
-  - 이미지 생성:
-    - GPT-3.5-turbo, Text Prompting
-    - 모델: FLUX.1-Schnell, LoRA, ComfyUI
-  - TTS 생성: Google Cloud Speech API – Text-to-Speech 2.0
-- 설명에 대한 youtube 링크 붙이기(추후 아이펠톤시)
-- 자세한 내용을 알고 싶다면? 포트폴리오와 보고서를 참고하세요! 라고 해놓겠지만 포트폴리오는 뭐고 보고서는 뭘까요
+
+  
+2. 기본 기능 : 동화 텍스트, 삽화 이미지, TTS 서비스를 동시에 적용하여 창작동화 구현 
+    
+3. 꿈꾸는 이야기의 특장점
+  - 버튼식 프롬프트 구조를 통해 글을 모르는 미취학 아동도 동화 생성에 참여할 수 있습니다.
+  - 보호자가 원하는 교훈(ex. 양치질을 잘해요)을 동화에 녹아내어 아이들의 사회적 규칙을 배우는 데에 도움을 줍니다.
+ 
+  
+#### 자세한 내용을 알고 싶다면 추후 추가 될 유튜브 영상을 참고해주세요! (3월 예정)
+
+<br>
 
 🗺️ 프로세스 맵 🗺️
 ---------------------
@@ -39,12 +54,17 @@
 온보딩 → 2. 버튼 선택 → 3. 동화 생성 → 4. 이미지 생성 → 5. 오디오 변환
 추천 이미지: 서비스 흐름을 보여주는 다이어그램
 
+화면 캡쳐본으로 PPT로 만들어볼까?
+
+<br>
 
 Tech Stack
 ---------------------
 ### 🏗️ Core Technologies
-- **Text Generation:** Claude 3.5 Sonnet, GPT-3.5-turbo  
-- **Image Generation:** FLUX.1-Schnell, LoRA, ComfyUI  
+- **Fairy Tale Text Generation:** Claude 3.5 Sonnet
+- **Image Generation:**
+  - GPT-4o-mini - 프롬프트 텍스트 생성 모델
+  - FLUX.1-Schnell - 이미지 생성 모델
 - **TTS (Text-to-Speech):** Google Cloud Speech API 2.0  
 
 ### 📱 Frontend
@@ -59,13 +79,18 @@ Tech Stack
 
 ### 🧠 AI & Model Training
 - **LangChain** – AI 모델 연결  
-- **LoRA (Low-Rank Adaptation)** – 경량 모델 튜닝  
+- **LoRA (Low-Rank Adaptation)** – 이미지 경량 모델 튜닝
+- **ComfyUI** - Text-to-Image model 위한 노드 기반 GUI
+ 
+<br>
 
-
+ 
 🏛️ Architecture 🏛️
 ---------------------
 - 전체 시스템 구조를 다이어그램으로 표현
 - 사용자가 요청 → AI 모델 → 데이터 처리 → 최종 결과 출력 흐름을 설명
+<br>
+
 
 📚 시연 영상 및 발표자료 📚
 ---------------------
@@ -76,11 +101,12 @@ Tech Stack
 4. 발표 자료(유튜브 링크)
 - 자세한 내용은 유튜브를 참고해 주세요
 - 유튜브 링크
+<br>
 
 🌲 Project Tree 🎄
 ---------------------
 - 프로젝트 폴더 구조 정리
-
+<br>
 
 🪪 Usage & License 🪪
 ---------------------
@@ -92,11 +118,12 @@ Tech Stack
 <sub>  - IN NO EVENT SHALL BLACK FOREST LABS, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH USE OF THIS MODEL. </sub>
 2. 배경 음악 : Created with Suno AI
 3. 아이콘 : Icons by Icons8
+<br>
 
 Reference
 ---------------------
 - PPT 정리 후 올리기
-
+<br>
 
 Acknowledgements
 ---------------------
@@ -108,10 +135,34 @@ Acknowledgements
 
 여러분의 지원과 도움 덕분에 프로젝트를 성공적으로 마칠 수 있었습니다.  
 진심으로 감사드립니다! 🙌  
+<br>
 
 ---
-이 프로젝트는 모두의연구소 **아이펠 코어 9기** 과정에서 진행된 **아이펠톤**에서 탄생했으며, **전래좋군 팀**이 기획하고 개발을 주도하였습니다.
+이 프로젝트는 [모두의연구소](https://modulabs.co.kr/) **아이펠 코어 9기** 과정에서 진행된 **아이펠톤**에서 탄생했으며, **전래좋군 팀**이 기획하고 개발을 주도하였습니다.
 
+
+
+
+
+
+끝
+----------------------
+
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
 
 
 
