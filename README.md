@@ -11,9 +11,9 @@
 | Members | Roles | Responsibilities |
 |:--|:--|:--|
 |조정민<br> [@SeongJae999](https://github.com/SeongJae999) <br> skanehfud279@gmail.com|Team Leader, Back-end Engineer |- Server and database management <br>- Google Cloud Platform (GCP) administration <br>|
-| 김민규 |Front-end developer <br> [@incheonQ](https://github.com/incheonQ) <br> kimminkue99@gmail.com |- UI/UX design and implementation <br>- Troubleshooting and debugging|
-| 이동수 |AI, Prompt Engineer  <br> [@Lee-Dongsu](https://github.com/Lee-Dongsu) <br> ehdtnehdtn95@naver.com  | 데이터12 |
-| 김우찬 |Project Manager, Prompt Engineer <br> [@chanxxw](https://github.com/chanxxw) <br> strauss2327@gmail.com | 데이터15 |
+| 김민규<br> [@incheonQ](https://github.com/incheonQ) <br> kimminkue99@gmail.com |Front-end developer  |- UI/UX design and implementation <br>- Troubleshooting and debugging|
+| 이동수<br> [@Lee-Dongsu](https://github.com/Lee-Dongsu) <br> ehdtnehdtn95@naver.com |AI, NLP, Prompt Engineer    |- Prompt design and AI model experimentation <br>- QA, User, and Mobile service testing|
+| 김우찬<br> [@chanxxw](https://github.com/chanxxw) <br> strauss2327@gmail.com |Project Manager, Prompt Engineer  |- Market research and strategic planning <br>- Image prompt engineering|
 
 🤖 서비스 소개
 ---------------------
