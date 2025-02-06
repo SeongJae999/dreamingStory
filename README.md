@@ -13,7 +13,7 @@
 | Members | Roles | Responsibilities |
 |:--|:--|:--|
 |조정민([@SeongJae999](https://github.com/SeongJae999)) <br>skanehfud279@gmail.com|Team Leader, Back-end Engineer |- Server and database management <br>- Google Cloud Platform (GCP) administration <br>|
-|김민규([@incheonQ](https://github.com/incheonQ)) <br>kimminkue99@gmail.com |Front-end developer  |- UI/UX design and implementation <br>- Troubleshooting and debugging|
+|김민규([@incheonQ](https://github.com/incheonQ)) <br>logisdatascience@gmail.com |Front-end developer  |- UI/UX design and implementation <br>- Troubleshooting and debugging|
 |이동수([@Lee-Dongsu](https://github.com/Lee-Dongsu)) <br>ehdtnehdtn95@naver.com |AI, NLP, Prompt Engineer    |- Prompt design and AI model experimentation <br>- QA, User, and Mobile service testing|
 |김우찬([@chanxxw](https://github.com/chanxxw)) <br>strauss2327@gmail.com |Project Manager, Prompt Engineer  |- Strategic planning, research and marketing <br>- Image prompt engineering|
 
