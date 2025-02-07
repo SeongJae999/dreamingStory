@@ -38,13 +38,40 @@
    - 전래동화를 무료로 제공하고, ‘나만의 동화 만들기’는 구독 시스템을 통해 이용 가능합니다.  
 
 2. **기본 기능**  
-   - **나만의 동화 만들기**: 버튼식 프롬프트로 키워드를 선택하면, 해당 키워드를 바탕으로 텍스트·이미지·TTS가 자동 생성됩니다.  
-   - **최근 동화**: 이전에 만들었던 ‘나만의 동화’를 다시 불러와 감상할 수 있습니다.  
-   - **무료 동화**: 고전 전래동화를 ‘꿈꾸는 이야기’ 형식에 맞춰 이미지·TTS와 함께 제공합니다.  
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bc1cf141-eec4-40c2-904f-6a54d6a57fd3" width="10%">
+</p>
+
+   - **나만의 동화 만들기**: 버튼식 프롬프트로 키워드를 선택하면, 해당 키워드를 바탕으로 텍스트·이미지·TTS가 자동 생성됩니다.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9395c94f-0b0c-4bdd-be4e-c3e6a0c5464d" width="18%">
+  <img src="https://github.com/user-attachments/assets/fff19fd1-9d0a-41a6-bb1d-79529a5801eb" width="18%">
+  <img src="https://github.com/user-attachments/assets/dae1d298-4362-4969-9174-81604a930c03" width="18%">
+  <img src="https://github.com/user-attachments/assets/055b9638-3523-497b-8341-c1678e3a8345" width="18%">
+  <img src="https://github.com/user-attachments/assets/fc4e7377-3449-45ed-b967-7fd1fcf28142" width="18%">
+</p>
+  
+
+
+
+   - **최근 동화**: 이전에 만들었던 ‘나만의 동화’를 다시 불러와 감상할 수 있습니다.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/831e3533-c18f-436c-b22c-66446ddef731" width="33%">
+</p>
+
+   - **무료 동화**: 고전 전래동화를 ‘꿈꾸는 이야기’ 형식에 맞춰 이미지·TTS와 함께 제공합니다.
    - **로그인 화면**: Google API 연동 및 자체 회원가입으로 아이디·비밀번호 로그인, 비밀번호 찾기 기능을 지원합니다.  
 
-3. **부가 기능**  
-   - **온보딩**: 처음 사용하는 유저를 위한 앱 사용 방법 안내.  
+4. **부가 기능**  
+   - **온보딩**: 처음 사용하는 유저를 위한 앱 사용 방법 안내.
+ 
+  <p align="center">
+  <img src="https://github.com/user-attachments/assets/92fae671-5c59-4adf-a1f9-ffd098d5f235" width="10%">
+  </p>
+
    - **기타 화면**  
      - **구독 및 결제**: 월간/연간 구독(추후 도입 예정)  
      - **설정**  
@@ -52,7 +79,7 @@
        - 앱 정보(이용 약관, 개인정보 처리 방침, 알림 설정)  
        - 도움말 및 지원(FAQ, 고객지원)  
 
-4. **꿈꾸는 이야기의 특장점**  
+5. **꿈꾸는 이야기의 특장점**  
    - 정보 접근 취약계층도 스마트폰만 있다면 쉽게 동화를 만들 수 있어요.  
    - 글을 모르는 미취학 아동도 버튼만 눌러 원하는 동화를 창작할 수 있습니다.  
    - 보호자가 원하는 교훈을 스토리에 녹여, 아이들이 재미있게 사회 규칙을 배울 수 있도록 돕습니다.  
@@ -101,21 +128,17 @@ Tech Stack
  
 🏛️ Architecture 🏛️
 ---------------------
-- 전체 시스템이 어떤 방식으로 동작하는지를 다이어그램으로 설명하는 섹션입니다.  
-- 사용자가 요청 → AI 모델 → 데이터 처리 → 최종 결과 출력 흐름을 설명
-
-<img width="892" alt="스크린샷 2025-02-06 오후 6 36 14" src="https://github.com/user-attachments/assets/0fe72b68-f852-42d0-89a2-565052adaa37" />
-이걸로 올려도 되는건지?
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cfe671ab-d2f5-4d4c-a587-d38823a6d66c" width="40%">
+</p>
 
 <br>
 
 
 📚 시연 영상 및 발표자료 📚
 ---------------------
+- gif로 올리기
 1. 나만의 동화 만들기
-<p align="center">
-<img src="https://drive.google.com/file/d/1VtfEq3d1IFVSy2KbQzTDi6IEioMrKxtS/view">
-</p>
 2. 무료 동화
 3. 아이펠톤 발표영상(발표영상은 3월 중 업데이트 예정)
 
