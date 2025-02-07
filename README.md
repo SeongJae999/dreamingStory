@@ -88,17 +88,6 @@
 
 <br>
 
-🗺️ 프로세스 맵 🗺️
----------------------
-사용자가 앱을 사용하면서 거치는 단계 (User Flow)
-예를 들어:
-온보딩 → 2. 버튼 선택 → 3. 동화 생성 → 4. 이미지 생성 → 5. 오디오 변환
-추천 이미지: 서비스 흐름을 보여주는 다이어그램
-
-화면 캡쳐본으로 PPT로 만들어볼까?
-
-<br>
-
 Tech Stack
 ---------------------
 ### 🏗️ Core Technologies
@@ -137,17 +126,14 @@ Tech Stack
 
 📚 시연 영상 및 발표자료 📚
 ---------------------
-- gif로 올리기
-1. 나만의 동화 만들기
-2. 무료 동화
-3. 아이펠톤 발표영상(발표영상은 3월 중 업데이트 예정)
+> **자세한 내용은 3월에 공개될 유튜브 영상에서 확인하실 수 있습니다!**  
+
 
 <br>
 
 🌲 Project Tree 🎄
 ---------------------
-- 프로젝트 폴더 구조 정리
-  - flutter dict  
+1. flutter dict  
     ```
     📦lib  
     ┣ 📂component  
@@ -187,7 +173,7 @@ Tech Stack
     ┗ 📜test.txt  
     ```
 
-  - server dict
+2. server dict
     ```  
     📦fastAPI  
     ┣ 📂models  
@@ -267,27 +253,38 @@ Tech Stack
 
 🪪 License 🪪
 ---------------------
-- 앱 사용 방식 설명
-- API 기반 서비스라면 API 엔드포인트 정보 포함
+- 본 앱은 API를 통해 다양한 서비스를 제공하고 있습니다. 서비스 이용 전 아래 라이선스 관련 정보를 꼭 확인해주세요.
 
-1- 본 앱은 API를 통해 다양한 서비스를 제공하고 있습니다.  
-- 서비스 이용 전 아래 라이선스 관련 정보를 꼭 확인해주세요.
-
-1. **이미지 생성: FLUX**  
-   <sub>- The FLUX.1 [dev] Model is licensed by Black Forest Labs. Inc. under the FLUX.1 [dev] Non-Commercial License.<br>
-   - Copyright Black Forest Labs. Inc.</sub>  
+1. **이미지 생성: FLUX**   
+   <sub>- The FLUX.1 [dev] Model is licensed by Black Forest Labs. Inc. under the FLUX.1 [dev] Non-Commercial License.</sub> <br>
+   <sub>- Copyright Black Forest Labs. Inc. </sub>  <br>
    <sub>- IN NO EVENT SHALL BLACK FOREST LABS, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH USE OF THIS MODEL.</sub>
 
-2. **배경 음악**: Created with Suno AI  
-3. **아이콘**: [Icons8](https://icons8.com/)
+3. **배경 음악**: Created with Suno AI  
+4. **아이콘**: [Icons8](https://icons8.com/)
 
-> **해당 프로젝트를 활용하길 원하실 경우, 먼저 팀 리더(조정민, skanehfud279@gmail.com)에게 메일로 문의 부탁드립니다.**
+<br>
 
+> **본 프로젝트를 활용하길 원하실 경우, 먼저 팀 리더(조정민, skanehfud279@gmail.com)에게 메일로 문의 부탁드립니다.**
 
+<br>
 
 Reference
 ---------------------
-- PPT 정리 후 올리기
+1. Technology References
+  - ComfyUI. Available at https://github.com/comfyanonymous/ComfyUI
+  - OpenArt Workflow. Available at https://openart.ai/workflows/home
+  - Civitai: LoRA. Available at https://civitai.com/user/juaner0211589
+  - Cursor.ai. Available at https://www.cursor.com/
+  - Flutter. Available at https://flutter.dev/
+  - Firebase. Available at https://firebase.google.com/
+  - Ngrok. Available at https://ngrok.com/
+  - FastAPI. Available at https://fastapi.tiangolo.com/
+2. 참고한 Mobile Apps
+  - 스토리셀프 [Mobile app]. Available at https://storyself.com/
+  - 오스카 [Mobile app]. Available at https://oscarstories.com/ko/
+  - AI 스토리 교실 [Mobile app]. Available at https://storyclass.ai/
+
 
 <br>
 
