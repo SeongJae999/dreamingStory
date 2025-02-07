@@ -20,6 +20,8 @@
 
 👬👨🏻‍💻 전래좋군 소개 👨🏻‍💻👬
 ---------------------
+<div align="center">
+  
 | **Members** | **Roles** | **Responsibilities** |
 |:--|:--|:--|
 | 조정민([@SeongJae999](https://github.com/SeongJae999)) <br><sub>skanehfud279@gmail.com</sub> | Team Leader, Back-end Engineer | - 서버 및 데이터베이스 관리 <br> - Google Cloud Platform(GCP) 운영 |
@@ -27,6 +29,7 @@
 | 이동수([@Lee-Dongsu](https://github.com/Lee-Dongsu)) <br><sub>ehdtnehdtn95@naver.com</sub> | AI, NLP, Prompt Engineer | - 프롬프트 설계 및 AI 모델 실험 <br> - QA, 사용자 및 모바일 서비스 테스트 |
 | 김우찬([@chanxxw](https://github.com/chanxxw)) <br><sub>strauss2327@gmail.com</sub> | Project Manager, Prompt Engineer | - 전략 기획, 리서치 및 마케팅 <br> - 이미지 프롬프트 엔지니어링 |
 
+</div>
 
 <br>
 
@@ -40,7 +43,7 @@
 2. **기본 기능**  
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/bc1cf141-eec4-40c2-904f-6a54d6a57fd3" width="10%">
+  <img src="https://github.com/user-attachments/assets/bc1cf141-eec4-40c2-904f-6a54d6a57fd3" width="15%">
 </p>
 
    - **나만의 동화 만들기**: 버튼식 프롬프트로 키워드를 선택하면, 해당 키워드를 바탕으로 텍스트·이미지·TTS가 자동 생성됩니다.
@@ -53,13 +56,10 @@
   <img src="https://github.com/user-attachments/assets/fc4e7377-3449-45ed-b967-7fd1fcf28142" width="18%">
 </p>
   
-
-
-
    - **최근 동화**: 이전에 만들었던 ‘나만의 동화’를 다시 불러와 감상할 수 있습니다.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/831e3533-c18f-436c-b22c-66446ddef731" width="33%">
+  <img src="https://github.com/user-attachments/assets/831e3533-c18f-436c-b22c-66446ddef731" width="40%">
 </p>
 
    - **무료 동화**: 고전 전래동화를 ‘꿈꾸는 이야기’ 형식에 맞춰 이미지·TTS와 함께 제공합니다.
@@ -69,7 +69,7 @@
    - **온보딩**: 처음 사용하는 유저를 위한 앱 사용 방법 안내.
  
   <p align="center">
-  <img src="https://github.com/user-attachments/assets/92fae671-5c59-4adf-a1f9-ffd098d5f235" width="10%">
+  <img src="https://github.com/user-attachments/assets/92fae671-5c59-4adf-a1f9-ffd098d5f235" width="15%">
   </p>
 
    - **기타 화면**  
