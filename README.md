@@ -112,8 +112,10 @@ Tech Stack
 
 📚 시연 영상 및 발표자료 📚
 ---------------------
-- gif로 올리기
 1. 나만의 동화 만들기
+<p align="center">
+<img src="https://drive.google.com/file/d/1VtfEq3d1IFVSy2KbQzTDi6IEioMrKxtS/view">
+</p>
 2. 무료 동화
 3. 아이펠톤 발표영상(발표영상은 3월 중 업데이트 예정)
 
