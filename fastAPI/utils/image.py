@@ -3,6 +3,13 @@ import random
 import sys
 import os
 
+LOADED_MODELS = {
+    "dualcliploader": None,
+    "vaeloader": None,
+    "unetloader": None,
+    "loraloader": None
+}
+
 def get_value_at_index(obj, index: int):
     try:
         return obj[index]
@@ -51,52 +58,80 @@ from ComfyUI.nodes import (
     LoraLoader
 )
 
-def generate_image(output_filename: str = "output.jpg", prompt: str = ""):
-    with torch.inference_mode():
-        emptylatentimage = EmptyLatentImage()
-        emptylatentimage_5 = emptylatentimage.generate(
-            width=1280, height=800, batch_size=1
-        )
+def load_image_models():
+    """
+    모델들이 로드되어 있지 않다면 로드하고, 이미 로드되어 있다면 스킵합니다.
+    """
+    global LOADED_MODELS
 
-        dualcliploader = DualCLIPLoader()
-        dualcliploader_11 = dualcliploader.load_clip(
+    if LOADED_MODELS["dualcliploader"] is None:
+        dualclip = DualCLIPLoader()
+        loaded_clip = dualclip.load_clip(
             clip_name1="t5xxl_fp16.safetensors",
             clip_name2="clip_l.safetensors",
             type="flux",
             device="default",
         )
-
-        cliptextencode = CLIPTextEncode()
-        cliptextencode_6 = cliptextencode.encode(
-            text="'title': 'Baridegi',\n  'introduction': \n    'description': 'In a grand palace, the king looks disappointed as the queen cradles their newborn daughter, Baridegi, while a nursemaid stands nearby, looking concerned.',\n    'leading_role': 'Baridegi, a newborn girl with a gentle, glowing aura, and the king, a stern figure dressed in regal robes, with the queen looking tenderly at the baby.',\n    'subject': 'The king’s disappointment at Baridegi’s birth.',\n    'style': 'Traditional and regal, inspired by Korean folk art with rich textures and intricate details.',\n    'composition': 'The king is seated on the throne in the background, while the queen holds Baridegi in the foreground, creating a stark contrast between joy and disappointment.',\n    'lighting': 'Soft, golden light illuminates the queen and Baridegi, while the king sits in shadow, symbolizing his displeasure.',\n    'color_palette': 'Deep reds and golds for the palace, with soft whites and pinks for the queen and Baridegi.',\n    'mood_atmosphere': 'Bittersweet and dramatic, highlighting the emotional tension.',\n    'technical_details': 'Medium perspective focusing on the interplay of light and shadow between the king and the queen.',\n    'additional_elements': 'Intricate palace decorations, including embroidered curtains and a gleaming golden throne.'\n  ",
-            clip=get_value_at_index(dualcliploader_11, 0),
+        LOADED_MODELS["dualcliploader"] = loaded_clip
+        print("dualclip 로드 완료")
+    
+    if LOADED_MODELS["vaeloader"] is None:
+        vae_loader = VAELoader()
+        loaded_vae = vae_loader.load_vae(vae_name="flux-vae-bf16.safetensors")
+        LOADED_MODELS["vaeloader"] = loaded_vae
+        print("vae 로드 완료")
+        
+    if LOADED_MODELS["unetloader"] is None:
+        unet_loader = UNETLoader()
+        loaded_unet = unet_loader.load_unet(
+            unet_name="flux1-schnell-fp8-e4m3fn.safetensors", 
+            weight_dtype="default"
         )
+        LOADED_MODELS["unetloader"] = loaded_unet
+        print("unet 로드 완료")
+        
+    if LOADED_MODELS["loraloader"] is None:
+        lora_loader = LoraLoader()
 
-        vaeloader = VAELoader()
-        vaeloader_10 = vaeloader.load_vae(vae_name="flux-vae-bf16.safetensors")
-
-        unetloader = UNETLoader()
-        unetloader_12 = unetloader.load_unet(
-            unet_name="flux1-schnell-fp8-e4m3fn.safetensors", weight_dtype="default"
-        )
-
-        loraloader = LoraLoader()
-        loraloader_49 = loraloader.load_lora(
+        loaded_lora = lora_loader.load_lora(
             lora_name="j_3dgame_flux.safetensors",
             strength_model=1,
             strength_clip=1,
-            model=get_value_at_index(unetloader_12, 0),
+            model=get_value_at_index(LOADED_MODELS["unetloader"], 0),
+            clip=get_value_at_index(LOADED_MODELS["dualcliploader"], 0),
+        )
+        LOADED_MODELS["loraloader"] = loaded_lora
+        print("lora 로드 완료")
+        
+def generate_image(output_filename: str = "output.jpg", prompt: str = ""):
+
+    load_image_models()
+        
+    with torch.inference_mode():
+        emptylatentimage = EmptyLatentImage()
+        cliptextencode = CLIPTextEncode()
+        ksampler = KSampler()
+        vaedecode = VAEDecode()
+        saveimage = SaveImage()
+
+        emptylatentimage_5 = emptylatentimage.generate(
+            width=1280, height=800, batch_size=1
+        )
+
+        dualcliploader_11 = LOADED_MODELS["dualcliploader"]
+
+        cliptextencode_6 = cliptextencode.encode(
+            text=prompt,
             clip=get_value_at_index(dualcliploader_11, 0),
         )
+
+        vaeloader_10 = LOADED_MODELS["vaeloader"]
+        loraloader_49 = LOADED_MODELS["loraloader"]
 
         cliptextencode_35 = cliptextencode.encode(
             text="text, blurry, shiny, photo, soft, nsfw, nude, ugly, broken, watermark, oversaturated,  extra digit, fewer digits, missing fingers, strange fingers, fewer fingers, missing arms, bad feet, bad legs, deformed, extra limbs",
             clip=get_value_at_index(loraloader_49, 1),
         )
-
-        ksampler = KSampler()
-        vaedecode = VAEDecode()
-        saveimage = SaveImage()
 
         ksampler_32 = ksampler.sample(
             seed=random.randint(1, 2**64),
@@ -115,9 +150,10 @@ def generate_image(output_filename: str = "output.jpg", prompt: str = ""):
             samples=get_value_at_index(ksampler_32, 0),
             vae=get_value_at_index(vaeloader_10, 0),
         )
-        
+
         saveimage_30 = saveimage.save_images(
-            filename_prefix=str(output_filename), images=get_value_at_index(vaedecode_29, 0)
-        )    
-        
+            filename_prefix=str(output_filename), 
+            images=get_value_at_index(vaedecode_29, 0)
+        )
+
         return saveimage_30["ui"]["images"][0]["filename"]

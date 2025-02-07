@@ -278,10 +278,6 @@ class _StoryDisplayPageState extends State<StoryDisplayPage> {
         print(">>> Triggering generation for next part '$nextPart'");
         await _generateAndFetchPart(nextPart);
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('모든 파트가 생성 완료되었습니다!')),
-      );
     }
   }
 
