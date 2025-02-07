@@ -255,12 +255,12 @@ Tech Stack
 ---------------------
 - 본 앱은 API를 통해 다양한 서비스를 제공하고 있습니다. 서비스 이용 전 아래 라이선스 관련 정보를 꼭 확인해주세요.
 
-1. **이미지 생성: FLUX**   
+1. **이미지 생성: [FLUX](https://blackforestlabs.ai/)**   
    <sub>- The FLUX.1 [dev] Model is licensed by Black Forest Labs. Inc. under the FLUX.1 [dev] Non-Commercial License.</sub> <br>
    <sub>- Copyright Black Forest Labs. Inc. </sub>  <br>
    <sub>- IN NO EVENT SHALL BLACK FOREST LABS, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH USE OF THIS MODEL.</sub>
 
-3. **배경 음악**: Created with Suno AI  
+3. **배경 음악**: Created with [Suno AI](https://suno.com/)  
 4. **아이콘**: [Icons8](https://icons8.com/)
 
 <br>
