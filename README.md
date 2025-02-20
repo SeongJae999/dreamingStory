@@ -24,7 +24,7 @@
   
 | **Members** | **Roles** | **Responsibilities** |
 |:--|:--|:--|
-| 조정민([@SeongJae999](https://github.com/SeongJae999)) <br><sub>skanehfud279@gmail.com</sub> | Team Leader, Back-end Engineer | - 서버 및 데이터베이스 관리 <br> - Google Cloud Platform(GCP) 운영 |
+| 조정민([@SeongJae999](https://github.com/SeongJae999)) <br><sub>skanehfud279@gmail.com</sub> | Team Leader, Back-end Engineer | - 서버 및 데이터베이스 구축 및 관리 <br> - Google Cloud Platform(GCP) 운영 |
 | 김민규([@incheonQ](https://github.com/incheonQ)) <br><sub>logisdatascience@gmail.com</sub> | Front-end Developer | - UI/UX 설계 및 구현 <br> - 버그 수정 및 디버깅 |
 | 이동수([@Lee-Dongsu](https://github.com/Lee-Dongsu)) <br><sub>ehdtnehdtn95@naver.com</sub> | AI, NLP, Prompt Engineer | - 프롬프트 설계 및 AI 모델 실험 <br> - QA, 사용자 및 모바일 서비스 테스트 |
 | 김우찬([@chanxxw](https://github.com/chanxxw)) <br><sub>strauss2327@gmail.com</sub> | Project Manager, Prompt Engineer | - 전략 기획, 리서치 및 마케팅 <br> - 이미지 프롬프트 엔지니어링 |
